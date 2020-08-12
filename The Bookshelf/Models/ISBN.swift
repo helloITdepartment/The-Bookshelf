@@ -9,7 +9,7 @@
 import Foundation
 
 class ISBN: Codable {
-    var book: Book
+    var serverBook: ServerBook
 }
 
 struct AnyKey: CodingKey {

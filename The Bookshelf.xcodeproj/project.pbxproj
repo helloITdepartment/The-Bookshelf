@@ -26,6 +26,7 @@
 		CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */; };
 		CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4524E49350008C95A5 /* Constants.swift */; };
 		CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4724E49396008C95A5 /* TBError.swift */; };
+		CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4924E4A050008C95A5 /* ServerBook.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBEntryFieldLabel.swift; sourceTree = "<group>"; };
 		CFCB9B4524E49350008C95A5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CFCB9B4724E49396008C95A5 /* TBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBError.swift; sourceTree = "<group>"; };
+		CFCB9B4924E4A050008C95A5 /* ServerBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerBook.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,8 +114,9 @@
 		CF88D119246D8ABA00C7DD26 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				CF88D104246CA93400C7DD26 /* Book.swift */,
 				CF88D10E246D78D600C7DD26 /* ISBN.swift */,
+				CFCB9B4924E4A050008C95A5 /* ServerBook.swift */,
+				CF88D104246CA93400C7DD26 /* Book.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 				CF88D105246CA93400C7DD26 /* Book.swift in Sources */,
 				CF88D11C246D8BE000C7DD26 /* ISBNEntryVC.swift in Sources */,
 				CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */,
+				CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */,
 				CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */,
 				CF88D103246C9F9C00C7DD26 /* Extensions.swift in Sources */,
 				CF88D117246D8AA000C7DD26 /* AddBookTabBarController.swift in Sources */,
