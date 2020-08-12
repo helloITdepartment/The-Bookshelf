@@ -9,21 +9,47 @@
 /* Begin PBXBuildFile section */
 		CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */; };
 		CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */; };
-		CF88D0E9246C4D2A00C7DD26 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E8246C4D2A00C7DD26 /* ViewController.swift */; };
-		CF88D0EC246C4D2A00C7DD26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF88D0EA246C4D2A00C7DD26 /* Main.storyboard */; };
 		CF88D0EE246C4D2B00C7DD26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */; };
 		CF88D0F1246C4D2B00C7DD26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF88D0EF246C4D2B00C7DD26 /* LaunchScreen.storyboard */; };
+		CF88D0F9246C4F3800C7DD26 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0F8246C4F3800C7DD26 /* MainVC.swift */; };
+		CF88D103246C9F9C00C7DD26 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D102246C9F9C00C7DD26 /* Extensions.swift */; };
+		CF88D105246CA93400C7DD26 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D104246CA93400C7DD26 /* Book.swift */; };
+		CF88D107246CAA9B00C7DD26 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D106246CAA9B00C7DD26 /* NetworkManager.swift */; };
+		CF88D10B246D684D00C7DD26 /* BookDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */; };
+		CF88D10F246D78D600C7DD26 /* ISBN.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D10E246D78D600C7DD26 /* ISBN.swift */; };
+		CF88D111246D83DF00C7DD26 /* TestData.json in Resources */ = {isa = PBXBuildFile; fileRef = CF88D110246D83DF00C7DD26 /* TestData.json */; };
+		CF88D117246D8AA000C7DD26 /* AddBookTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */; };
+		CF88D11C246D8BE000C7DD26 /* ISBNEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */; };
+		CF88D11E246D8BFA00C7DD26 /* ManualEntryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */; };
+		CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */; };
+		CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D123246DC4A300C7DD26 /* TBTextField.swift */; };
+		CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */; };
+		CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4524E49350008C95A5 /* Constants.swift */; };
+		CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4724E49396008C95A5 /* TBError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CF88D0E1246C4D2A00C7DD26 /* The Bookshelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Bookshelf.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		CF88D0E8246C4D2A00C7DD26 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		CF88D0EB246C4D2A00C7DD26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CF88D0F0246C4D2B00C7DD26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CF88D0F2246C4D2B00C7DD26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF88D0F8246C4F3800C7DD26 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		CF88D102246C9F9C00C7DD26 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		CF88D104246CA93400C7DD26 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		CF88D106246CAA9B00C7DD26 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailVC.swift; sourceTree = "<group>"; };
+		CF88D10E246D78D600C7DD26 /* ISBN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISBN.swift; sourceTree = "<group>"; };
+		CF88D110246D83DF00C7DD26 /* TestData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TestData.json; sourceTree = "<group>"; };
+		CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBookTabBarController.swift; sourceTree = "<group>"; };
+		CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISBNEntryVC.swift; sourceTree = "<group>"; };
+		CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualEntryVC.swift; sourceTree = "<group>"; };
+		CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryFormField.swift; sourceTree = "<group>"; };
+		CF88D123246DC4A300C7DD26 /* TBTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTextField.swift; sourceTree = "<group>"; };
+		CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBEntryFieldLabel.swift; sourceTree = "<group>"; };
+		CFCB9B4524E49350008C95A5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		CFCB9B4724E49396008C95A5 /* TBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +82,52 @@
 		CF88D0E3246C4D2A00C7DD26 /* The Bookshelf */ = {
 			isa = PBXGroup;
 			children = (
+				CF88D118246D8AB200C7DD26 /* Views */,
+				CF88D119246D8ABA00C7DD26 /* Models */,
+				CF88D11A246D8AC200C7DD26 /* Controllers */,
 				CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */,
 				CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */,
-				CF88D0E8246C4D2A00C7DD26 /* ViewController.swift */,
-				CF88D0EA246C4D2A00C7DD26 /* Main.storyboard */,
+				CF88D106246CAA9B00C7DD26 /* NetworkManager.swift */,
+				CF88D110246D83DF00C7DD26 /* TestData.json */,
 				CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */,
 				CF88D0EF246C4D2B00C7DD26 /* LaunchScreen.storyboard */,
 				CF88D0F2246C4D2B00C7DD26 /* Info.plist */,
+				CF88D102246C9F9C00C7DD26 /* Extensions.swift */,
+				CFCB9B4524E49350008C95A5 /* Constants.swift */,
+				CFCB9B4724E49396008C95A5 /* TBError.swift */,
 			);
 			path = "The Bookshelf";
+			sourceTree = "<group>";
+		};
+		CF88D118246D8AB200C7DD26 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */,
+				CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */,
+				CF88D123246DC4A300C7DD26 /* TBTextField.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		CF88D119246D8ABA00C7DD26 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				CF88D104246CA93400C7DD26 /* Book.swift */,
+				CF88D10E246D78D600C7DD26 /* ISBN.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CF88D11A246D8AC200C7DD26 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CF88D0F8246C4F3800C7DD26 /* MainVC.swift */,
+				CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */,
+				CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */,
+				CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */,
+				CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,8 +189,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF88D0F1246C4D2B00C7DD26 /* LaunchScreen.storyboard in Resources */,
+				CF88D111246D83DF00C7DD26 /* TestData.json in Resources */,
 				CF88D0EE246C4D2B00C7DD26 /* Assets.xcassets in Resources */,
-				CF88D0EC246C4D2A00C7DD26 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,23 +201,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF88D0E9246C4D2A00C7DD26 /* ViewController.swift in Sources */,
+				CF88D107246CAA9B00C7DD26 /* NetworkManager.swift in Sources */,
+				CF88D10F246D78D600C7DD26 /* ISBN.swift in Sources */,
+				CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */,
+				CF88D0F9246C4F3800C7DD26 /* MainVC.swift in Sources */,
 				CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */,
+				CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */,
+				CF88D11E246D8BFA00C7DD26 /* ManualEntryVC.swift in Sources */,
 				CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */,
+				CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */,
+				CF88D10B246D684D00C7DD26 /* BookDetailVC.swift in Sources */,
+				CF88D105246CA93400C7DD26 /* Book.swift in Sources */,
+				CF88D11C246D8BE000C7DD26 /* ISBNEntryVC.swift in Sources */,
+				CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */,
+				CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */,
+				CF88D103246C9F9C00C7DD26 /* Extensions.swift in Sources */,
+				CF88D117246D8AA000C7DD26 /* AddBookTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		CF88D0EA246C4D2A00C7DD26 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CF88D0EB246C4D2A00C7DD26 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		CF88D0EF246C4D2B00C7DD26 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -294,7 +362,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.QTechnologies.The-Bookshelf";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -312,7 +380,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.QTechnologies.The-Bookshelf";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
