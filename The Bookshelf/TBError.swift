@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+enum TBError: String, Error {
+    case invalidResponse = "Invalid response from the server. Please try again."
+    case invalidData = "The data returned from the server was invalid. Please try again."
+
+}
