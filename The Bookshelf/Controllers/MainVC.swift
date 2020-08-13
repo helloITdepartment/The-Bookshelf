@@ -69,16 +69,5 @@ class MainVC: UIViewController {
         let addEntryVC = AddBookTabBarController()
         present(addEntryVC, animated: true)
         
-        NetworkManager.shared.getBook(for: "0451526538") { result in
-            
-            switch result {
-                
-            case .success(let book):
-                print(book.title)
-            case .failure(let error):
-                print(error.localizedDescription)
-                
-            }
-        }
     }
 }

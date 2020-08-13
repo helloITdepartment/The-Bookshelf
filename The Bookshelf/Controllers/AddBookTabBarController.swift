@@ -21,6 +21,7 @@ class AddBookTabBarController: UITabBarController {
     private func configureISBNVC() -> UIViewController {
         let isbnEntryVC = ISBNEntryVC()
         isbnEntryVC.view.backgroundColor = .systemBlue
+        isbnEntryVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
         
         return isbnEntryVC
     }
@@ -28,6 +29,7 @@ class AddBookTabBarController: UITabBarController {
     private func configureManualEntryVC() -> UIViewController{
         let manualEntryVC = ManualEntryVC()
         manualEntryVC.view.backgroundColor = .systemPurple
+        manualEntryVC.tabBarItem = UITabBarItem(title: "Manual", image: UIImage(systemName: "text.alignleft"), tag: 1)
         
         return manualEntryVC
     }
