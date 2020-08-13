@@ -10,6 +10,8 @@ import UIKit
 
 class ISBNEntryVC: UIViewController {
 
+    var addBookDelegate: AddBookDelegate!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

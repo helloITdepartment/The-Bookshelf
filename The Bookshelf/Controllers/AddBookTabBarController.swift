@@ -9,6 +9,8 @@
 import UIKit
 
 class AddBookTabBarController: UITabBarController {
+    
+    var addBookDelegate: AddBookDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +24,7 @@ class AddBookTabBarController: UITabBarController {
         let isbnEntryVC = ISBNEntryVC()
         isbnEntryVC.view.backgroundColor = .systemBlue
         isbnEntryVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
+        isbnEntryVC.addBookDelegate = addBookDelegate
         
         return isbnEntryVC
     }
@@ -30,6 +33,7 @@ class AddBookTabBarController: UITabBarController {
         let manualEntryVC = ManualEntryVC()
         manualEntryVC.view.backgroundColor = .systemPurple
         manualEntryVC.tabBarItem = UITabBarItem(title: "Manual", image: UIImage(systemName: "text.alignleft"), tag: 1)
+        manualEntryVC.addBookDelegate = addBookDelegate
         
         return manualEntryVC
     }

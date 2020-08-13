@@ -10,6 +10,8 @@ import UIKit
 
 class ManualEntryVC: UIViewController {
 
+    var addBookDelegate: AddBookDelegate!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

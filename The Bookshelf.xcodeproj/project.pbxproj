@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF798D7924E56974002670C6 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF798D7824E56974002670C6 /* PersistenceManager.swift */; };
 		CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */; };
 		CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */; };
 		CF88D0EE246C4D2B00C7DD26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF798D7824E56974002670C6 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		CF88D0E1246C4D2A00C7DD26 /* The Bookshelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Bookshelf.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -84,12 +86,12 @@
 		CF88D0E3246C4D2A00C7DD26 /* The Bookshelf */ = {
 			isa = PBXGroup;
 			children = (
+				CFCB9B4B24E4BCDF008C95A5 /* Managers */,
 				CF88D118246D8AB200C7DD26 /* Views */,
 				CF88D119246D8ABA00C7DD26 /* Models */,
 				CF88D11A246D8AC200C7DD26 /* Controllers */,
 				CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */,
 				CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */,
-				CF88D106246CAA9B00C7DD26 /* NetworkManager.swift */,
 				CF88D110246D83DF00C7DD26 /* TestData.json */,
 				CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */,
 				CF88D0EF246C4D2B00C7DD26 /* LaunchScreen.storyboard */,
@@ -131,6 +133,15 @@
 				CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		CFCB9B4B24E4BCDF008C95A5 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				CF88D106246CAA9B00C7DD26 /* NetworkManager.swift */,
+				CF798D7824E56974002670C6 /* PersistenceManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,6 +230,7 @@
 				CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */,
 				CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */,
 				CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */,
+				CF798D7924E56974002670C6 /* PersistenceManager.swift in Sources */,
 				CF88D103246C9F9C00C7DD26 /* Extensions.swift in Sources */,
 				CF88D117246D8AA000C7DD26 /* AddBookTabBarController.swift in Sources */,
 			);
