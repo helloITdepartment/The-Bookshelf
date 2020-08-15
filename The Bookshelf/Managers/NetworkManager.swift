@@ -84,16 +84,14 @@ class NetworkManager {
     }
     
     func getCoverImage(from urlString: String, completed: @escaping (Result<UIImage, TBError>) -> Void) {
-        
+                
         guard let url = URL(string: urlString) else {
             completed(.failure(.invalidURL))
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
-            
-            guard let self = self else { return }
-            
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                        
             if error != nil { return }
             guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
                 completed(.failure(.invalidResponse))
