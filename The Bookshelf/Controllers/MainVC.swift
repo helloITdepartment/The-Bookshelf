@@ -25,9 +25,25 @@ class MainVC: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .systemRed
         
+        //TODO:- get rid of this, it's only for testing
+        NetworkManager.shared.getBookTest(for: "idk some isbn") { [weak self] result in
+            guard let self = self else { return }
+
+            switch result{
+
+            case .success(let book):
+                print("Got the book \(book.title)")
+                self.didSubmit(book: book)
+            case .failure(let error):
+                //TODO:- something useful with this error
+                print(error.localizedDescription)
+            }
+        }
+        
         configureNavBar()
-        //loadBooks()
+        loadBooks()
         showCollectionView()
+        
     }
     
     private func configureNavBar() {
@@ -35,11 +51,32 @@ class MainVC: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
     }
     
+    private func loadBooks() {
+        
+        PersistenceManager.retrieveBooks { [weak self] result in
+            
+            guard let self = self else { return }
+            
+            switch result{
+            case .success(let books):
+                self.books = books
+            case .failure(let error):
+                //TODO:- actually do something useful with these errors
+                print(error.rawValue)
+            }
+        }
+    }
+    
     private func showListView() {
         
         view.clear()
         
         listView = UITableView(frame: view.bounds)
+        listView.rowHeight = 60
+        listView.dataSource = self
+        listView.delegate = self
+        listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
+
         listView.backgroundColor = .systemYellow
         view.addSubview(listView)
     }
@@ -87,6 +124,13 @@ extension MainVC: AddBookDelegate {
     
     func didSubmit(book: Book) {
         
+        PersistenceManager.updateBooks(.add, book: book) { error in
+            if let error = error {
+                //TODO:- something useful with this error
+                print(error.rawValue)
+            }
+        }
+        
     }
     
 }
@@ -94,11 +138,14 @@ extension MainVC: AddBookDelegate {
 extension MainVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
+        return books.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
+        let book = books[indexPath.row]
+        cell.set(book: book)
+        return cell
     }
     
     

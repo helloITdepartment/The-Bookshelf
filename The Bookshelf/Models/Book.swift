@@ -59,3 +59,11 @@ class Book: Codable {
     }
 }
 
+extension Book: Equatable {
+    
+    static func == (lhs: Book, rhs: Book) -> Bool {
+        return lhs.isbn == rhs.isbn
+    }
+    
+    
+}
