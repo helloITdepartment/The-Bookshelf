@@ -42,12 +42,14 @@ class MainVC: UIViewController {
         
         configureNavBar()
         loadBooks()
-        showCollectionView()
+        showListView()
         
     }
     
     private func configureNavBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
+        //In production, should use the one with "listViewButtonTapped" and showCollectionView in the viewDidLoad
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
     }
     
@@ -77,7 +79,7 @@ class MainVC: UIViewController {
         listView.delegate = self
         listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
 
-        listView.backgroundColor = .systemYellow
+        listView.backgroundColor = .systemBackground
         view.addSubview(listView)
     }
     
