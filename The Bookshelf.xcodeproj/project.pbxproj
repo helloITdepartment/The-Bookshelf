@@ -29,6 +29,7 @@
 		CFC3E45E24E5EA0A00482DD8 /* TBCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */; };
 		CFC3E46024E5EA4C00482DD8 /* TBTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */; };
 		CFC3E46224E5EA8300482DD8 /* TBAuthorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */; };
+		CFC3E46624E9392D00482DD8 /* TBCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */; };
 		CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4524E49350008C95A5 /* Constants.swift */; };
 		CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4724E49396008C95A5 /* TBError.swift */; };
 		CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4924E4A050008C95A5 /* ServerBook.swift */; };
@@ -59,6 +60,7 @@
 		CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCoverImageView.swift; sourceTree = "<group>"; };
 		CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTitleLabel.swift; sourceTree = "<group>"; };
 		CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBAuthorLabel.swift; sourceTree = "<group>"; };
+		CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCollectionViewCell.swift; sourceTree = "<group>"; };
 		CFCB9B4524E49350008C95A5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CFCB9B4724E49396008C95A5 /* TBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBError.swift; sourceTree = "<group>"; };
 		CFCB9B4924E4A050008C95A5 /* ServerBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerBook.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */,
 				CF88D123246DC4A300C7DD26 /* TBTextField.swift */,
 				CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */,
+				CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */,
 				CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */,
 				CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */,
 				CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */,
@@ -240,6 +243,7 @@
 				CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */,
 				CF88D10B246D684D00C7DD26 /* BookDetailVC.swift in Sources */,
 				CF88D105246CA93400C7DD26 /* Book.swift in Sources */,
+				CFC3E46624E9392D00482DD8 /* TBCollectionViewCell.swift in Sources */,
 				CFC3E45C24E5E95100482DD8 /* TBBookCell.swift in Sources */,
 				CF88D11C246D8BE000C7DD26 /* ISBNEntryVC.swift in Sources */,
 				CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */,
