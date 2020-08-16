@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Book: Codable {
+struct Book: Codable, Hashable {
     var title: String
     var subtitle: String?
     var authors: [String]

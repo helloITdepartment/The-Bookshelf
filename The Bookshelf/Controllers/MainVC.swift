@@ -14,10 +14,17 @@ protocol AddBookDelegate {
 
 class MainVC: UIViewController {
     
+    enum Section {
+        case main
+        //TODO:- maybe figure out a way to have the rooms where the books might be plus a "lent out" section
+    }
+    
     var books: [Book] = []
     
     var collectionView: UICollectionView!
+    var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
     var listView: UITableView!
+    var listViewDataSource: UITableViewDiffableDataSource<Section, Book>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,30 +33,32 @@ class MainVC: UIViewController {
         view.backgroundColor = .systemRed
         
         //TODO:- get rid of this, it's only for testing
-        NetworkManager.shared.getBookTest(for: "idk some isbn") { [weak self] result in
-            guard let self = self else { return }
-
-            switch result{
-
-            case .success(let book):
-                print("Got the book \(book.title)")
-                self.didSubmit(book: book)
-            case .failure(let error):
-                //TODO:- something useful with this error
-                print(error.localizedDescription)
-            }
-        }
+//        NetworkManager.shared.getBookTest(for: "idk some isbn") { [weak self] result in
+//            guard let self = self else { return }
+//
+//            switch result{
+//
+//            case .success(let book):
+//                print("Got the book \(book.title)")
+//                self.didSubmit(book: book)
+//            case .failure(let error):
+//                //TODO:- something useful with this error
+//                print(error.localizedDescription)
+//            }
+//        }
         
         configureNavBar()
         loadBooks()
-        showListView()
+        configureCollectionView()
+        showCollectionView()
+        configureDiffableDataSources()
         
     }
     
     private func configureNavBar() {
         //In production, should use the one with "listViewButtonTapped" and showCollectionView in the viewDidLoad
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
     }
     
@@ -62,6 +71,7 @@ class MainVC: UIViewController {
             switch result{
             case .success(let books):
                 self.books = books
+                self.updateDataSources(with: self.books, animated: true)
             case .failure(let error):
                 //TODO:- actually do something useful with these errors
                 print(error.rawValue)
@@ -69,26 +79,48 @@ class MainVC: UIViewController {
         }
     }
     
+    private func configureDiffableDataSources() {
+        
+        //CollectionView dataSource
+        collectionViewDataSource = UICollectionViewDiffableDataSource<Section, Book>(collectionView: collectionView, cellProvider: { (collectionView, indexPath, book) -> UICollectionViewCell? in
+           
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBCollectionViewCell.reuseID, for: indexPath) as! TBCollectionViewCell
+            cell.set(book: book)
+            
+            return cell
+        })
+        
+        //ListView dataSource
+    }
+    
     private func showListView() {
         
         view.clear()
         
+        //Pull this bit out into a "configureListView" function so it only needs to be called once
         listView = UITableView(frame: view.bounds)
         listView.rowHeight = 60
         listView.dataSource = self
         listView.delegate = self
         listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
-
         listView.backgroundColor = .systemBackground
+        
         view.addSubview(listView)
+    }
+    
+    private func configureCollectionView() {
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createNColumnFlowLayout(withNColumns: 3))
+        collectionView.delegate = self
+        collectionView.register(TBCollectionViewCell.self, forCellWithReuseIdentifier: TBCollectionViewCell.reuseID)
+        collectionView.backgroundColor = .systemOrange
+        
     }
     
     private func showCollectionView() {
         
         view.clear()
-        
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewLayout())
-        collectionView.backgroundColor = .systemOrange
+                
         view.addSubview(collectionView)
     }
     
@@ -98,6 +130,23 @@ class MainVC: UIViewController {
         let addEntryVC = AddBookTabBarController()
         addEntryVC.addBookDelegate = self
         present(addEntryVC, animated: true)
+        
+    }
+    
+    private func createNColumnFlowLayout(withNColumns n: Int) -> UICollectionViewFlowLayout {
+        
+        let width = view.bounds.width
+        let padding: CGFloat = 12
+        let minimumItemSpacing: CGFloat = 10 // smallest amount of space between items
+        let numberOfItemSpacings: CGFloat = CGFloat(n-1) // number of times you'll need ^. As in how many spaces that border 2 items.
+        let availableWidth = width - (padding * 2) - (minimumItemSpacing * numberOfItemSpacings)
+        let itemWidth = availableWidth / CGFloat(n)
+        
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth + 40)
+        
+        return flowLayout
         
     }
     
@@ -115,6 +164,20 @@ class MainVC: UIViewController {
         print("Switching to collection view")
         
         showCollectionView()
+    }
+    
+    func updateDataSources(with books: [Book], animated: Bool) {
+        
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Book>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(books)
+        
+        DispatchQueue.main.async {
+            
+            //TODO:- figure out if this has some sort of performance/memory penalty, and if it does, keep track of which view is currently up and only update that one
+            self.collectionViewDataSource.apply(snapshot, animatingDifferences: animated)
+            //self.listViewDataSource.apply(snapshot, animatingDifferences: animated)
+        }
     }
     
     @objc private func plusButtonTapped() {
@@ -150,5 +213,14 @@ extension MainVC: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    
+}
+
+extension MainVC: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let book = books[indexPath.row]
+        print(book.title)
+    }
     
 }
