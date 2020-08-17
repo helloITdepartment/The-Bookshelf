@@ -21,6 +21,7 @@ enum PersistenceManager {
     
     static private let defaults = UserDefaults.standard
     
+    //MARK:- Book stuff
     static func retrieveBooks(completed: @escaping (Result<[Book], TBError>) -> Void) {
         
         //Have to make sure there's even something in there for "books"
@@ -97,4 +98,6 @@ enum PersistenceManager {
             }
         }
     }
+    
+    //MARK:- Cover stuff
 }

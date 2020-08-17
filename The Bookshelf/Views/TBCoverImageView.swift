@@ -10,7 +10,6 @@ import UIKit
 
 class TBCoverImageView: UIImageView {
 
-    //TODO:- find and actually set this placeholder image
     let placeholderImage = UIImage(systemName: "book.fill")
     let cache = NetworkManager.shared.cache
     
