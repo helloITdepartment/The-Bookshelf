@@ -111,7 +111,7 @@ class MainVC: UIViewController {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createNColumnFlowLayout(withNColumns: 3))
         collectionView.delegate = self
         collectionView.register(TBCollectionViewCell.self, forCellWithReuseIdentifier: TBCollectionViewCell.reuseID)
-        collectionView.backgroundColor = .systemOrange
+        collectionView.backgroundColor = .systemBackground
         
     }
     
@@ -143,7 +143,7 @@ class MainVC: UIViewController {
         
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth + 40)
+        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth + 60)
         
         return flowLayout
         

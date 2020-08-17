@@ -64,7 +64,9 @@ class TBCollectionViewCell: UICollectionViewCell {
     private func configureTitleLabel() {
         
         addSubview(titleLabel)
-        
+        titleLabel.minimumScaleFactor = 0.6
+        titleLabel.numberOfLines = 0
+
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
             titleLabel.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: padding),
@@ -77,6 +79,7 @@ class TBCollectionViewCell: UICollectionViewCell {
     private func configureAuthorLabel() {
         
         addSubview(authorLabel)
+        authorLabel.minimumScaleFactor = 0.5
         
         NSLayoutConstraint.activate([
             authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
