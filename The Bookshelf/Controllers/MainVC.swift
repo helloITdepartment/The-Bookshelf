@@ -12,6 +12,7 @@ protocol AddBookDelegate {
     func didSubmit(book: Book)
 }
 
+//Just putting this here so there's something to commit
 class MainVC: UIViewController {
     
     enum Section {
@@ -31,21 +32,6 @@ class MainVC: UIViewController {
 
         // Do any additional setup after loading the view.
         view.backgroundColor = .systemRed
-        
-        //TODO:- get rid of this, it's only for testing
-//        NetworkManager.shared.getBookTest(for: "idk some isbn") { [weak self] result in
-//            guard let self = self else { return }
-//
-//            switch result{
-//
-//            case .success(let book):
-//                print("Got the book \(book.title)")
-//                self.didSubmit(book: book)
-//            case .failure(let error):
-//                //TODO:- something useful with this error
-//                print(error.localizedDescription)
-//            }
-//        }
         
         configureNavBar()
         configureCollectionView()
@@ -215,22 +201,6 @@ extension MainVC: AddBookDelegate {
     }
     
 }
-
-//extension MainVC: UITableViewDataSource, UITableViewDelegate {
-//
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return books.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
-//        let book = books[indexPath.row]
-//        cell.set(book: book)
-//        return cell
-//    }
-//
-//
-//}
 
 extension MainVC: UITableViewDelegate {}
 
