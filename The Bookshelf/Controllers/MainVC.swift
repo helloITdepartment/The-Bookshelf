@@ -48,10 +48,11 @@ class MainVC: UIViewController {
 //        }
         
         configureNavBar()
-        loadBooks()
         configureCollectionView()
+        configureListView()
         showCollectionView()
         configureDiffableDataSources()
+        loadBooks()
         
     }
     
@@ -91,21 +92,32 @@ class MainVC: UIViewController {
         })
         
         //ListView dataSource
+        listViewDataSource = UITableViewDiffableDataSource<Section, Book>(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
+            let book = self.books[indexPath.row]
+            cell.set(book: book)
+            return cell
+            
+        })
+    }
+    
+    private func configureListView() {
+        
+        listView = UITableView(frame: view.bounds)
+        listView.rowHeight = 60
+        listView.delegate = self
+        listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
+        listView.backgroundColor = .systemBackground
+        
     }
     
     private func showListView() {
         
         view.clear()
-        
-        //Pull this bit out into a "configureListView" function so it only needs to be called once
-        listView = UITableView(frame: view.bounds)
-        listView.rowHeight = 60
-        listView.dataSource = self
-        listView.delegate = self
-        listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
-        listView.backgroundColor = .systemBackground
-        
         view.addSubview(listView)
+        updateDataSources(with: books, animated: false)
+
     }
     
     private func configureCollectionView() {
@@ -120,8 +132,9 @@ class MainVC: UIViewController {
     private func showCollectionView() {
         
         view.clear()
-                
         view.addSubview(collectionView)
+        updateDataSources(with: books, animated: true)
+
     }
     
     private func showAddEntryController() {
@@ -172,11 +185,14 @@ class MainVC: UIViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(books)
         
-        DispatchQueue.main.async {
-            
-            //TODO:- figure out if this has some sort of performance/memory penalty, and if it does, keep track of which view is currently up and only update that one
-            self.collectionViewDataSource.apply(snapshot, animatingDifferences: animated)
-            //self.listViewDataSource.apply(snapshot, animatingDifferences: animated)
+        if view.subviews.contains(collectionView){
+            DispatchQueue.main.async {
+                self.collectionViewDataSource.apply(snapshot, animatingDifferences: animated)
+            }
+        } else if view.subviews.contains(listView) {
+            DispatchQueue.main.async {
+                self.listViewDataSource.apply(snapshot, animatingDifferences: animated)
+            }
         }
     }
     
@@ -200,21 +216,23 @@ extension MainVC: AddBookDelegate {
     
 }
 
-extension MainVC: UITableViewDataSource, UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return books.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
-        let book = books[indexPath.row]
-        cell.set(book: book)
-        return cell
-    }
-    
-    
-}
+//extension MainVC: UITableViewDataSource, UITableViewDelegate {
+//
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return books.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
+//        let book = books[indexPath.row]
+//        cell.set(book: book)
+//        return cell
+//    }
+//
+//
+//}
+
+extension MainVC: UITableViewDelegate {}
 
 extension MainVC: UICollectionViewDelegate {
     
