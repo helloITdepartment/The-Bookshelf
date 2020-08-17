@@ -48,7 +48,9 @@ class TBBookCell: UITableViewCell {
         titleLabel.text = book.title
         
         //set the authorLabel's text
-        if !book.authors.isEmpty {
+        if book.authors.isEmpty {
+            authorLabel.text = "Unknown"
+        } else {
             authorLabel.text = book.authors.joined(separator: ", ")
         }
         
