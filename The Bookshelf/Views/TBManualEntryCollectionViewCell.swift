@@ -83,6 +83,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    //Just putting this here so i have something else to commit because i hit enter too early last time
     
 }
 
