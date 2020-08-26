@@ -31,7 +31,7 @@ class AddBookTabBarController: UITabBarController {
 
     private func configureManualEntryVC() -> UIViewController{
         let manualEntryVC = ManualEntryVC()
-        manualEntryVC.view.backgroundColor = .systemPurple
+        manualEntryVC.view.backgroundColor = .systemBackground
         manualEntryVC.tabBarItem = UITabBarItem(title: "Manual", image: UIImage(systemName: "text.alignleft"), tag: 1)
         manualEntryVC.addBookDelegate = addBookDelegate
         

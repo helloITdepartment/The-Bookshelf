@@ -6,5 +6,8 @@
 //  Copyright © 2020 Q Technologies. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
+struct Constants {
+    static let entryFormFieldBorderWidth: CGFloat = 2
+}

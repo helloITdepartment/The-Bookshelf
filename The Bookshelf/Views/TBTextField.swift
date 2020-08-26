@@ -24,8 +24,8 @@ class TBTextField: UITextField {
         translatesAutoresizingMaskIntoConstraints = false
         
         layer.cornerRadius = 10
-        layer.borderWidth = 2
-        layer.borderColor = UIColor.systemGray4.cgColor
+//        layer.borderWidth = 2
+//        layer.borderColor = UIColor.systemGray4.cgColor
         
         textColor = .label
         tintColor = .label
@@ -34,7 +34,7 @@ class TBTextField: UITextField {
         adjustsFontSizeToFitWidth = true
         minimumFontSize = 12
         
-        backgroundColor = .tertiarySystemBackground
+        backgroundColor = .systemGroupedBackground
         
         returnKeyType = .go
         autocorrectionType = .no

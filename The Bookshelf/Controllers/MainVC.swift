@@ -88,6 +88,7 @@ class MainVC: UIViewController {
         })
     }
     
+    //MARK:- List view
     private func configureListView() {
         
         listView = UITableView(frame: view.bounds)
@@ -106,6 +107,7 @@ class MainVC: UIViewController {
 
     }
     
+    //MARK:- CollectionView
     private func configureCollectionView() {
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createNColumnFlowLayout(withNColumns: 3))
@@ -121,15 +123,6 @@ class MainVC: UIViewController {
         view.addSubview(collectionView)
         updateDataSources(with: books, animated: true)
 
-    }
-    
-    private func showAddEntryController() {
-        print("Pretend the addBookVC just popped up")
-        
-        let addEntryVC = AddBookTabBarController()
-        addEntryVC.addBookDelegate = self
-        present(addEntryVC, animated: true)
-        
     }
     
     private func createNColumnFlowLayout(withNColumns n: Int) -> UICollectionViewFlowLayout {
@@ -149,20 +142,13 @@ class MainVC: UIViewController {
         
     }
     
-    @objc private func listViewButtonTapped() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
+    private func showAddEntryController() {
+        print("Pretend the addBookVC just popped up")
         
-        print("Switching to list view")
+        let addEntryVC = AddBookTabBarController()
+        addEntryVC.addBookDelegate = self
+        present(addEntryVC, animated: true)
         
-        showListView()
-    }
-    
-    @objc private func collectionViewButtonTapped() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
-        
-        print("Switching to collection view")
-        
-        showCollectionView()
     }
     
     func updateDataSources(with books: [Book], animated: Bool) {
@@ -181,10 +167,28 @@ class MainVC: UIViewController {
             }
         }
     }
+
+    //MARK:- Tap actions
+    @objc private func listViewButtonTapped() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
+        
+        print("Switching to list view")
+        
+        showListView()
+    }
+    
+    @objc private func collectionViewButtonTapped() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
+        
+        print("Switching to collection view")
+        
+        showCollectionView()
+    }
     
     @objc private func plusButtonTapped() {
         showAddEntryController()
     }
+    
 }
 
 extension MainVC: AddBookDelegate {
@@ -208,7 +212,7 @@ extension MainVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let book = books[indexPath.row]
-        print(book.title)
+        print(book)
     }
     
 }
