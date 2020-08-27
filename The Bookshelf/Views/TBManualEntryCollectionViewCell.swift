@@ -16,6 +16,9 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     private let titleLabel = TBEntryFieldLabel()
     private let textField = TBTextField()
     
+    var labelHeightAnchor: NSLayoutConstraint!
+    var textFieldHeightAnchor: NSLayoutConstraint!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -46,9 +49,12 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
             titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
-            titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
-            titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding)
+            titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding)//,
+//            titleLabel.bottomAnchor.constraint(equalTo: self.centerYAnchor, constant: -padding)
         ])
+        
+        labelHeightAnchor = titleLabel.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5)
+        labelHeightAnchor.isActive = true
     }
     
     private func configureTextField(){
@@ -57,10 +63,13 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
                
         NSLayoutConstraint.activate([
             textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
-            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
+//            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
             textField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
             textField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding)
         ])
+        
+        textFieldHeightAnchor = textField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5)
+        textFieldHeightAnchor.isActive = true
     }
     
     public func getTextFieldValue() -> String? {
@@ -68,22 +77,24 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     }
     
     public func grow() {
+        
         DispatchQueue.main.async {
-            UIView.animate(withDuration: 1) {
-                NSLayoutConstraint.activate([
-                    self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.padding),
-                    self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: self.padding),
-                    self.titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -self.padding),
-                    self.titleLabel.bottomAnchor.constraint(equalTo: self.centerYAnchor, constant: -self.padding),
-                    self.textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.padding),
-                    self.textField.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: self.padding),
-                    self.textField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -self.padding),
-                    self.textField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.padding)
-                ])
+            
+            self.labelHeightAnchor.isActive = false
+            self.textFieldHeightAnchor.isActive = false
+            
+            self.labelHeightAnchor = self.titleLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.25)
+            self.textFieldHeightAnchor = self.textField.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.75)
+
+            self.labelHeightAnchor.isActive = false
+            self.textFieldHeightAnchor.isActive = false
+            
+            UIView.animate(withDuration: 3) {
+                
+                self.layoutIfNeeded()
+                
             }
         }
     }
-    //Just putting this here so i have something else to commit because i hit enter too early last time
-    
 }
 
