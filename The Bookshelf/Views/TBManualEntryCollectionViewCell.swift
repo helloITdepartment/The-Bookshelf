@@ -17,7 +17,6 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     private let textField = TBTextField()
     
     var labelHeightAnchor: NSLayoutConstraint!
-    var textFieldHeightAnchor: NSLayoutConstraint!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,13 +62,11 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
                
         NSLayoutConstraint.activate([
             textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
-//            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
+            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             textField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
             textField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding)
         ])
         
-        textFieldHeightAnchor = textField.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5)
-        textFieldHeightAnchor.isActive = true
     }
     
     public func getTextFieldValue() -> String? {
@@ -81,13 +78,10 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         DispatchQueue.main.async {
             
             self.labelHeightAnchor.isActive = false
-            self.textFieldHeightAnchor.isActive = false
             
             self.labelHeightAnchor = self.titleLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.25)
-            self.textFieldHeightAnchor = self.textField.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.75)
 
-            self.labelHeightAnchor.isActive = false
-            self.textFieldHeightAnchor.isActive = false
+            self.labelHeightAnchor.isActive = true
             
             UIView.animate(withDuration: 3) {
                 

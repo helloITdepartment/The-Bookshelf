@@ -35,6 +35,7 @@ class TBTextField: UITextField {
         minimumFontSize = 12
         
         backgroundColor = .systemGroupedBackground
+        backgroundColor = .systemPurple
         
         returnKeyType = .go
         autocorrectionType = .no
