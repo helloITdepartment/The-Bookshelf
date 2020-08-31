@@ -59,7 +59,8 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     private func configureTextField(){
         
         addSubview(textField)
-               
+        textField.delegate = self
+        
         NSLayoutConstraint.activate([
             textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
             textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
@@ -83,12 +84,44 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
 
             self.labelHeightAnchor.isActive = true
             
-            UIView.animate(withDuration: 3) {
+            UIView.animate(withDuration: 0.3) {
                 
                 self.layoutIfNeeded()
                 
             }
         }
     }
+    
+    public func shrink() {
+        
+        DispatchQueue.main.async {
+            
+            self.labelHeightAnchor.isActive = false
+            
+            self.labelHeightAnchor = self.titleLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.5)
+
+            self.labelHeightAnchor.isActive = true
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.layoutIfNeeded()
+                
+            }
+        }
+    }
+    
+    public func makeTextFieldPrimary() {
+        textField.becomeFirstResponder()
+    }
 }
 
+extension TBManualEntryCollectionViewCell: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        grow()
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        shrink()
+    }
+}

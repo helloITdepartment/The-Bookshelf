@@ -28,17 +28,17 @@ class TBTextField: UITextField {
 //        layer.borderColor = UIColor.systemGray4.cgColor
         
         textColor = .label
-        tintColor = .label
+        tintColor = Constants.tintColor
         textAlignment = .center
         font = UIFont.preferredFont(forTextStyle: .title2)
         adjustsFontSizeToFitWidth = true
         minimumFontSize = 12
         
-        backgroundColor = .systemGroupedBackground
-        backgroundColor = .systemPurple
+        backgroundColor = .secondarySystemGroupedBackground
         
         returnKeyType = .go
         autocorrectionType = .no
+        autocapitalizationType = .words
     }
 
 }

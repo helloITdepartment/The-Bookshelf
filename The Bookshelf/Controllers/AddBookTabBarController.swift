@@ -15,14 +15,15 @@ class AddBookTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .systemBackground
+        tabBar.tintColor = Constants.tintColor
         // Do any additional setup after loading the view.
         viewControllers = [configureISBNVC(), configureManualEntryVC()]
     }
     
     private func configureISBNVC() -> UIViewController {
         let isbnEntryVC = ISBNEntryVC()
-        isbnEntryVC.view.backgroundColor = .systemBlue
+        isbnEntryVC.view.backgroundColor = .systemBackground
         isbnEntryVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
         isbnEntryVC.addBookDelegate = addBookDelegate
         

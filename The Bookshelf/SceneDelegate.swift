@@ -23,6 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = configureNC()
         window?.makeKeyAndVisible()
+        
+        configureNavBar()
     }
 
     func configureNC() -> UINavigationController{
@@ -31,6 +33,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         mainVC.title = "The Bookshelf"
         
         return UINavigationController(rootViewController: mainVC)
+    }
+    
+    func configureNavBar() {
+        UINavigationBar.appearance().tintColor = Constants.tintColor
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -10,4 +10,5 @@ import UIKit
 
 struct Constants {
     static let entryFormFieldBorderWidth: CGFloat = 2
+    static let tintColor: UIColor = .systemIndigo
 }

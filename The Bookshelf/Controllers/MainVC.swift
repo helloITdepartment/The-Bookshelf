@@ -43,10 +43,15 @@ class MainVC: UIViewController {
     }
     
     private func configureNavBar() {
+        
         //In production, should use the one with "listViewButtonTapped" and showCollectionView in the viewDidLoad
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify")?.withTintColor(Constants.tintColor), style: .plain, target: self, action: #selector(listViewButtonTapped))
+        navigationItem.leftBarButtonItem?.tintColor = Constants.tintColor
+        
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
+        navigationItem.rightBarButtonItem?.tintColor = Constants.tintColor
     }
     
     private func loadBooks() {
@@ -114,6 +119,7 @@ class MainVC: UIViewController {
         collectionView.delegate = self
         collectionView.register(TBCollectionViewCell.self, forCellWithReuseIdentifier: TBCollectionViewCell.reuseID)
         collectionView.backgroundColor = .systemBackground
+        collectionView.tintColor = Constants.tintColor
         
     }
     
@@ -171,6 +177,8 @@ class MainVC: UIViewController {
     //MARK:- Tap actions
     @objc private func listViewButtonTapped() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "rectangle.grid.3x2"), style: .plain, target: self, action: #selector(collectionViewButtonTapped))
+        navigationItem.leftBarButtonItem?.tintColor = Constants.tintColor
+
         
         print("Switching to list view")
         
@@ -179,6 +187,8 @@ class MainVC: UIViewController {
     
     @objc private func collectionViewButtonTapped() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "text.justify"), style: .plain, target: self, action: #selector(listViewButtonTapped))
+        navigationItem.leftBarButtonItem?.tintColor = Constants.tintColor
+
         
         print("Switching to collection view")
         

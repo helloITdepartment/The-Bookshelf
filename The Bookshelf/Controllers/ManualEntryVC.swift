@@ -77,11 +77,15 @@ extension ManualEntryVC: UICollectionViewDelegate {
         //TODO:- Grow, make text field primary
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell else { return }
-        
+//        print("selected cell for \(fields[indexPath.row].label)")
         cell.grow()
+        cell.makeTextFieldPrimary()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        //TODO:- Shrink
+        
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell else { return }
+//        print("deselected cell for \(fields[indexPath.row].label)")
+        cell.shrink()
     }
 }
