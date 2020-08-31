@@ -98,6 +98,8 @@
 		CF88D0E3246C4D2A00C7DD26 /* The Bookshelf */ = {
 			isa = PBXGroup;
 			children = (
+				CFCB9B4524E49350008C95A5 /* Constants.swift */,
+				CF88D102246C9F9C00C7DD26 /* Extensions.swift */,
 				CFCB9B4B24E4BCDF008C95A5 /* Managers */,
 				CF88D118246D8AB200C7DD26 /* Views */,
 				CF88D119246D8ABA00C7DD26 /* Models */,
@@ -108,8 +110,6 @@
 				CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */,
 				CF88D0EF246C4D2B00C7DD26 /* LaunchScreen.storyboard */,
 				CF88D0F2246C4D2B00C7DD26 /* Info.plist */,
-				CF88D102246C9F9C00C7DD26 /* Extensions.swift */,
-				CFCB9B4524E49350008C95A5 /* Constants.swift */,
 				CFCB9B4724E49396008C95A5 /* TBError.swift */,
 			);
 			path = "The Bookshelf";
