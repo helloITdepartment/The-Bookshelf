@@ -14,18 +14,31 @@ class ManualEntryVC: UIViewController {
     
     var collectionView: UICollectionView!
     
-    let fields: [(label: String, placeholder: String)] = [("Title", "The Adventures of Tom Sawyer"), ("Author", "Mark Twain"), ("ISBN", "0451526538")]
+    let fields: [(label: String, placeholder: String)] = [
+        ("Title", "The Adventures of Tom Sawyer"),
+        ("Genre", "Adventure Fiction"),
+        ("Author", "Mark Twain"),
+        ("ISBN", "0451526538") ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        //TODO:- Make sure the fields aren't hidden behind the keyboard
+        
+        //Be on guard for the keyboard popping up
+        setUpKeyboardNotificationObserver()
         //Configure the collectionView
         configureCollectionView()
     }
+    
+    func setUpKeyboardNotificationObserver() {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillRise), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
+    }
 
     private func configureCollectionView() {
-        
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createFlowLayout())
         collectionView.dataSource = self
@@ -49,6 +62,15 @@ class ManualEntryVC: UIViewController {
         
         return flowLayout
         
+    }
+    
+    @objc func keyboardWillRise() {
+        print("he has risen")
+        
+    }
+    
+    @objc func keyboardWillHide() {
+        print("he has unrisen")
     }
     
 }
@@ -78,6 +100,8 @@ extension ManualEntryVC: UICollectionViewDelegate {
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell else { return }
 //        print("selected cell for \(fields[indexPath.row].label)")
+        //Make sure cell isn't hidden behind the keyboard
+        
         cell.grow()
         cell.makeTextFieldPrimary()
     }

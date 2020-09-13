@@ -153,7 +153,9 @@ class MainVC: UIViewController {
         
         let addEntryVC = AddBookTabBarController()
         addEntryVC.addBookDelegate = self
-        present(addEntryVC, animated: true)
+        
+        let navController = UINavigationController(rootViewController: addEntryVC)
+        present(navController, animated: true)
         
     }
     
