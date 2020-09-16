@@ -14,11 +14,18 @@ class ManualEntryVC: UIViewController {
     
     var collectionView: UICollectionView!
     
+    var selectedCell: TBManualEntryCollectionViewCell?
+    
     let fields: [(label: String, placeholder: String)] = [
         ("Title", "The Adventures of Tom Sawyer"),
         ("Genre", "Adventure Fiction"),
         ("Author", "Mark Twain"),
-        ("ISBN", "0451526538") ]
+        ("ISBN", "0451526538"),
+        ("test1", "test1"),
+        ("test2", "test2"),
+        ("test3", "test3"),
+        ("test4", "test4")
+        ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +34,9 @@ class ManualEntryVC: UIViewController {
         
         //Be on guard for the keyboard popping up
         setUpKeyboardNotificationObserver()
+    }
+    
+    override func viewWillLayoutSubviews() {
         //Configure the collectionView
         configureCollectionView()
     }
@@ -64,13 +74,18 @@ class ManualEntryVC: UIViewController {
         
     }
     
-    @objc func keyboardWillRise() {
-        print("he has risen")
+    @objc func keyboardWillRise(notification: NSNotification) {
         
+        guard let userInfo = notification.userInfo else { return }
+        guard let keyb = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardFrame = keyb.cgRectValue
+
     }
     
     @objc func keyboardWillHide() {
         print("he has unrisen")
+        
+//        self.view.frame.origin.y = 0
     }
     
 }
@@ -99,11 +114,13 @@ extension ManualEntryVC: UICollectionViewDelegate {
         //TODO:- Grow, make text field primary
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell else { return }
-//        print("selected cell for \(fields[indexPath.row].label)")
-        //Make sure cell isn't hidden behind the keyboard
         
+        selectedCell = cell
         cell.grow()
         cell.makeTextFieldPrimary()
+        
+        //Make sure cell isn't hidden behind the keyboard
+        collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
