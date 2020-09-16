@@ -16,15 +16,15 @@ class ManualEntryVC: UIViewController {
     
     var selectedCell: TBManualEntryCollectionViewCell?
     
-    let fields: [(label: String, placeholder: String)] = [
-        ("Title", "The Adventures of Tom Sawyer"),
-        ("Genre", "Adventure Fiction"),
-        ("Author", "Mark Twain"),
-        ("ISBN", "0451526538"),
-        ("test1", "test1"),
-        ("test2", "test2"),
-        ("test3", "test3"),
-        ("test4", "test4")
+    let fields: [(label: String, placeholder: String, required: Bool)] = [
+        ("Title", "The Adventures of Tom Sawyer", true),
+        ("Genre", "Adventure Fiction", false),
+        ("Author", "Mark Twain", true),
+        ("ISBN", "0451526538", false),
+        ("test1", "test1", false),
+        ("test2", "test2", false),
+        ("test3", "test3", false),
+        ("test4", "test4", false)
         ]
 
     override func viewDidLoad() {
@@ -57,7 +57,6 @@ class ManualEntryVC: UIViewController {
         collectionView.backgroundColor = .systemBackground
         
         view.addSubview(collectionView)
-
     }
     
     private func createFlowLayout() -> UICollectionViewFlowLayout {
@@ -79,13 +78,15 @@ class ManualEntryVC: UIViewController {
         guard let userInfo = notification.userInfo else { return }
         guard let keyb = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
         let keyboardFrame = keyb.cgRectValue
-
+        
+        //I'll be honest, I don't know *why* three quarters of the height of the keyboard is the perfect height, I just know that it is
+        collectionView.contentInset.bottom = (keyboardFrame.height * 0.75)
     }
     
     @objc func keyboardWillHide() {
         print("he has unrisen")
         
-//        self.view.frame.origin.y = 0
+        collectionView.contentInset.bottom = 0
     }
     
 }
@@ -120,7 +121,7 @@ extension ManualEntryVC: UICollectionViewDelegate {
         cell.makeTextFieldPrimary()
         
         //Make sure cell isn't hidden behind the keyboard
-        collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
