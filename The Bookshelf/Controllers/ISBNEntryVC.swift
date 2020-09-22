@@ -105,7 +105,7 @@ class ISBNEntryVC: UIViewController {
         addBookDelegate.didSubmit(book: book)
     }
     
-    private func correctEditButtonTapped(book: Book) {
+    private func correctEditButtonTapped(book: Book) { 
         print("Correct, but let's change some things")
     }
     
