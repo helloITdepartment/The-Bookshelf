@@ -58,6 +58,17 @@ struct Book: Codable, Hashable {
         
         numberOfPages = serverBook.numberOfPages
     }
+    
+    public func authorString() -> String {
+        
+        if authors.count == 1 {
+            return authors[0]
+        } else {
+            var mutableAuthors = authors
+            let last = mutableAuthors.popLast()!
+            return (mutableAuthors.joined(separator: ", ") + "and \(last)")
+        }
+    }
 }
 
 extension Book: Equatable {
@@ -65,6 +76,4 @@ extension Book: Equatable {
     static func == (lhs: Book, rhs: Book) -> Bool {
         return lhs.isbn == rhs.isbn
     }
-    
-    
 }
