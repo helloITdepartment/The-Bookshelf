@@ -25,7 +25,7 @@ class TBEntryFieldLabel: UILabel {
     
     func configure() {
         textColor = .secondaryLabel
-        font = .preferredFont(forTextStyle: .body)
+        font = .preferredFont(forTextStyle: .headline)
         adjustsFontSizeToFitWidth = true
         minimumScaleFactor = 0.75
         lineBreakMode = .byWordWrapping

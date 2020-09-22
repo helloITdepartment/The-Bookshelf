@@ -16,6 +16,7 @@ struct Book: Codable, Hashable {
 //    var identifiers: [String : [String]]?
     var coverUrl: String?
     var numberOfPages: Int?
+    //TODO:- Maybe add a notes section?
     
     init(title: String, subtitle: String?, authors: [String], isbn: String?, coverUrl: String?, numberOfPages: Int?) {
         self.title = title
