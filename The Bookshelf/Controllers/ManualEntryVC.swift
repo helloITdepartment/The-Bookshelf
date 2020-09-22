@@ -18,13 +18,12 @@ class ManualEntryVC: UIViewController {
     
     let fields: [(label: String, placeholder: String, required: Bool)] = [
         ("Title", "The Adventures of Tom Sawyer", true),
+        ("Subtitle", "subtitle", false),
         ("Genre", "Adventure Fiction", false),
         ("Author", "Mark Twain", true),
         ("ISBN", "0451526538", false),
-        ("test1", "test1", false),
-        ("test2", "test2", false),
-        ("test3", "test3", false),
-        ("test4", "test4", false)
+        ("I'm on page", "102", false),
+        ("Number of pages", "340", false),
         ]
 
     override func viewDidLoad() {
@@ -34,11 +33,21 @@ class ManualEntryVC: UIViewController {
         
         //Be on guard for the keyboard popping up
         setUpKeyboardNotificationObserver()
+        
+        
     }
     
     override func viewWillLayoutSubviews() {
+        
         //Configure the collectionView
         configureCollectionView()
+        
+        //configure the Add button
+        let addButton = UIBarButtonItem(title: "Add", style: .done, target: self, action: #selector(addButtonTapped))
+        addButton.tintColor = Constants.tintColor
+        
+        tabBarController!.navigationItem.leftBarButtonItem = addButton
+        
     }
     
     func setUpKeyboardNotificationObserver() {
@@ -73,6 +82,22 @@ class ManualEntryVC: UIViewController {
         
     }
     
+    @objc func addButtonTapped() {
+        print("add Button tapped")
+        
+        //TODO:- make this not horrible
+        let bookTitle = (collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
+        let subtitle = (collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
+        let genre = (collectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
+        let author = (collectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
+        let isbn = (collectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
+        
+        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], isbn: isbn, coverUrl: nil, numberOfPages: nil)
+        addBookDelegate.didSubmit(book: book)
+
+        dismiss(animated: true)
+    }
+    
     @objc func keyboardWillRise(notification: NSNotification) {
         
         guard let userInfo = notification.userInfo else { return }
@@ -88,6 +113,7 @@ class ManualEntryVC: UIViewController {
         
         collectionView.contentInset.bottom = 0
     }
+    
     
 }
 

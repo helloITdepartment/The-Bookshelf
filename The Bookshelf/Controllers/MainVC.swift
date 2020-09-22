@@ -149,7 +149,7 @@ class MainVC: UIViewController {
     }
     
     private func showAddEntryController() {
-        print("Pretend the addBookVC just popped up")
+//        print("Pretend the addBookVC just popped up")
         
         let addEntryVC = AddBookTabBarController()
         addEntryVC.addBookDelegate = self

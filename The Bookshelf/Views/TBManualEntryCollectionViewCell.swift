@@ -68,6 +68,8 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
             textField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding)
         ])
         
+        textField.returnKeyType = .done
+        
     }
     
     public func getTextFieldValue() -> String? {
@@ -123,5 +125,11 @@ extension TBManualEntryCollectionViewCell: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         shrink()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let didProperlyResign = textField.resignFirstResponder()
+        shrink()
+        return didProperlyResign
     }
 }
