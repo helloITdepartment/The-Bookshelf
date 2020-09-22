@@ -104,6 +104,7 @@ class ManualEntryVC: UIViewController {
         guard let keyb = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
         let keyboardFrame = keyb.cgRectValue
         
+        guard let collectionView = collectionView else { return }
         //I'll be honest, I don't know *why* three quarters of the height of the keyboard is the perfect height, I just know that it is
         collectionView.contentInset.bottom = (keyboardFrame.height * 0.75)
     }
@@ -111,6 +112,7 @@ class ManualEntryVC: UIViewController {
     @objc func keyboardWillHide() {
         print("he has unrisen")
         
+        guard let collectionView = collectionView else { return }
         collectionView.contentInset.bottom = 0
     }
     
