@@ -37,7 +37,8 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     }
     
     private func configureCell() {
-        backgroundColor = .systemGroupedBackground
+//        backgroundColor = .systemGroupedBackground
+        backgroundColor = .secondarySystemBackground
         layer.cornerRadius = 15
     }
     
