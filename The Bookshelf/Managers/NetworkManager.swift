@@ -55,7 +55,7 @@ class NetworkManager {
                 let isbnobj = try decoder.decode(ISBN.self, from: data)
                 completed(.success(isbnobj))
             } catch {
-                print("Invalid data2")
+                completed(.failure(.invalidData))
                 return
             }
         }
