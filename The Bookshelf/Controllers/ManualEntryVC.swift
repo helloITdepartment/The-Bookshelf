@@ -33,9 +33,8 @@ class ManualEntryVC: UIViewController {
         
         //Be on guard for the keyboard popping up
         setUpKeyboardNotificationObserver()
-        
-        
     }
+    
     
     override func viewWillLayoutSubviews() {
         
