@@ -103,6 +103,7 @@ class ISBNEntryVC: UIViewController {
     private func correctButtonTapped(book: Book) {
         print("Correct, let's add it")
         addBookDelegate.didSubmit(book: book)
+        dismiss(animated: true)
     }
     
     private func correctEditButtonTapped(book: Book) { 
