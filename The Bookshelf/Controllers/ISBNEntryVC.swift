@@ -30,7 +30,7 @@ class ISBNEntryVC: UIViewController {
         entryField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(entryField)
         
-        entryField.set(labelText: "ISBN", textFieldPlaceholderText: "123456789")
+        entryField.set(labelText: "ISBN", textFieldPlaceholderText: "123456789", type: .numeric)
         
         NSLayoutConstraint.activate([
             entryField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),

@@ -84,7 +84,15 @@ enum PersistenceManager {
                     
                 case .delete:
                     //TODO:- implement this
-                    return
+                    guard mutableBooks.contains(book) else {
+                        completed(.bookNotYetSaved)
+                        return
+                    }
+                    
+                    mutableBooks.removeAll { (bookUnderInspection) -> Bool in
+                        bookUnderInspection == book
+                    }
+                    
                 case .move:
                     //TODO:- implement this
                     return

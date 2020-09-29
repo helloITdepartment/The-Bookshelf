@@ -16,14 +16,14 @@ class ManualEntryVC: UIViewController {
     
     var selectedCell: TBManualEntryCollectionViewCell?
     
-    let fields: [(label: String, placeholder: String, required: Bool)] = [
-        ("Title", "The Adventures of Tom Sawyer", true),
-        ("Subtitle", "subtitle", false),
-        ("Genre", "Adventure Fiction", false),
-        ("Author", "Mark Twain", true),
-        ("ISBN", "0451526538", false),
-        ("I'm on page", "102", false),
-        ("Number of pages", "340", false),
+    let fields: [(label: String, placeholder: String, required: Bool, type: EntryCellType)] = [
+        ("Title", "The Adventures of Tom Sawyer", true, .regular),
+        ("Subtitle", "subtitle", false, .regular),
+        ("Genre", "Adventure Fiction", false, .regular),
+        ("Author", "Mark Twain", true, .regular),
+        ("ISBN", "0451526538", false, .numeric),
+        ("I'm on page", "102", false, .numeric),
+        ("Number of pages", "340", false, .numeric),
         ]
 
     override func viewDidLoad() {
@@ -84,6 +84,19 @@ class ManualEntryVC: UIViewController {
     @objc func addButtonTapped() {
         print("add Button tapped")
         
+        //Checks if any field which is marked required doesn't have text in it
+        for i in 0..<fields.count {
+            let indexPath = IndexPath(item: i, section: 0)
+            if fields[i].required { //Put this check first to avoid assignment of cell if it's unnecessary
+                let cell = collectionView.cellForItem(at: indexPath) as! TBManualEntryCollectionViewCell
+                if cell.getTextFieldValue() == "" {
+                    collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+                    cell.flashRed()
+                    return
+                }
+            }
+        }
+        
         //TODO:- make this not horrible
         let bookTitle = (collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
         let subtitle = (collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! TBManualEntryCollectionViewCell).getTextFieldValue()
@@ -128,11 +141,10 @@ extension ManualEntryVC: UICollectionViewDataSource {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBManualEntryCollectionViewCell.reuseID, for: indexPath) as! TBManualEntryCollectionViewCell
         let fieldTuple = fields[indexPath.row]
-        cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder)
+        cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder, type: fieldTuple.type)
         
         return cell
     }
-    
     
 }
 
