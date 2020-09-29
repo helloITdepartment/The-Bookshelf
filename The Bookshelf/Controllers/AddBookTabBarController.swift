@@ -10,14 +10,26 @@ import UIKit
 
 class AddBookTabBarController: UITabBarController {
     
-    var addBookDelegate: AddBookDelegate!
+    var addBookDelegate: AddBookDelegate! {
+        didSet {
+            isbnVC.addBookDelegate = addBookDelegate
+            manualEntryVC.addBookDelegate = addBookDelegate
+        }
+    }
+    
+    var isbnVC: ISBNEntryVC!
+    var manualEntryVC: ManualEntryVC!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         configureVC()
-        viewControllers = [configureISBNVC(), configureManualEntryVC()]
+        
+        configureISBNVC()
+        configureManualEntryVC()
+        
+        viewControllers = [isbnVC, manualEntryVC]
     }
     
     private func configureVC() {
@@ -31,22 +43,16 @@ class AddBookTabBarController: UITabBarController {
         title = "Add New Book"
     }
     
-    private func configureISBNVC() -> UIViewController {
-        let isbnEntryVC = ISBNEntryVC()
-        isbnEntryVC.view.backgroundColor = .systemBackground
-        isbnEntryVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
-        isbnEntryVC.addBookDelegate = addBookDelegate
-        
-        return isbnEntryVC
+    private func configureISBNVC() {
+        isbnVC = ISBNEntryVC()
+        isbnVC.view.backgroundColor = .systemBackground
+        isbnVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
     }
 
-    private func configureManualEntryVC() -> UIViewController{
-        let manualEntryVC = ManualEntryVC()
+    private func configureManualEntryVC() {
+        manualEntryVC = ManualEntryVC()
         manualEntryVC.view.backgroundColor = .systemBackground
         manualEntryVC.tabBarItem = UITabBarItem(title: "Manual", image: UIImage(systemName: "text.alignleft"), tag: 1)
-        manualEntryVC.addBookDelegate = addBookDelegate
-        
-        return manualEntryVC
     }
     
     @objc func doneButtonTapped() {

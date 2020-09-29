@@ -214,6 +214,7 @@ extension MainVC: AddBookDelegate {
             }
         }
         
+        loadBooks()
     }
     
 }
