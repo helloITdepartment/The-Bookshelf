@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Book: Codable {
+struct Book: Codable, Hashable {
     var title: String
     var subtitle: String?
     var authors: [String]
@@ -16,6 +16,7 @@ class Book: Codable {
 //    var identifiers: [String : [String]]?
     var coverUrl: String?
     var numberOfPages: Int?
+    //TODO:- Maybe add a notes section?
     
     init(title: String, subtitle: String?, authors: [String], isbn: String?, coverUrl: String?, numberOfPages: Int?) {
         self.title = title
@@ -57,5 +58,22 @@ class Book: Codable {
         
         numberOfPages = serverBook.numberOfPages
     }
+    
+    public func authorString() -> String {
+        
+        if authors.count == 1 {
+            return authors[0]
+        } else {
+            var mutableAuthors = authors
+            let last = mutableAuthors.popLast()!
+            return (mutableAuthors.joined(separator: ", ") + "and \(last)")
+        }
+    }
 }
 
+extension Book: Equatable {
+    
+    static func == (lhs: Book, rhs: Book) -> Bool {
+        return lhs.isbn == rhs.isbn
+    }
+}

@@ -10,31 +10,52 @@ import UIKit
 
 class AddBookTabBarController: UITabBarController {
     
-    var addBookDelegate: AddBookDelegate!
+    var addBookDelegate: AddBookDelegate! {
+        didSet {
+            isbnVC.addBookDelegate = addBookDelegate
+            manualEntryVC.addBookDelegate = addBookDelegate
+        }
+    }
+    
+    var isbnVC: ISBNEntryVC!
+    var manualEntryVC: ManualEntryVC!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .systemPink
         // Do any additional setup after loading the view.
-        viewControllers = [configureISBNVC(), configureManualEntryVC()]
+        configureVC()
+        
+        configureISBNVC()
+        configureManualEntryVC()
+        
+        viewControllers = [isbnVC, manualEntryVC]
     }
     
-    private func configureISBNVC() -> UIViewController {
-        let isbnEntryVC = ISBNEntryVC()
-        isbnEntryVC.view.backgroundColor = .systemBlue
-        isbnEntryVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
-        isbnEntryVC.addBookDelegate = addBookDelegate
+    private func configureVC() {
+        view.backgroundColor = .systemBackground
+        tabBar.tintColor = Constants.tintColor
         
-        return isbnEntryVC
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
+        doneButton.tintColor = Constants.tintColor
+        navigationItem.rightBarButtonItem = doneButton
+        
+        title = "Add New Book"
+    }
+    
+    private func configureISBNVC() {
+        isbnVC = ISBNEntryVC()
+        isbnVC.view.backgroundColor = .systemBackground
+        isbnVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
     }
 
-    private func configureManualEntryVC() -> UIViewController{
-        let manualEntryVC = ManualEntryVC()
-        manualEntryVC.view.backgroundColor = .systemPurple
+    private func configureManualEntryVC() {
+        manualEntryVC = ManualEntryVC()
+        manualEntryVC.view.backgroundColor = .systemBackground
         manualEntryVC.tabBarItem = UITabBarItem(title: "Manual", image: UIImage(systemName: "text.alignleft"), tag: 1)
-        manualEntryVC.addBookDelegate = addBookDelegate
-        
-        return manualEntryVC
+    }
+    
+    @objc func doneButtonTapped() {
+        dismiss(animated: true)
     }
 }

@@ -25,6 +25,12 @@
 		CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */; };
 		CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D123246DC4A300C7DD26 /* TBTextField.swift */; };
 		CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */; };
+		CFBB34E324F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */; };
+		CFC3E45C24E5E95100482DD8 /* TBBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */; };
+		CFC3E45E24E5EA0A00482DD8 /* TBCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */; };
+		CFC3E46024E5EA4C00482DD8 /* TBTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */; };
+		CFC3E46224E5EA8300482DD8 /* TBAuthorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */; };
+		CFC3E46624E9392D00482DD8 /* TBCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */; };
 		CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4524E49350008C95A5 /* Constants.swift */; };
 		CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4724E49396008C95A5 /* TBError.swift */; };
 		CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCB9B4924E4A050008C95A5 /* ServerBook.swift */; };
@@ -51,6 +57,12 @@
 		CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryFormField.swift; sourceTree = "<group>"; };
 		CF88D123246DC4A300C7DD26 /* TBTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTextField.swift; sourceTree = "<group>"; };
 		CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBEntryFieldLabel.swift; sourceTree = "<group>"; };
+		CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBManualEntryCollectionViewCell.swift; sourceTree = "<group>"; };
+		CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBBookCell.swift; sourceTree = "<group>"; };
+		CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCoverImageView.swift; sourceTree = "<group>"; };
+		CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTitleLabel.swift; sourceTree = "<group>"; };
+		CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBAuthorLabel.swift; sourceTree = "<group>"; };
+		CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCollectionViewCell.swift; sourceTree = "<group>"; };
 		CFCB9B4524E49350008C95A5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		CFCB9B4724E49396008C95A5 /* TBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBError.swift; sourceTree = "<group>"; };
 		CFCB9B4924E4A050008C95A5 /* ServerBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerBook.swift; sourceTree = "<group>"; };
@@ -86,6 +98,8 @@
 		CF88D0E3246C4D2A00C7DD26 /* The Bookshelf */ = {
 			isa = PBXGroup;
 			children = (
+				CFCB9B4524E49350008C95A5 /* Constants.swift */,
+				CF88D102246C9F9C00C7DD26 /* Extensions.swift */,
 				CFCB9B4B24E4BCDF008C95A5 /* Managers */,
 				CF88D118246D8AB200C7DD26 /* Views */,
 				CF88D119246D8ABA00C7DD26 /* Models */,
@@ -96,8 +110,6 @@
 				CF88D0ED246C4D2B00C7DD26 /* Assets.xcassets */,
 				CF88D0EF246C4D2B00C7DD26 /* LaunchScreen.storyboard */,
 				CF88D0F2246C4D2B00C7DD26 /* Info.plist */,
-				CF88D102246C9F9C00C7DD26 /* Extensions.swift */,
-				CFCB9B4524E49350008C95A5 /* Constants.swift */,
 				CFCB9B4724E49396008C95A5 /* TBError.swift */,
 			);
 			path = "The Bookshelf";
@@ -107,8 +119,14 @@
 			isa = PBXGroup;
 			children = (
 				CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */,
+				CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */,
 				CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */,
 				CF88D123246DC4A300C7DD26 /* TBTextField.swift */,
+				CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */,
+				CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */,
+				CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */,
+				CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */,
+				CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -215,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFC3E45E24E5EA0A00482DD8 /* TBCoverImageView.swift in Sources */,
 				CF88D107246CAA9B00C7DD26 /* NetworkManager.swift in Sources */,
 				CF88D10F246D78D600C7DD26 /* ISBN.swift in Sources */,
 				CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */,
@@ -222,10 +241,14 @@
 				CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */,
 				CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */,
 				CF88D11E246D8BFA00C7DD26 /* ManualEntryVC.swift in Sources */,
+				CFC3E46024E5EA4C00482DD8 /* TBTitleLabel.swift in Sources */,
 				CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */,
 				CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */,
 				CF88D10B246D684D00C7DD26 /* BookDetailVC.swift in Sources */,
 				CF88D105246CA93400C7DD26 /* Book.swift in Sources */,
+				CFBB34E324F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift in Sources */,
+				CFC3E46624E9392D00482DD8 /* TBCollectionViewCell.swift in Sources */,
+				CFC3E45C24E5E95100482DD8 /* TBBookCell.swift in Sources */,
 				CF88D11C246D8BE000C7DD26 /* ISBNEntryVC.swift in Sources */,
 				CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */,
 				CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */,
@@ -233,6 +256,7 @@
 				CF798D7924E56974002670C6 /* PersistenceManager.swift in Sources */,
 				CF88D103246C9F9C00C7DD26 /* Extensions.swift in Sources */,
 				CF88D117246D8AA000C7DD26 /* AddBookTabBarController.swift in Sources */,
+				CFC3E46224E5EA8300482DD8 /* TBAuthorLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,7 +393,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 849KN7767H;
+				DEVELOPMENT_TEAM = 569W85DQKZ;
 				INFOPLIST_FILE = "The Bookshelf/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

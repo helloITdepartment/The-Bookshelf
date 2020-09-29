@@ -10,6 +10,7 @@ import Foundation
 
 enum PersistenceActionType {
     case add
+    case delete
     case move
 }
 
@@ -20,16 +21,19 @@ enum PersistenceManager {
     
     static private let defaults = UserDefaults.standard
     
+    //MARK:- Book stuff
     static func retrieveBooks(completed: @escaping (Result<[Book], TBError>) -> Void) {
         
         //Have to make sure there's even something in there for "books"
         guard let booksObject = defaults.value(forKey: Keys.books) else {
             completed(.success([]))
+            return
         }
         
         //Have to make sure what's there is even understandable Data
         guard let encodedBooks = booksObject as? Data else {
             completed(.failure(.unableToRetrieveBooks))
+            return
         }
         
         //Try to pull the books out of the data
@@ -56,4 +60,44 @@ enum PersistenceManager {
         }
 
     }
+    
+    static func updateBooks(_ actionType: PersistenceActionType, book: Book, completed: @escaping (TBError?) -> Void) {
+        
+        retrieveBooks { result in
+            switch result {
+                
+            case .success(let books):
+                //make an editable version of the list of books
+                var mutableBooks = books
+                
+                //Decide what edit needs to be made and make it
+                switch actionType {
+                case .add:
+                    
+                    //check to make sure the books isn't already in there
+                    guard !mutableBooks.contains(book) else {
+                        completed(.bookAlreadySaved)
+                        return
+                    }
+                    
+                    mutableBooks.append(book)
+                    
+                case .delete:
+                    //TODO:- implement this
+                    return
+                case .move:
+                    //TODO:- implement this
+                    return
+                }
+                
+                //Store the result of the editing over the old list of books
+                completed(saveBooks(books: mutableBooks))
+                
+            case .failure(let error):
+                completed(error)
+            }
+        }
+    }
+    
+    //MARK:- Cover stuff
 }

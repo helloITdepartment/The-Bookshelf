@@ -1,14 +1,14 @@
 //
-//  TBEntryFieldLabel.swift
+//  TBTitleLabel.swift
 //  The Bookshelf
 //
-//  Created by Jacques Benzakein on 5/14/20.
+//  Created by Jacques Benzakein on 8/14/20.
 //  Copyright © 2020 Q Technologies. All rights reserved.
 //
 
 import UIKit
 
-class TBEntryFieldLabel: UILabel {
+class TBTitleLabel: UILabel {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -18,17 +18,18 @@ class TBEntryFieldLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init() {
+    init(textAlignment: NSTextAlignment, fontSize: CGFloat) {
         super.init(frame: .zero)
+        self.textAlignment = textAlignment
+        self.font = .systemFont(ofSize: fontSize, weight: .bold)
         configure()
     }
     
     func configure() {
-        textColor = .secondaryLabel
-        font = .preferredFont(forTextStyle: .headline)
+        textColor = .label
         adjustsFontSizeToFitWidth = true
         minimumScaleFactor = 0.75
-        lineBreakMode = .byWordWrapping
+        lineBreakMode = .byTruncatingMiddle
         translatesAutoresizingMaskIntoConstraints = false
     }
 }
