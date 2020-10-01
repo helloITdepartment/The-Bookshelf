@@ -26,10 +26,21 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         configureTextField()
     }
     
-    func set(labelText: String, textFieldPlaceholderText placeholderText: String) {
+    func set(labelText: String, textFieldPlaceholderText placeholderText: String, type: EntryCellType) {
         
         titleLabel.text = labelText
         textField.placeholder = placeholderText
+        
+        switch type {
+        case .regular:
+            return
+        case .numeric:
+            textField.keyboardType = .numberPad
+        case .picture:
+            return
+        case .location:
+            return
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -115,6 +126,20 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     
     public func makeTextFieldPrimary() {
         textField.becomeFirstResponder()
+    }
+    
+    public func flashRed() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 2.5) {
+                self.backgroundColor = .systemRed
+            }
+        }
+        
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 2.5) {
+                self.backgroundColor = .secondarySystemBackground
+            }
+        }
     }
 }
 

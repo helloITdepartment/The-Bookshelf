@@ -17,5 +17,5 @@ enum TBError: String, Error {
     case unableToRetrieveBooks = "There was an error retrieving your books."
     case unableToDownloadCover = "There was an error loading the cover image fo this book"
     case bookAlreadySaved = "Looks like you already have that book :)"
-    
+    case bookNotYetSaved = "Couldn't find that book in your list"
 }
