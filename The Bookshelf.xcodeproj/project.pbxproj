@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF785913252DE9A2004479C3 /* PictureEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF785912252DE9A2004479C3 /* PictureEntryCVCell.swift */; };
+		CF785916252DEAC3004479C3 /* OptionsEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF785915252DEAC3004479C3 /* OptionsEntryCVCell.swift */; };
+		CF785919252DEADC004479C3 /* NumericEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF785918252DEADC004479C3 /* NumericEntryCVCell.swift */; };
 		CF798D7924E56974002670C6 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF798D7824E56974002670C6 /* PersistenceManager.swift */; };
 		CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */; };
 		CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */; };
@@ -37,6 +40,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF785912252DE9A2004479C3 /* PictureEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureEntryCVCell.swift; sourceTree = "<group>"; };
+		CF785915252DEAC3004479C3 /* OptionsEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsEntryCVCell.swift; sourceTree = "<group>"; };
+		CF785918252DEADC004479C3 /* NumericEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericEntryCVCell.swift; sourceTree = "<group>"; };
 		CF798D7824E56974002670C6 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		CF88D0E1246C4D2A00C7DD26 /* The Bookshelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Bookshelf.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +85,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CF785911252DE920004479C3 /* Manual Entry Cell subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				CF785912252DE9A2004479C3 /* PictureEntryCVCell.swift */,
+				CF785918252DEADC004479C3 /* NumericEntryCVCell.swift */,
+				CF785915252DEAC3004479C3 /* OptionsEntryCVCell.swift */,
+			);
+			path = "Manual Entry Cell subclasses";
+			sourceTree = "<group>";
+		};
 		CF88D0D8246C4D2A00C7DD26 = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +136,7 @@
 			children = (
 				CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */,
 				CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */,
+				CF785911252DE920004479C3 /* Manual Entry Cell subclasses */,
 				CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */,
 				CF88D123246DC4A300C7DD26 /* TBTextField.swift */,
 				CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */,
@@ -233,10 +250,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF785913252DE9A2004479C3 /* PictureEntryCVCell.swift in Sources */,
 				CFC3E45E24E5EA0A00482DD8 /* TBCoverImageView.swift in Sources */,
+				CF785916252DEAC3004479C3 /* OptionsEntryCVCell.swift in Sources */,
 				CF88D107246CAA9B00C7DD26 /* NetworkManager.swift in Sources */,
 				CF88D10F246D78D600C7DD26 /* ISBN.swift in Sources */,
 				CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */,
+				CF785919252DEADC004479C3 /* NumericEntryCVCell.swift in Sources */,
 				CF88D0F9246C4F3800C7DD26 /* MainVC.swift in Sources */,
 				CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */,
 				CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */,

@@ -28,8 +28,6 @@ class ManualEntryVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        //TODO:- Make sure the fields aren't hidden behind the keyboard
         
         //Be on guard for the keyboard popping up
         setUpKeyboardNotificationObserver()

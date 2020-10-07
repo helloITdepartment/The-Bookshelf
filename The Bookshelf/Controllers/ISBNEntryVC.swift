@@ -38,6 +38,7 @@ class ISBNEntryVC: UIViewController {
             entryField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             entryField.heightAnchor.constraint(equalToConstant: 100)
         ])
+        
     }
     
     private func configureGoButton() {

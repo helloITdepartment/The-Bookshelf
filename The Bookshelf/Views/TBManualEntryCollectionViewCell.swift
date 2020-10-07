@@ -136,7 +136,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         }
         
         DispatchQueue.main.async {
-            UIView.animate(withDuration: 2.5) {
+            UIView.animate(withDuration: 1.5) {
                 self.backgroundColor = .secondarySystemBackground
             }
         }
