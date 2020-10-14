@@ -17,5 +17,5 @@ enum EntryCellType {
     case regular
     case numeric
     case picture
-    case location
+    case options
 }

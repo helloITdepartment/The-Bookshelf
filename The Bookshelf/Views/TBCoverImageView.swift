@@ -35,13 +35,14 @@ class TBCoverImageView: UIImageView {
         
         let cacheKey = NSString(string: urlString)
         if let image = cache.object(forKey: cacheKey) {
+            print("cached: ", cacheKey)
             self.image = image
             return
         }
         
         
         NetworkManager.shared.getCoverImage(from: urlString) { result in
-            
+            print("not cached: ", urlString)
             switch result {
                 
             case .success(let image):
