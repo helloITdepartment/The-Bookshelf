@@ -16,6 +16,6 @@ struct Constants {
 enum EntryCellType {
     case regular
     case numeric
+    case options
     case picture
-    case location
 }
