@@ -55,7 +55,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         layer.cornerRadius = 15
     }
     
-    private func configureLabel() {
+    internal func configureLabel() {
         
         addSubview(titleLabel)
         
@@ -86,7 +86,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
 //        
 //    }
     
-    private func configureLowerView(){
+    internal func configureLowerView(){
   
         lowerView.translatesAutoresizingMaskIntoConstraints = false
         

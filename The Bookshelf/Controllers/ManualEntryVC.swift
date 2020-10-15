@@ -16,14 +16,15 @@ class ManualEntryVC: UIViewController {
     
     var selectedCell: TBManualEntryCollectionViewCell?
     
-    let fields: [(label: String, placeholder: String, required: Bool, type: EntryCellType)] = [
+    let fields: [(label: String, placeholder: String?, required: Bool, type: EntryCellType)] = [
+        ("Cover image", "gotta fix this, shouldn't need it", false, .picture),
         ("Title", "The Adventures of Tom Sawyer", true, .regular),
         ("Subtitle", "subtitle", false, .regular),
         ("Genre", "Adventure Fiction", false, .regular),
         ("Author", "Mark Twain", true, .regular),
         ("ISBN", "0451526538", false, .numeric),
         ("I'm on page", "102", false, .numeric),
-        ("Number of pages", "340", false, .numeric),
+        ("Number of pages", "340", false, .numeric)
         ]
 
     override func viewDidLoad() {
@@ -149,21 +150,21 @@ extension ManualEntryVC: UICollectionViewDataSource {
         switch fieldTuple.type {
         case .regular:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBTextEntryCVCell.reuseID, for: indexPath) as! TBTextEntryCVCell
-            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder)
+            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
             
             return cell
         case .numeric:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBNumericEntryCVCell.reuseID, for: indexPath) as! TBNumericEntryCVCell
-            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder)
-            
-            return cell
-        case .picture:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
-            cell.set(labelText: fieldTuple.label)
+            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
             
             return cell
         case .options:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
+            cell.set(labelText: fieldTuple.label)
+            
+            return cell
+        case .picture:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
             cell.set(labelText: fieldTuple.label)
             
             return cell
