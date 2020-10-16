@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
     
@@ -95,7 +96,6 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
 
     }
     
-    
     private func configurePhotosButton() {
         
         //create the button
@@ -129,7 +129,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
         
         imageView = UIImageView()
         addSubview(imageView)
-        
+        print("added subview")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
@@ -140,6 +140,21 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
         
         imageView.image = picture
         imageView.contentMode = .scaleAspectFit
+    }
+    
+    private func reloadView() {
+        
+        DispatchQueue.main.async {
+            self.clear()
+            print("cleared")
+            self.configureLabel()
+            print("configured label")
+            self.configureLowerView()
+            print("configured lower view")
+            self.layoutIfNeeded()
+            print("layedout if needed")
+        }
+        
     }
     
     @objc func cameraButtonTapped() {
@@ -158,20 +173,73 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
             return
         }
         
+        //Check if the camera is able to take pictures
         guard UIImagePickerController.availableMediaTypes(for: .camera)!.contains("public.image") else {
             //TODO:- Actually do something with this error
             print(TBError.cameraNotAvailable.rawValue)
             return
         }
         
-        let cameraVC = UIImagePickerController()
-        cameraVC.sourceType = .camera
-        cameraVC.mediaTypes = ["public.image"]
-        helperVCPresenterDelegate.present(cameraVC)
+        //Check if we have permissions
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        
+        case .authorized:
+            
+            //Present the camera
+            let cameraVC = UIImagePickerController()
+            cameraVC.sourceType = .camera
+            cameraVC.mediaTypes = ["public.image"]
+            cameraVC.delegate = self
+            helperVCPresenterDelegate.present(cameraVC)
+            
+        case .notDetermined:
+            
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    
+                    //Present the camera
+                    let cameraVC = UIImagePickerController()
+                    cameraVC.sourceType = .camera
+                    cameraVC.mediaTypes = ["public.image"]
+                    cameraVC.delegate = self
+                    self.helperVCPresenterDelegate.present(cameraVC)
+                    
+                }
+            }
+            
+        case .restricted:
+            //TODO:- Actually do something with this error
+            print(TBError.cameraPermissionRestricted.rawValue)
+        case .denied:
+            //TODO:- Actually do something with this error
+            print(TBError.cameraPermissionDenied.rawValue)
+        @unknown default:
+            //TODO:- Actually do something with this error
+            print(TBError.thisIsAwkward.rawValue)
+        }
+        
+        
     }
     
     @objc func photosButtonTapped() {
         print("photos button was tapped")
     }
     
+}
+
+extension TBPictureEntryCVCell: UIImagePickerControllerDelegate & UINavigationControllerDelegate{
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true)
+
+        picture = info[.originalImage] as? UIImage
+
+        if picture != nil {
+            print("Found the picture")
+//            picture = UIImage(named: "testCover")
+            
+            reloadView()
+        }
+    }
 }
