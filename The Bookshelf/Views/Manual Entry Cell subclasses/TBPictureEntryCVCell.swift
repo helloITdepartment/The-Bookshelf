@@ -11,6 +11,9 @@ import UIKit
 class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
     
     static let reuseID = "PictureEntryCVCell"
+    
+    var helperVCPresenterDelegate: HelperVCPresenterDelegate!
+    
     var cameraButton: UIButton!
     var photosButton: UIButton!
     var imageView: UIImageView!
@@ -147,6 +150,24 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
 //        configureLabel()
 //        configureLowerView()
         
+        
+        //Check to see if the camera is available
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            //TODO:- Actually do something with this error
+            print(TBError.cameraNotAvailable.rawValue)
+            return
+        }
+        
+        guard UIImagePickerController.availableMediaTypes(for: .camera)!.contains("public.image") else {
+            //TODO:- Actually do something with this error
+            print(TBError.cameraNotAvailable.rawValue)
+            return
+        }
+        
+        let cameraVC = UIImagePickerController()
+        cameraVC.sourceType = .camera
+        cameraVC.mediaTypes = ["public.image"]
+        helperVCPresenterDelegate.present(cameraVC)
     }
     
     @objc func photosButtonTapped() {

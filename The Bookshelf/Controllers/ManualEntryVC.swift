@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol HelperVCPresenterDelegate {
+
+    func present(_ vc: UIViewController)
+}
+
 class ManualEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
@@ -17,7 +22,7 @@ class ManualEntryVC: UIViewController {
     var selectedCell: TBManualEntryCollectionViewCell?
     
     let fields: [(label: String, placeholder: String?, required: Bool, type: EntryCellType)] = [
-        ("Cover image", "gotta fix this, shouldn't need it", false, .picture),
+        ("Cover image", nil, false, .picture),
         ("Title", "The Adventures of Tom Sawyer", true, .regular),
         ("Subtitle", "subtitle", false, .regular),
         ("Genre", "Adventure Fiction", false, .regular),
@@ -160,11 +165,13 @@ extension ManualEntryVC: UICollectionViewDataSource {
             return cell
         case .options:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
+            cell.helperVCPresenterDelegate = self
             cell.set(labelText: fieldTuple.label)
             
             return cell
         case .picture:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
+            cell.helperVCPresenterDelegate = self
             cell.set(labelText: fieldTuple.label)
             
             return cell
@@ -194,4 +201,13 @@ extension ManualEntryVC: UICollectionViewDelegate {
 //        print("deselected cell for \(fields[indexPath.row].label)")
         cell.shrink()
     }
+}
+
+extension ManualEntryVC: HelperVCPresenterDelegate {
+    
+    func present(_ vc: UIViewController) {
+        present(vc, animated: true)
+    }
+    
+    
 }
