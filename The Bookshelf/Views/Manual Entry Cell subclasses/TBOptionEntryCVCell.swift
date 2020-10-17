@@ -12,6 +12,8 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     static let reuseID = "OptionEntryCVCell"
 
+    var helperVCPresenterDelegate: HelperVCPresenterDelegate!
+
     func set(labelText: String) {
         titleLabel.text = labelText
     }
