@@ -7,10 +7,15 @@
 //
 
 import UIKit
+import AVFoundation
+import Photos
 
-class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
+class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     
     static let reuseID = "PictureEntryCVCell"
+    
+    var helperVCPresenterDelegate: HelperVCPresenterDelegate!
+    
     var cameraButton: UIButton!
     var photosButton: UIButton!
     var imageView: UIImageView!
@@ -92,7 +97,6 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
 
     }
     
-    
     private func configurePhotosButton() {
         
         //create the button
@@ -126,7 +130,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
         
         imageView = UIImageView()
         addSubview(imageView)
-        
+        print("added subview")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
@@ -139,18 +143,166 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell {
         imageView.contentMode = .scaleAspectFit
     }
     
+    private func reloadView() {
+        
+        DispatchQueue.main.async {
+            self.clear()
+            print("cleared")
+            self.configureLabel()
+            print("configured label")
+            self.configureLowerView()
+            print("configured lower view")
+            self.layoutIfNeeded()
+            print("layedout if needed")
+        }
+        
+    }
+    
     @objc func cameraButtonTapped() {
         print("camera button was tapped")
 //        picture = UIImage(named: "testCover")
-//        
-//        clear()
-//        configureLabel()
-//        configureLowerView()
+        
+        //Check to see if the camera is available
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            //TODO:- Actually do something with this error
+            print(TBError.cameraNotAvailable.rawValue)
+            return
+        }
+        
+        //Check if the camera is able to take pictures
+        guard UIImagePickerController.availableMediaTypes(for: .camera)!.contains("public.image") else {
+            //TODO:- Actually do something with this error
+            print(TBError.cameraNotAvailable.rawValue)
+            return
+        }
+        
+        //Check if we have permissions
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        
+        case .authorized:
+            
+            //Present the camera
+            let cameraVC = UIImagePickerController()
+            cameraVC.sourceType = .camera
+            cameraVC.mediaTypes = ["public.image"]
+            cameraVC.delegate = self
+            helperVCPresenterDelegate.present(cameraVC)
+            
+        case .notDetermined:
+            
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    
+                    //Present the camera
+                    let cameraVC = UIImagePickerController()
+                    cameraVC.sourceType = .camera
+                    cameraVC.mediaTypes = ["public.image"]
+                    cameraVC.delegate = self
+                    self.helperVCPresenterDelegate.present(cameraVC)
+                    
+                }
+            }
+            
+        case .restricted:
+            //TODO:- Actually do something with this error
+            print(TBError.cameraPermissionRestricted.rawValue)
+        case .denied:
+            //TODO:- Actually do something with this error
+            print(TBError.cameraPermissionDenied.rawValue)
+        @unknown default:
+            //TODO:- Actually do something with this error
+            print(TBError.thisIsAwkward.rawValue)
+        }
+        
         
     }
     
     @objc func photosButtonTapped() {
         print("photos button was tapped")
+        
+        //Check to see if the photo picker is available
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            //TODO:- Actually do something with this error
+            print(TBError.devicePhotosNotAvailable.rawValue)
+            return
+        }
+        //Check if the pictures are available on this device
+        guard UIImagePickerController.availableMediaTypes(for: .photoLibrary)!.contains("public.image") else {
+            //TODO:- Actually do something with this error
+            print(TBError.devicePhotosNotAvailable.rawValue)
+            return
+        }
+        
+        //Check permissions
+        if #available(iOS 14, *){
+            switch PHPhotoLibrary.authorizationStatus(for: PHAccessLevel.readWrite){
+            case .notDetermined:
+                
+                PHPhotoLibrary.requestAuthorization(for: .readWrite, handler: { (authStatus) in
+                    if authStatus == .authorized {
+                        
+                        //Present the photo picker
+                        DispatchQueue.main.async {
+                            let photoChooserVC = UIImagePickerController()
+                            photoChooserVC.sourceType = .photoLibrary
+                            photoChooserVC.mediaTypes = ["public.image"]
+                            photoChooserVC.delegate = self
+                            self.helperVCPresenterDelegate.present(photoChooserVC)
+                        }
+                        
+                    }
+                })
+                
+            case .restricted:
+                //TODO:- Actually do something with this error
+                print(TBError.photosPermissionRestricted.rawValue)
+            case .denied:
+                //TODO:- Actually do something with this error
+                print(TBError.photosPermissionDenied.rawValue)
+           case .authorized:
+                
+            //Present the photo picker
+            DispatchQueue.main.async {
+                let photoChooserVC = UIImagePickerController()
+                photoChooserVC.sourceType = .photoLibrary
+                photoChooserVC.mediaTypes = ["public.image"]
+                photoChooserVC.delegate = self
+                self.helperVCPresenterDelegate.present(photoChooserVC)
+            }
+                
+            case .limited:
+                
+                //Present the photo picker
+                DispatchQueue.main.async {
+                    let photoChooserVC = UIImagePickerController()
+                    photoChooserVC.sourceType = .photoLibrary
+                    photoChooserVC.mediaTypes = ["public.image"]
+                    photoChooserVC.delegate = self
+                    self.helperVCPresenterDelegate.present(photoChooserVC)
+                }
+            
+             @unknown default:
+                //TODO:- Actually do something with this error
+                print(TBError.thisIsAwkward.rawValue)
+            }
+        }
     }
     
+}
+
+extension TBPictureEntryCVCell: UIImagePickerControllerDelegate & UINavigationControllerDelegate{
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true)
+
+        picture = info[.originalImage] as? UIImage
+
+        if picture != nil {
+            print("Found the picture")
+//            picture = UIImage(named: "testCover")
+            
+            reloadView()
+        }
+    }
 }

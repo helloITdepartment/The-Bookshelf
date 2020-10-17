@@ -8,16 +8,22 @@
 
 import UIKit
 
+protocol HelperVCPresenterDelegate {
+    func present(_ vc: UIViewController)
+}
+
 class ManualEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
+    
+    var willLayoutSubviewsHasRun = false
     
     var collectionView: UICollectionView!
     
     var selectedCell: TBManualEntryCollectionViewCell?
     
     let fields: [(label: String, placeholder: String?, required: Bool, type: EntryCellType)] = [
-        ("Cover image", "gotta fix this, shouldn't need it", false, .picture),
+        ("Cover image", nil, false, .picture),
         ("Title", "The Adventures of Tom Sawyer", true, .regular),
         ("Subtitle", "subtitle", false, .regular),
         ("Genre", "Adventure Fiction", false, .regular),
@@ -34,9 +40,13 @@ class ManualEntryVC: UIViewController {
         setUpKeyboardNotificationObserver()
     }
     
-    
     override func viewWillLayoutSubviews() {
+
+        //viewWillLayoutSubviews can get called multiple times, including every time the view's bounds change, for example on rotations
+        //This can lead to the problem of, in this example, the collectionView being put on twice
+        //So as a quick fix, I'm putting a flag here to check if it's already been run
         
+        guard !willLayoutSubviewsHasRun else { return }
         //Configure the collectionView
         configureCollectionView()
         
@@ -45,6 +55,8 @@ class ManualEntryVC: UIViewController {
         addButton.tintColor = Constants.tintColor
         
         tabBarController!.navigationItem.leftBarButtonItem = addButton
+        
+        willLayoutSubviewsHasRun = true
         
     }
     
@@ -104,11 +116,11 @@ class ManualEntryVC: UIViewController {
         }
         
         //TODO:- make this not horrible
-        let bookTitle = (collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let subtitle = (collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let genre = (collectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let author = (collectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let isbn = (collectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
+        let bookTitle = (collectionView.cellForItem(at: IndexPath(row: 1, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
+        let subtitle = (collectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
+        let genre = (collectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
+        let author = (collectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
+        let isbn = (collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
         
         let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], isbn: isbn, coverUrl: nil, numberOfPages: nil)
         addBookDelegate.didSubmit(book: book)
@@ -160,11 +172,13 @@ extension ManualEntryVC: UICollectionViewDataSource {
             return cell
         case .options:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
+            cell.helperVCPresenterDelegate = self
             cell.set(labelText: fieldTuple.label)
             
             return cell
         case .picture:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
+            cell.helperVCPresenterDelegate = self
             cell.set(labelText: fieldTuple.label)
             
             return cell
@@ -193,5 +207,12 @@ extension ManualEntryVC: UICollectionViewDelegate {
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBTextEntryCVCell else { return }
 //        print("deselected cell for \(fields[indexPath.row].label)")
         cell.shrink()
+    }
+}
+
+extension ManualEntryVC: HelperVCPresenterDelegate {
+
+    func present(_ vc: UIViewController) {
+        present(vc, animated: true)
     }
 }
