@@ -211,10 +211,8 @@ extension ManualEntryVC: UICollectionViewDelegate {
 }
 
 extension ManualEntryVC: HelperVCPresenterDelegate {
-    
+
     func present(_ vc: UIViewController) {
         present(vc, animated: true)
     }
-    
-    
 }

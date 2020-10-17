@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>&quot;This app can let you use your camera to tkae pictures of the covers of your books, as well as scan the barcode so the information can be loaded automatically.&quot;</string>
+	<string>&quot;This app can let you use your camera to take pictures of the covers of your books, as well as scan the barcode so the information can be loaded automatically.&quot;</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>&quot;This app can let you choose one of your photos to use as the cover for a book, as well as scan the barcode so the information can be loaded automatically.&quot;</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
