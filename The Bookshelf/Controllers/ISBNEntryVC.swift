@@ -12,7 +12,7 @@ class ISBNEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
 
-    var entryField = TBManualEntryCollectionViewCell(frame: .zero)
+    var entryField = TBNumericEntryCVCell(frame: .zero)
     var goButton: UIButton!
     
     let padding: CGFloat = 20
@@ -38,6 +38,7 @@ class ISBNEntryVC: UIViewController {
             entryField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             entryField.heightAnchor.constraint(equalToConstant: 100)
         ])
+        
     }
     
     private func configureGoButton() {
@@ -74,12 +75,12 @@ class ISBNEntryVC: UIViewController {
                 
                 DispatchQueue.main.async {
                     let authorString = book.authorString()
-                    let ac = UIAlertController(title: "Here's what we found", message: "\(book.title) by \(authorString)", preferredStyle: .alert)
+                    let ac = UIAlertController(title: "Here's what we found, is this right?", message: "\(book.title) by \(authorString)", preferredStyle: .alert)
                     
                     let correctButton = UIAlertAction(title: "Looks great, let's add it!", style: .default) { (alertAction) in
                         self.correctButtonTapped(book: book)
                     }
-                    let correctEditButton = UIAlertAction(title: "Looks pretty close, but let me edit some things", style: .default) { (alertAction) in
+                    let correctEditButton = UIAlertAction(title: "Close, but let me edit some things", style: .default) { (alertAction) in
                         self.correctEditButtonTapped(book: book)
                     }
                     let incorrectButton = UIAlertAction(title: "Hmm that doesn't look right", style: .destructive) { (alertAction) in
@@ -103,6 +104,7 @@ class ISBNEntryVC: UIViewController {
     private func correctButtonTapped(book: Book) {
         print("Correct, let's add it")
         addBookDelegate.didSubmit(book: book)
+        dismiss(animated: true)
     }
     
     private func correctEditButtonTapped(book: Book) { 
