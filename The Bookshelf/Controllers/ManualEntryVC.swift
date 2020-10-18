@@ -69,7 +69,7 @@ class ManualEntryVC: UIViewController {
 
     private func configureCollectionView() {
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createFlowLayout())
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -84,19 +84,19 @@ class ManualEntryVC: UIViewController {
         view.addSubview(collectionView)
     }
     
-    private func createFlowLayout() -> UICollectionViewFlowLayout {
-        
-        let width = view.bounds.width
-        let padding: CGFloat = 12
-        let itemWidth = width - (padding * 2)
-        
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth/4)
-        
-        return flowLayout
-        
-    }
+//    private func createFlowLayout() -> UICollectionViewFlowLayout {
+//
+//        let width = view.bounds.width
+//        let padding: CGFloat = 12
+//        let itemWidth = width - (padding * 2)
+//
+//        let flowLayout = UICollectionViewFlowLayout()
+//        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+//        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth/4)
+//
+//        return flowLayout
+//
+//    }
     
     @objc func addButtonTapped() {
         print("add Button tapped")
