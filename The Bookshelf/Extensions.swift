@@ -15,3 +15,18 @@ extension UIView {
         }
     }
 }
+
+extension UICollectionView {
+    static func createFlowLayout(for width: CGFloat) -> UICollectionViewFlowLayout {
+        
+        let padding: CGFloat = 12
+        let itemWidth = width - (padding * 2)
+        
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth/4)
+        
+        return flowLayout
+        
+    }
+}

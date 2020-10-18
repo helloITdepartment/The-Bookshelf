@@ -130,7 +130,6 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         
         imageView = UIImageView()
         addSubview(imageView)
-        print("added subview")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
@@ -147,19 +146,14 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         
         DispatchQueue.main.async {
             self.clear()
-            print("cleared")
             self.configureLabel()
-            print("configured label")
             self.configureLowerView()
-            print("configured lower view")
             self.layoutIfNeeded()
-            print("layedout if needed")
         }
         
     }
     
     @objc func cameraButtonTapped() {
-        print("camera button was tapped")
 //        picture = UIImage(named: "testCover")
         
         //Check to see if the camera is available
@@ -218,7 +212,6 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     }
     
     @objc func photosButtonTapped() {
-        print("photos button was tapped")
         
         //Check to see if the photo picker is available
         guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
@@ -299,9 +292,7 @@ extension TBPictureEntryCVCell: UIImagePickerControllerDelegate & UINavigationCo
         picture = info[.originalImage] as? UIImage
 
         if picture != nil {
-            print("Found the picture")
 //            picture = UIImage(named: "testCover")
-            
             reloadView()
         }
     }

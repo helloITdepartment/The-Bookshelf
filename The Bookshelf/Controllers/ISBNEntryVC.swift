@@ -12,7 +12,8 @@ class ISBNEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
 
-    var entryField = TBNumericEntryCVCell(frame: .zero)
+    var collectionView: UICollectionView!
+    var entryField: TBNumericEntryCVCell!
     var goButton: UIButton!
     
     let padding: CGFloat = 20
@@ -21,11 +22,27 @@ class ISBNEntryVC: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        configureEntryField()
-        configureGoButton()
+        configureCollectionView()
+//        configureEntryField()
+//        configureGoButton()
         //configureAddButton
     }
+        
+    private func configureCollectionView() {
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        //Register the different types
+        collectionView.register(TBNumericEntryCVCell.self, forCellWithReuseIdentifier: TBNumericEntryCVCell.reuseID)
+        collectionView.register(TBPictureEntryCVCell.self, forCellWithReuseIdentifier: TBPictureEntryCVCell.reuseID)
 
+        collectionView.backgroundColor = .systemBackground
+        
+        view.addSubview(collectionView)
+    }
+    
     private func configureEntryField() {
         entryField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(entryField)
@@ -41,7 +58,7 @@ class ISBNEntryVC: UIViewController {
         
     }
     
-    private func configureGoButton() {
+    private func configureGoButton(under cell: UICollectionViewCell) {
         
         goButton = UIButton()
         goButton.translatesAutoresizingMaskIntoConstraints = false
@@ -52,11 +69,13 @@ class ISBNEntryVC: UIViewController {
         goButton.tintColor = Constants.tintColor
         goButton.backgroundColor = .secondarySystemBackground
         goButton.layer.cornerRadius = 15
+                    
+        entryField = (cell as! TBNumericEntryCVCell)
         
         NSLayoutConstraint.activate([
-            goButton.leadingAnchor.constraint(equalTo: entryField.leadingAnchor),
-            goButton.topAnchor.constraint(equalTo: entryField.bottomAnchor, constant: padding),
-            goButton.trailingAnchor.constraint(equalTo: entryField.trailingAnchor),
+            goButton.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
+            goButton.topAnchor.constraint(equalTo: cell.bottomAnchor, constant: padding),
+            goButton.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
             goButton.heightAnchor.constraint(equalToConstant: 50)
         ])
         
@@ -114,5 +133,49 @@ class ISBNEntryVC: UIViewController {
     private func incorrectButtonTapped() {
         print("Incorrect")
         dismiss(animated: true)
+    }
+}
+
+extension ISBNEntryVC: UICollectionViewDataSource{
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if indexPath.item == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
+            cell.helperVCPresenterDelegate = self
+            cell.set(labelText: "Scan a barcode")
+            
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBNumericEntryCVCell.reuseID, for: indexPath) as! TBNumericEntryCVCell
+            cell.set(labelText: "ISBN", textFieldPlaceholderText: "123456789")
+            
+            return cell
+        }
+    }
+    
+    
+}
+
+extension ISBNEntryVC: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.item == 1 {
+            configureGoButton(under: cell)
+        }
+    }
+}
+
+extension ISBNEntryVC: HelperVCPresenterDelegate {
+    
+    func present(_ vc: UIViewController) {
+        present(vc, animated: true)
     }
 }

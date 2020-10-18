@@ -25,11 +25,13 @@ class NetworkManager {
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             
             if let error = error {
+                //TODO:- actually do something useful with this error
                 print("Error: \(error)")
                 return
             }
             
             guard let response = response as? HTTPURLResponse else {
+                //TODO:- make a TBError for this
                 print("Invalid response")
                 return
             }
@@ -39,7 +41,6 @@ class NetworkManager {
             }
             
             guard let data = data else {
-                print("Invalid data1")
                 return
             }
             
