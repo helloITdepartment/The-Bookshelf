@@ -15,6 +15,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     static let reuseID = "PictureEntryCVCell"
     
     var helperVCPresenterDelegate: HelperVCPresenterDelegate!
+    var cameraDelegateToPass: (UIImagePickerControllerDelegate & UINavigationControllerDelegate)?
     
     var cameraButton: UIButton!
     var photosButton: UIButton!
@@ -130,7 +131,6 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         
         imageView = UIImageView()
         addSubview(imageView)
-        print("added subview")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
@@ -147,19 +147,14 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         
         DispatchQueue.main.async {
             self.clear()
-            print("cleared")
             self.configureLabel()
-            print("configured label")
             self.configureLowerView()
-            print("configured lower view")
             self.layoutIfNeeded()
-            print("layedout if needed")
         }
         
     }
     
     @objc func cameraButtonTapped() {
-        print("camera button was tapped")
 //        picture = UIImage(named: "testCover")
         
         //Check to see if the camera is available
@@ -185,7 +180,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
             let cameraVC = UIImagePickerController()
             cameraVC.sourceType = .camera
             cameraVC.mediaTypes = ["public.image"]
-            cameraVC.delegate = self
+            
+            if cameraDelegateToPass != nil {
+                cameraVC.delegate = cameraDelegateToPass
+            } else {
+                cameraVC.delegate =  self
+            }
+            
             helperVCPresenterDelegate.present(cameraVC)
             
         case .notDetermined:
@@ -197,7 +198,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                     let cameraVC = UIImagePickerController()
                     cameraVC.sourceType = .camera
                     cameraVC.mediaTypes = ["public.image"]
-                    cameraVC.delegate = self
+                    
+                    if self.cameraDelegateToPass != nil {
+                        cameraVC.delegate = self.cameraDelegateToPass
+                    } else {
+                        cameraVC.delegate =  self
+                    }
+                    
                     self.helperVCPresenterDelegate.present(cameraVC)
                     
                 }
@@ -218,7 +225,6 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     }
     
     @objc func photosButtonTapped() {
-        print("photos button was tapped")
         
         //Check to see if the photo picker is available
         guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
@@ -246,7 +252,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                             let photoChooserVC = UIImagePickerController()
                             photoChooserVC.sourceType = .photoLibrary
                             photoChooserVC.mediaTypes = ["public.image"]
-                            photoChooserVC.delegate = self
+                            
+                            if self.cameraDelegateToPass != nil {
+                                photoChooserVC.delegate = self.cameraDelegateToPass
+                            } else {
+                                photoChooserVC.delegate =  self
+                            }
+                            
                             self.helperVCPresenterDelegate.present(photoChooserVC)
                         }
                         
@@ -266,7 +278,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                 let photoChooserVC = UIImagePickerController()
                 photoChooserVC.sourceType = .photoLibrary
                 photoChooserVC.mediaTypes = ["public.image"]
-                photoChooserVC.delegate = self
+
+                if self.cameraDelegateToPass != nil {
+                    photoChooserVC.delegate = self.cameraDelegateToPass
+                } else {
+                    photoChooserVC.delegate =  self
+                }
+
                 self.helperVCPresenterDelegate.present(photoChooserVC)
             }
                 
@@ -277,7 +295,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                     let photoChooserVC = UIImagePickerController()
                     photoChooserVC.sourceType = .photoLibrary
                     photoChooserVC.mediaTypes = ["public.image"]
-                    photoChooserVC.delegate = self
+                    
+                    if self.cameraDelegateToPass != nil {
+                        photoChooserVC.delegate = self.cameraDelegateToPass
+                    } else {
+                        photoChooserVC.delegate =  self
+                    }
+
                     self.helperVCPresenterDelegate.present(photoChooserVC)
                 }
             
@@ -299,9 +323,7 @@ extension TBPictureEntryCVCell: UIImagePickerControllerDelegate & UINavigationCo
         picture = info[.originalImage] as? UIImage
 
         if picture != nil {
-            print("Found the picture")
 //            picture = UIImage(named: "testCover")
-            
             reloadView()
         }
     }
