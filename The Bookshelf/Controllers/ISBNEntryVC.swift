@@ -18,6 +18,8 @@ class ISBNEntryVC: UIViewController {
     var entryField: TBNumericEntryCVCell!
     var goButton: UIButton!
     
+    var loadingSpinnerOverlay: UIView!
+    
     let padding: CGFloat = 20
     
     override func viewDidLoad() {
@@ -95,7 +97,12 @@ class ISBNEntryVC: UIViewController {
     
     private func search(for isbn: String) {
         
+        //start spinner
+        startLoadingSpinner()
         NetworkManager.shared.getBook(for: isbn) { result in
+            
+            //Stop spinner
+            self.stopLoadingSpinner()
             
             switch result {
             case .success(let book):
@@ -157,6 +164,35 @@ class ISBNEntryVC: UIViewController {
         
         search(for: isbn)
 //        print(bestGuess.payloadStringValue)
+    }
+    
+    private func startLoadingSpinner() {
+        loadingSpinnerOverlay = UIView(frame: view.bounds)
+        view.addSubview(loadingSpinnerOverlay)
+        loadingSpinnerOverlay.backgroundColor = .systemBackground
+        loadingSpinnerOverlay.alpha = 0
+        
+        UIView.animate(withDuration: 0.25) {
+            self.loadingSpinnerOverlay.alpha = 0.8
+        }
+        
+        let loadingSpinner = UIActivityIndicatorView(style: .large)
+        loadingSpinnerOverlay.addSubview(loadingSpinner)
+        
+        loadingSpinner.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingSpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            loadingSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        
+        loadingSpinner.startAnimating()
+    }
+    
+    private func stopLoadingSpinner() {
+        DispatchQueue.main.async {
+            self.loadingSpinnerOverlay.removeFromSuperview()
+            self.loadingSpinnerOverlay = nil
+        }
     }
 }
 //MARK:- Extensions
