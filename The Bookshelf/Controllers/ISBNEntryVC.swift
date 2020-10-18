@@ -7,6 +7,8 @@
 //
 
 import UIKit
+//import AVFoundation
+import Vision
 
 class ISBNEntryVC: UIViewController {
 
@@ -28,6 +30,7 @@ class ISBNEntryVC: UIViewController {
         //configureAddButton
     }
         
+    //MARK:- Configuring UI layout
     private func configureCollectionView() {
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
@@ -36,27 +39,28 @@ class ISBNEntryVC: UIViewController {
         
         //Register the different types
         collectionView.register(TBNumericEntryCVCell.self, forCellWithReuseIdentifier: TBNumericEntryCVCell.reuseID)
+//        collectionView.register(TBBarcodeEntryCVCell.self, forCellWithReuseIdentifier: TBBarcodeEntryCVCell.reuseID)
         collectionView.register(TBPictureEntryCVCell.self, forCellWithReuseIdentifier: TBPictureEntryCVCell.reuseID)
-
+        
         collectionView.backgroundColor = .systemBackground
         
         view.addSubview(collectionView)
     }
     
-    private func configureEntryField() {
-        entryField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(entryField)
-        
-        entryField.set(labelText: "ISBN", textFieldPlaceholderText: "123456789")
-        
-        NSLayoutConstraint.activate([
-            entryField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            entryField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: padding),
-            entryField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            entryField.heightAnchor.constraint(equalToConstant: 100)
-        ])
-        
-    }
+//    private func configureEntryField() {
+//        entryField.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(entryField)
+//
+//        entryField.set(labelText: "ISBN", textFieldPlaceholderText: "123456789")
+//
+//        NSLayoutConstraint.activate([
+//            entryField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
+//            entryField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: padding),
+//            entryField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
+//            entryField.heightAnchor.constraint(equalToConstant: 100)
+//        ])
+//
+//    }
     
     private func configureGoButton(under cell: UICollectionViewCell) {
         
@@ -82,9 +86,14 @@ class ISBNEntryVC: UIViewController {
         goButton.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
     }
     
+    //MARK:- Button taps
     @objc private func searchButtonTapped() {
         
         guard let isbn = entryField.getTextFieldValue() else { return }
+        search(for: isbn)
+    }
+    
+    private func search(for isbn: String) {
         
         NetworkManager.shared.getBook(for: isbn) { result in
             
@@ -118,6 +127,7 @@ class ISBNEntryVC: UIViewController {
                 print(error.localizedDescription)
             }
         }
+        
     }
     
     private func correctButtonTapped(book: Book) {
@@ -134,8 +144,24 @@ class ISBNEntryVC: UIViewController {
         print("Incorrect")
         dismiss(animated: true)
     }
+    
+    private func process(_ observations: [VNDetectedObjectObservation]) {
+        
+        guard let bestGuess = (observations.first as? VNBarcodeObservation), let isbn = bestGuess.payloadStringValue else {
+            
+            let ac = UIAlertController(title: "Hmm...", message: "It looks like something went wrong. Please try again, or, if you prefer, just type the ISBN in.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Got it", style: .default))
+            present(ac, animated: true)
+            return
+        }
+        
+        search(for: isbn)
+//        print(bestGuess.payloadStringValue)
+    }
 }
+//MARK:- Extensions
 
+//MARK:- CollectionViewDataSource
 extension ISBNEntryVC: UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -145,8 +171,10 @@ extension ISBNEntryVC: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if indexPath.item == 0 {
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBBarcodeEntryCVCell.reuseID, for: indexPath) as! TBBarcodeEntryCVCell
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
             cell.helperVCPresenterDelegate = self
+            cell.cameraDelegateToPass = self
             cell.set(labelText: "Scan a barcode")
             
             return cell
@@ -161,6 +189,7 @@ extension ISBNEntryVC: UICollectionViewDataSource{
     
 }
 
+//MARK:- CollectionViewDelegate
 extension ISBNEntryVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -173,9 +202,46 @@ extension ISBNEntryVC: UICollectionViewDelegate {
     }
 }
 
+//MARK:- PresenterDelegate
 extension ISBNEntryVC: HelperVCPresenterDelegate {
     
     func present(_ vc: UIViewController) {
         present(vc, animated: true)
     }
 }
+
+//MARK:- CameraVC Delegate
+extension ISBNEntryVC: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true)
+
+        let picture = info[.originalImage] as? UIImage
+        guard let cgImage = picture?.cgImage else { return }
+        
+        let request = VNDetectBarcodesRequest { (request, error) in
+            
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            
+            guard let observations = request.results as? [VNDetectedObjectObservation] else { return }
+//            print("observations are:", observations)
+            self.process(observations)
+        }
+        
+        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        
+        do {
+            try requestHandler.perform([request])
+        } catch {
+            print(error)
+        }
+    }
+}
+
+//extension ISBNEntryVC: AVCaptureMetadataOutputObjectsDelegate {
+//
+//}
