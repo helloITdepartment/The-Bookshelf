@@ -15,6 +15,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     static let reuseID = "PictureEntryCVCell"
     
     var helperVCPresenterDelegate: HelperVCPresenterDelegate!
+    var cameraDelegateToPass: (UIImagePickerControllerDelegate & UINavigationControllerDelegate)?
     
     var cameraButton: UIButton!
     var photosButton: UIButton!
@@ -179,7 +180,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
             let cameraVC = UIImagePickerController()
             cameraVC.sourceType = .camera
             cameraVC.mediaTypes = ["public.image"]
-            cameraVC.delegate = self
+            
+            if cameraDelegateToPass != nil {
+                cameraVC.delegate = cameraDelegateToPass
+            } else {
+                cameraVC.delegate =  self
+            }
+            
             helperVCPresenterDelegate.present(cameraVC)
             
         case .notDetermined:
@@ -191,7 +198,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                     let cameraVC = UIImagePickerController()
                     cameraVC.sourceType = .camera
                     cameraVC.mediaTypes = ["public.image"]
-                    cameraVC.delegate = self
+                    
+                    if self.cameraDelegateToPass != nil {
+                        cameraVC.delegate = self.cameraDelegateToPass
+                    } else {
+                        cameraVC.delegate =  self
+                    }
+                    
                     self.helperVCPresenterDelegate.present(cameraVC)
                     
                 }
@@ -239,7 +252,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                             let photoChooserVC = UIImagePickerController()
                             photoChooserVC.sourceType = .photoLibrary
                             photoChooserVC.mediaTypes = ["public.image"]
-                            photoChooserVC.delegate = self
+                            
+                            if self.cameraDelegateToPass != nil {
+                                photoChooserVC.delegate = self.cameraDelegateToPass
+                            } else {
+                                photoChooserVC.delegate =  self
+                            }
+                            
                             self.helperVCPresenterDelegate.present(photoChooserVC)
                         }
                         
@@ -259,7 +278,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                 let photoChooserVC = UIImagePickerController()
                 photoChooserVC.sourceType = .photoLibrary
                 photoChooserVC.mediaTypes = ["public.image"]
-                photoChooserVC.delegate = self
+
+                if self.cameraDelegateToPass != nil {
+                    photoChooserVC.delegate = self.cameraDelegateToPass
+                } else {
+                    photoChooserVC.delegate =  self
+                }
+
                 self.helperVCPresenterDelegate.present(photoChooserVC)
             }
                 
@@ -270,7 +295,13 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                     let photoChooserVC = UIImagePickerController()
                     photoChooserVC.sourceType = .photoLibrary
                     photoChooserVC.mediaTypes = ["public.image"]
-                    photoChooserVC.delegate = self
+                    
+                    if self.cameraDelegateToPass != nil {
+                        photoChooserVC.delegate = self.cameraDelegateToPass
+                    } else {
+                        photoChooserVC.delegate =  self
+                    }
+
                     self.helperVCPresenterDelegate.present(photoChooserVC)
                 }
             
