@@ -52,6 +52,10 @@ class TBKeyboardEntryCVCell: TBManualEntryCollectionViewCell {
         textField.text
     }
 
+    public func setTextFieldValue(to text: String) {
+        textField.text = text
+    }
+    
     public func grow() {
         
         DispatchQueue.main.async {
