@@ -13,7 +13,6 @@ class EntryFormField: UIView {
     private let titleLabel = TBEntryFieldLabel()
     private let textField = TBTextField()
     let padding: CGFloat = 8
-    //TODO:- Make this class a delegate for its textField. When textfield.didBecomeActive() or whatever, change the constraints so the textField takes up... 75? 70? percent of the view, animated, and change it back when textField.didLoseItsActiveness
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -131,8 +131,8 @@ class ISBNEntryVC: UIViewController {
                 }
                 
             case .failure(let error):
-                //TODO:- actually do something useful with these errors
-                print(error.localizedDescription)
+                print(error.rawValue)
+                self.presentErrorAlert(for: error)
             }
         }
         

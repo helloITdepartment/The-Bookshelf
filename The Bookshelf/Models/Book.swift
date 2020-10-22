@@ -75,7 +75,6 @@ struct Book: Codable, Hashable {
 extension Book: Equatable { //TODO:- also add Comparable
     
     static func == (lhs: Book, rhs: Book) -> Bool {
-        //TODO:- have this compare the title.lowercased() first
         if lhs.title.lowercased() == rhs.title.lowercased() {
             return true
         } else {

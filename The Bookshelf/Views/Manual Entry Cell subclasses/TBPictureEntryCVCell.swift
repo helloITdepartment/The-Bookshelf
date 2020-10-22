@@ -163,15 +163,15 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         
         //Check to see if the camera is available
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            //TODO:- Actually do something with this error
             print(TBError.cameraNotAvailable.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .cameraNotAvailable)
             return
         }
         
         //Check if the camera is able to take pictures
         guard UIImagePickerController.availableMediaTypes(for: .camera)!.contains("public.image") else {
-            //TODO:- Actually do something with this error
             print(TBError.cameraNotAvailable.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .cameraNotAvailable)
             return
         }
         
@@ -215,14 +215,15 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
             }
             
         case .restricted:
-            //TODO:- Actually do something with this error
             print(TBError.cameraPermissionRestricted.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .cameraPermissionRestricted)
+            
         case .denied:
-            //TODO:- Actually do something with this error
             print(TBError.cameraPermissionDenied.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .cameraPermissionDenied)
         @unknown default:
-            //TODO:- Actually do something with this error
             print(TBError.thisIsAwkward.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .thisIsAwkward)
         }
         
         
@@ -232,14 +233,14 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         
         //Check to see if the photo picker is available
         guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
-            //TODO:- Actually do something with this error
             print(TBError.devicePhotosNotAvailable.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .devicePhotosNotAvailable)
             return
         }
         //Check if the pictures are available on this device
         guard UIImagePickerController.availableMediaTypes(for: .photoLibrary)!.contains("public.image") else {
-            //TODO:- Actually do something with this error
             print(TBError.devicePhotosNotAvailable.rawValue)
+            helperVCPresenterDelegate.presentErrorAlert(for: .devicePhotosNotAvailable)
             return
         }
         
@@ -270,11 +271,17 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                 })
                 
             case .restricted:
-                //TODO:- Actually do something with this error
+                
                 print(TBError.photosPermissionRestricted.rawValue)
+                helperVCPresenterDelegate.presentErrorAlert(for: .photosPermissionRestricted)
+                return
+                
             case .denied:
-                //TODO:- Actually do something with this error
+                
                 print(TBError.photosPermissionDenied.rawValue)
+                helperVCPresenterDelegate.presentErrorAlert(for: .photosPermissionDenied)
+                return
+                
            case .authorized:
                 
             //Present the photo picker
@@ -310,8 +317,8 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                 }
             
              @unknown default:
-                //TODO:- Actually do something with this error
                 print(TBError.thisIsAwkward.rawValue)
+                helperVCPresenterDelegate.presentErrorAlert(for: .thisIsAwkward)
             }
         }
     }

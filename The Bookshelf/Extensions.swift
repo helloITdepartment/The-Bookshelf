@@ -30,3 +30,12 @@ extension UICollectionView {
         
     }
 }
+
+extension UIViewController {
+    func presentErrorAlert(for error: TBError) {
+        let ac = UIAlertController(title: "Something went wrong.", message: error.rawValue, preferredStyle: .alert)
+        let gotItButton = UIAlertAction(title: "Got it", style: .default)
+        ac.addAction(gotItButton)
+        present(ac, animated: true)
+    }
+}

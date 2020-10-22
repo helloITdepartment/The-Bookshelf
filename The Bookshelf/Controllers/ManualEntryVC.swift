@@ -10,6 +10,7 @@ import UIKit
 
 protocol HelperVCPresenterDelegate {
     func present(_ vc: UIViewController)
+    func presentErrorAlert(for error: TBError)
 }
 
 class ManualEntryVC: UIViewController {
@@ -117,8 +118,8 @@ class ManualEntryVC: UIViewController {
                     }
                     
                 case .failure(let error):
-                    //TODO:- actually do something useful with this error
                     print(error.rawValue)
+                    self.presentErrorAlert(for: error)
                 }
             }
         }
