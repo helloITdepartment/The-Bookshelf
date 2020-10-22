@@ -13,7 +13,8 @@ import Vision
 class ISBNEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
-
+    var editBookDelegate: EditBookDelegate!
+    
     var collectionView: UICollectionView!
     var entryField: TBNumericEntryCVCell!
     var goButton: UIButton!
@@ -145,6 +146,7 @@ class ISBNEntryVC: UIViewController {
     
     private func correctEditButtonTapped(book: Book) { 
         print("Correct, but let's change some things")
+        editBookDelegate.edit(book: book)
     }
     
     private func incorrectButtonTapped() {

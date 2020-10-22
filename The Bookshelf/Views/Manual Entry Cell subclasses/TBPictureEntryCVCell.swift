@@ -21,7 +21,11 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     var photosButton: UIButton!
     var imageView: UIImageView!
 
-    var picture: UIImage?
+    var picture: UIImage? {
+        didSet {
+            reloadView()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -322,9 +326,9 @@ extension TBPictureEntryCVCell: UIImagePickerControllerDelegate & UINavigationCo
 
         picture = info[.originalImage] as? UIImage
 
-        if picture != nil {
-//            picture = UIImage(named: "testCover")
-            reloadView()
-        }
+//        if picture != nil {
+////            picture = UIImage(named: "testCover")
+//            reloadView()
+//        }
     }
 }
