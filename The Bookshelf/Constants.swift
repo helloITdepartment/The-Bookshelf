@@ -12,3 +12,10 @@ struct Constants {
     static let entryFormFieldBorderWidth: CGFloat = 2
     static let tintColor: UIColor = .systemTeal
 }
+
+enum EntryCellType {
+    case regular
+    case numeric
+    case options
+    case picture
+}

@@ -16,6 +16,7 @@ struct Book: Codable, Hashable {
 //    var identifiers: [String : [String]]?
     var coverUrl: String?
     var numberOfPages: Int?
+    //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
     init(title: String, subtitle: String?, authors: [String], isbn: String?, coverUrl: String?, numberOfPages: Int?) {
@@ -66,14 +67,18 @@ struct Book: Codable, Hashable {
         } else {
             var mutableAuthors = authors
             let last = mutableAuthors.popLast()!
-            return (mutableAuthors.joined(separator: ", ") + "and \(last)")
+            return (mutableAuthors.joined(separator: ", ") + " and \(last)")
         }
     }
 }
 
-extension Book: Equatable {
+extension Book: Equatable { //TODO:- also add Comparable
     
     static func == (lhs: Book, rhs: Book) -> Bool {
-        return lhs.isbn == rhs.isbn
+        if lhs.title.lowercased() == rhs.title.lowercased() {
+            return true
+        } else {
+            return lhs.isbn == rhs.isbn
+        }
     }
 }

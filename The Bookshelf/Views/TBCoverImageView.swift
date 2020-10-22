@@ -41,7 +41,6 @@ class TBCoverImageView: UIImageView {
         
         
         NetworkManager.shared.getCoverImage(from: urlString) { result in
-            
             switch result {
                 
             case .success(let image):
