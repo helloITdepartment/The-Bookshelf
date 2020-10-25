@@ -70,9 +70,7 @@ extension AddBookTabBarController: EditBookDelegate {
     
     func edit(book: Book) {
         manualEntryVC.book = book
-        print(manualEntryVC.tabBarController?.selectedIndex)
         manualEntryVC.tabBarController?.selectedIndex = 1
-        manualEntryVC.fillInCollectionViewFields()
     }
 
 }
