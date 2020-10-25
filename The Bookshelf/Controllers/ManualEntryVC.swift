@@ -65,11 +65,13 @@ class ManualEntryVC: UIViewController {
             tabBarController!.navigationItem.leftBarButtonItem = addButton
             
             didConfigureCollectionView = true
-        } //else {
-//            if didConfigureCollectionView && !didFillInCollectionViewFields && book != nil {
-//                fillInCollectionViewFields()
-//            }
-//        }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        fillInCollectionViewFields()
     }
     
     func setUpKeyboardNotificationObserver() {
@@ -98,7 +100,14 @@ class ManualEntryVC: UIViewController {
     
     public func fillInCollectionViewFields() {
         
-        guard book != nil else { return }
+        guard book != nil else {
+            print("Book was nil")
+            return
+        }
+        guard collectionView != nil else {
+            print("Collection view was nil")
+            return
+        }
         
         //Fill in the cover
         if let coverURL = book?.coverUrl {
