@@ -35,7 +35,7 @@ class EntryFormField: UIView {
         backgroundColor = .systemGroupedBackground
 //        layer.borderColor = UIColor.systemYellow.cgColor
 //        layer.borderWidth = Constants.entryFormFieldBorderWidth
-        layer.cornerRadius = 10
+        layer.cornerRadius = Constants.smallItemCornerRadius
     }
     
     private func configureTitleLabel(withText text: String) {

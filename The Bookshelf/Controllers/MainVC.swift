@@ -131,6 +131,7 @@ class MainVC: UIViewController {
 
     }
     
+    //TODO: this isn't very DRY
     private func createNColumnFlowLayout(withNColumns n: Int) -> UICollectionViewFlowLayout {
         
         let width = view.bounds.width

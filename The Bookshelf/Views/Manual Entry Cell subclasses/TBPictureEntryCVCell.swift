@@ -80,7 +80,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         //Style the button (round the corners, set the background color, set the image)
         cameraButton.setImage(UIImage(systemName: "camera.viewfinder"), for: .normal)
         cameraButton.tintColor = Constants.tintColor
-        cameraButton.layer.cornerRadius = 10
+        cameraButton.layer.cornerRadius = Constants.smallItemCornerRadius
         cameraButton.backgroundColor = .tertiarySystemBackground
 
         
@@ -110,7 +110,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         //Style the button (round the corners, set the background color, set the image)
         photosButton.setImage(UIImage(systemName: "photo.on.rectangle"), for: .normal)
         photosButton.tintColor = Constants.tintColor
-        photosButton.layer.cornerRadius = 10
+        photosButton.layer.cornerRadius = Constants.smallItemCornerRadius
         photosButton.backgroundColor = .tertiarySystemBackground
 
         

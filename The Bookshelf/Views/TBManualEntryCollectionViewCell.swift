@@ -28,23 +28,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
 //        configureTextField()
     }
     
-//    func set(labelText: String, textFieldPlaceholderText placeholderText: String, type: EntryCellType) {
-//        
-//        titleLabel.text = labelText
-//        textField.placeholder = placeholderText
-//
-//        switch type {
-//        case .regular:
-//            return
-//        case .numeric:
-//            textField.keyboardType = .numberPad
-//        case .picture:
-//            return
-//        case .location:
-//            return
-//        }
-//    }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -52,7 +36,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     private func configureCell() {
 //        backgroundColor = .systemGroupedBackground
         backgroundColor = .secondarySystemBackground
-        layer.cornerRadius = 15
+        layer.cornerRadius = Constants.largeItemCornerRadius
     }
     
     internal func configureLabel() {
@@ -70,21 +54,7 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         labelHeightAnchor.isActive = true
     }
     
-//    private func configureTextField(){
-//        
-//        addSubview(textField)
-//        textField.delegate = self
-//        
-//        NSLayoutConstraint.activate([
-//            textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
-//            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-//            textField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
-//            textField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding)
-//        ])
-//        
-//        textField.returnKeyType = .done
-//        
-//    }
+
     
     internal func configureLowerView(){
   
@@ -104,54 +74,6 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
         fatalError("Must override isEmpty")
     }
     
-//    public func getData() -> Any {
-//        fatalError("Must override getData() method")
-//    }
-    
-//    public func getTextFieldValue() -> String? {
-//        textField.text
-//    }
-    
-//    public func grow() {
-//
-//        DispatchQueue.main.async {
-//
-//            self.labelHeightAnchor.isActive = false
-//
-//            self.labelHeightAnchor = self.titleLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.25)
-//
-//            self.labelHeightAnchor.isActive = true
-//
-//            UIView.animate(withDuration: 0.3) {
-//
-//                self.layoutIfNeeded()
-//
-//            }
-//        }
-//    }
-//
-//    public func shrink() {
-//
-//        DispatchQueue.main.async {
-//
-//            self.labelHeightAnchor.isActive = false
-//
-//            self.labelHeightAnchor = self.titleLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.5)
-//
-//            self.labelHeightAnchor.isActive = true
-//
-//            UIView.animate(withDuration: 0.2) {
-//
-//                self.layoutIfNeeded()
-//
-//            }
-//        }
-//    }
-//
-//    public func makeTextFieldPrimary() {
-//        textField.becomeFirstResponder()
-//    }
-    
     public func flashRed() {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 2.5) {
@@ -167,19 +89,4 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
     }
 }
 
-//extension TBManualEntryCollectionViewCell: UITextFieldDelegate {
-//    
-//    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        grow()
-//    }
-//    
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//        shrink()
-//    }
-//    
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        let didProperlyResign = textField.resignFirstResponder()
-//        shrink()
-//        return didProperlyResign
-//    }
-//}
+
