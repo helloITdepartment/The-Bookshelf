@@ -10,14 +10,22 @@ import Foundation
 
 enum TBError: String, Error {
     
+    //MARK:- Networking
     case invalidURL = "Invalid URL. Please try again later."
     case invalidResponse = "Invalid response from the server. Please try again."
     case invalidData = "The data returned from the server was invalid. Please try again."
+    
+    //MARK:- Persistence
     case unableToSaveBooks = "There was an error storing your Bookshelf."
     case unableToRetrieveBooks = "There was an error retrieving your books."
     case unableToDownloadCover = "There was an error loading the cover image fo this book"
     case bookAlreadySaved = "Looks like you already have that book :)"
     case bookNotYetSaved = "Couldn't find that book in your list"
+    
+    case unableToRetrieveLocations = "There was an error retrieving your list of locations"
+    case unableToSaveLocations = "There was an error storing your list of locations"
+    
+    //MARK:- Permissions
     case cameraNotAvailable = "The camera is not available"
     case cameraPermissionDenied = "It looks like you've decided not to grant permission to your camera, which is fine. Everyone is entitled to their privacy.\nBut to use the camera, you'll need to enable permissions. This can be done by going to Settings > The Bookshelf and making sure the camera toggle is on."
     case cameraPermissionRestricted = "Looks like the camera can't be accessed because of restrictions."
@@ -25,4 +33,6 @@ enum TBError: String, Error {
     case devicePhotosNotAvailable = "The device's photos are unavailable"
     case photosPermissionRestricted = "Looks like the photos can't be accessed because of restrictions."
     case photosPermissionDenied = "It looks like you've decided not to grant permission to your photos, which is fine. Everyone is entitled to their privacy.\nBut to chose a photo, you'll need to enable permissions. This can be done by going to Settings > The Bookshelf and making sure the photos toggle is on."
+    
+    
 }

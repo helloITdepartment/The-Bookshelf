@@ -17,6 +17,7 @@ enum PersistenceActionType {
 enum PersistenceManager {
     enum Keys {
         static let books = "books"
+        static let locations = "locations"
     }
     
     static private let defaults = UserDefaults.standard
@@ -104,6 +105,43 @@ enum PersistenceManager {
             case .failure(let error):
                 completed(error)
             }
+        }
+    }
+    
+    //MARK:- Location stuff
+    static func retrieveLocations(completed: @escaping (Result<[String], TBError>) -> Void) {
+        
+        //Check if there's anything there. If not, it's new, pass back an empty array
+        guard let locationsObject = defaults.value(forKey: Keys.locations) else {
+            completed(.success([]))
+            return
+        }
+        
+        //Check that what we got back makes sense
+        guard let encodedLocations = locationsObject as? Data else {
+            completed(.failure(.unableToRetrieveLocations))
+            return
+        }
+        
+        //Try and get the locations array from the Data
+        do {
+            let decoder = JSONDecoder()
+            let locations = try decoder.decode([String].self, from: encodedLocations)
+            completed(.success(locations))
+        } catch {
+            completed(.failure(.unableToRetrieveLocations))
+        }
+    }
+    
+    static func saveLocations(locations: [String]) -> TBError? {
+        do {
+            let encoder = JSONEncoder()
+            let encodedLocations = try encoder.encode(locations)
+            defaults.setValue(encodedLocations, forKey: Keys.locations)
+            return nil //Because nothing went wrong, no errors to report
+        } catch {
+            //Uh oh
+            return .unableToSaveLocations
         }
     }
     
