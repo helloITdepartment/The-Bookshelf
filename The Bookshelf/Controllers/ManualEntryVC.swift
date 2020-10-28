@@ -36,6 +36,7 @@ class ManualEntryVC: UIViewController {
         ("Subtitle", "subtitle", false, .regular),
         ("Genre", "Adventure Fiction", false, .regular),
         ("Author", "Mark Twain", true, .regular),
+        ("Location", nil, false, .options),
         ("ISBN", "0451526538", false, .numeric),
         ("I'm on page", "102", false, .numeric),
         ("Number of pages", "340", false, .numeric)
@@ -83,7 +84,7 @@ class ManualEntryVC: UIViewController {
 
     private func configureCollectionView() {
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createVerticalFlowLayout(for: view.frame.width))
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -166,12 +167,22 @@ class ManualEntryVC: UIViewController {
         
         //Fill in the ISBN
         if let isbn = book?.isbn {
-            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as? TBNumericEntryCVCell else {
+            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as? TBNumericEntryCVCell else {
                 print("Couldn't find isbn cell")
                 return
             }
             
             isbnCell.setTextFieldValue(to: isbn)
+        }
+        
+        //Fill in the number of pages
+        if let numPages = book?.numberOfPages {
+            guard let pagesCell = self.collectionView.cellForItem(at: IndexPath(item: 8, section: 0)) as? TBNumericEntryCVCell else {
+                print("Couldn't find the pages cell")
+                return
+            }
+            
+            pagesCell.setTextFieldValue(to: String(numPages))
         }
         
         //If it made it this far, that means none of the fields weren't found, and so
@@ -238,28 +249,32 @@ extension ManualEntryVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let fieldTuple = fields[indexPath.row]
+        let labelText = fieldTuple.label + (fieldTuple.required ? " (required)" : "")
         
         switch fieldTuple.type {
         case .regular:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBTextEntryCVCell.reuseID, for: indexPath) as! TBTextEntryCVCell
-            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
+            cell.set(labelText: labelText, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
             
             return cell
+            
         case .numeric:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBNumericEntryCVCell.reuseID, for: indexPath) as! TBNumericEntryCVCell
-            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
+            cell.set(labelText: labelText, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
             
             return cell
+            
         case .options:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
             cell.helperVCPresenterDelegate = self
-            cell.set(labelText: fieldTuple.label)
+            cell.set(labelText: labelText)
             
             return cell
+            
         case .picture:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
             cell.helperVCPresenterDelegate = self
-            cell.set(labelText: fieldTuple.label)
+            cell.set(labelText: labelText)
             
             return cell
         }
