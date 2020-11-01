@@ -24,7 +24,7 @@ class TBCoverImageView: UIImageView {
     }
     
     private func configure() {
-        layer.cornerRadius = Constants.smallItemCornerRadius
+        layer.cornerRadius = Constants.mediumItemCornerRadius
         clipsToBounds = true
         image = placeholderImage
         translatesAutoresizingMaskIntoConstraints = false

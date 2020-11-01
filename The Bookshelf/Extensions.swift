@@ -33,13 +33,15 @@ extension UICollectionView {
     
     static func createHorizontalFlowLayout(for height: CGFloat) -> UICollectionViewFlowLayout{
         
-        let padding: CGFloat = 6
+        let padding: CGFloat = 3
         let itemHeight = height - (padding * 2)
         
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
         flowLayout.itemSize = CGSize(width: itemHeight * 4, height: itemHeight)
         flowLayout.scrollDirection = .horizontal
+//        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//        flowLayout.estimatedItemSize = CGSize.init(width: 1, height: 1)
         
         return flowLayout
     }

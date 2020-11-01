@@ -11,7 +11,8 @@ import UIKit
 struct Constants {
     static let entryFormFieldBorderWidth: CGFloat = 2
     static let largeItemCornerRadius: CGFloat = 15
-    static let smallItemCornerRadius: CGFloat = 10
+    static let mediumItemCornerRadius: CGFloat = 10
+    static let smallItemCornerRadius: CGFloat = 5
     static let tintColor: UIColor = .systemTeal
 }
 

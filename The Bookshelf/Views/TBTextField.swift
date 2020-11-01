@@ -23,7 +23,7 @@ class TBTextField: UITextField {
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        layer.cornerRadius = Constants.smallItemCornerRadius
+        layer.cornerRadius = Constants.mediumItemCornerRadius
 //        layer.borderWidth = 2
 //        layer.borderColor = UIColor.systemGray4.cgColor
         
