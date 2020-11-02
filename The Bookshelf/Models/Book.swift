@@ -9,9 +9,13 @@
 import Foundation
 
 struct Book: Codable, Hashable {
+    
     var title: String
     var subtitle: String?
     var authors: [String]
+    //For now location will just be the string, but in the future it will be the Location type, once I have the energy to make that Codable
+//    var location: Location?
+    var location: String?
     var isbn: String?
 //    var identifiers: [String : [String]]?
     var coverUrl: String?
@@ -19,10 +23,11 @@ struct Book: Codable, Hashable {
     //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
-    init(title: String, subtitle: String?, authors: [String], isbn: String?, coverUrl: String?, numberOfPages: Int?) {
+    init(title: String, subtitle: String?, authors: [String], location: String?, isbn: String?, coverUrl: String?, numberOfPages: Int?) {
         self.title = title
         self.subtitle = subtitle
         self.authors = authors
+        self.location = location
         self.isbn = isbn
         self.coverUrl = coverUrl
         self.numberOfPages = numberOfPages

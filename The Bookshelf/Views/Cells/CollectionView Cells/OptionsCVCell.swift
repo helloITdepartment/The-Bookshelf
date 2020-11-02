@@ -49,6 +49,8 @@ class OptionsCVCell: UICollectionViewCell {
         nameLabel.layer.cornerRadius = Constants.smallItemCornerRadius
         nameLabel.lineBreakMode = .byTruncatingMiddle
         nameLabel.textColor = .secondaryLabel
+        nameLabel.textAlignment = .center
+        nameLabel.tintColor = Constants.tintColor
         
         contentView.addSubview(nameLabel)
         
@@ -63,6 +65,21 @@ class OptionsCVCell: UICollectionViewCell {
     
     public func setText(to string: String?) {
         nameLabel.text = string
+    }
+    
+    public func getText() -> String {
+        nameLabel.text!
+    }
+    
+    public func indicateSelected() {
+        backgroundColor = .systemTeal
+        nameLabel.textColor = .label
+        
+    }
+    
+    public func removeSelectedIndication() {
+        backgroundColor = .secondarySystemBackground
+        nameLabel.textColor = .secondaryLabel
     }
     
     public func getLabelSize() -> CGSize {

@@ -10,7 +10,7 @@ import Foundation
 
 struct Location {
     
-    typealias Shelf = (Int, Int)
+    typealias Shelf = (row: Int, column: Int)
     
     var name: String
     var shelf: Shelf?

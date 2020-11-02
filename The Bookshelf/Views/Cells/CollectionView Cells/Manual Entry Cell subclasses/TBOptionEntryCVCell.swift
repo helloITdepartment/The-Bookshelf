@@ -15,9 +15,11 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     var helperVCPresenterDelegate: HelperVCPresenterDelegate!
 
     var collectionView: UICollectionView!
-  
+    var selectedCell: OptionsCVCell? = nil
+    
 //    let locations = [ "a", "b", "c", "d", "e", "f"]
-    let locations = [nil, "Main room", "Guest bedroom", "Downstairs", "test", "one more", "and one just for kicks", "lallalalalalalalalala real long boi"]
+    let locations = [.lentOut, "Main room", "Guest bedroom", "Downstairs", "test", "one more", "and one just for kicks", "lallalalalalalalalala real long boi"]
+//    var selectedLocation: String? = nil
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,6 +45,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
         collectionView = UICollectionView(frame: lowerView.bounds, collectionViewLayout: UICollectionView.createHorizontalFlowLayout(for: lowerView.frame.height))
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(OptionsCVCell.self, forCellWithReuseIdentifier: OptionsCVCell.reuseID)
         
         collectionView.backgroundColor = .tertiarySystemBackground
@@ -50,6 +53,14 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         
         lowerView.addSubview(collectionView)
+    }
+    
+//    public func getValue() -> Location? {
+//        selectedCell == nil ? nil : Location(name: selectedCell?.getText())
+//    }
+    
+    public func getValue() -> String? {
+        selectedCell?.getText()
     }
 }
 
@@ -64,7 +75,7 @@ extension TBOptionEntryCVCell: UICollectionViewDataSource {
         
         cell.setText(to: locations[indexPath.row])
 //        cell.widthAnchor.constraint(equalToConstant: cell.getLabelSize().width).isActive = true
-        print(cell.getLabelSize())
+//        print(cell.getLabelSize())
 //        print("Cell size", cell.frame.width, cell.frame.height)
         return cell
     }
@@ -74,4 +85,26 @@ extension TBOptionEntryCVCell: UICollectionViewDataSource {
 
 extension TBOptionEntryCVCell: UICollectionViewDelegate {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        guard let cell = collectionView.cellForItem(at: indexPath) as? OptionsCVCell else { return }
+
+        if cell == selectedCell {
+            collectionView.deselectItem(at: indexPath, animated: false)
+            selectedCell = nil
+            cell.removeSelectedIndication()
+        } else {
+            selectedCell = cell
+            cell.indicateSelected()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        
+        guard let cell = collectionView.cellForItem(at: indexPath) as? OptionsCVCell else { return }
+
+        selectedCell = nil
+        cell.removeSelectedIndication()
+
+    }
 }

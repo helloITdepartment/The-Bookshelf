@@ -211,9 +211,11 @@ class ManualEntryVC: UIViewController {
         let subtitle = (collectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
         let genre = (collectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
         let author = (collectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let isbn = (collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as! TBNumericEntryCVCell).getTextFieldValue()
+        let location = (collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as! TBOptionEntryCVCell).getValue()
+        let isbn = (collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as! TBNumericEntryCVCell).getTextFieldValue()
+        let numPages = (collectionView.cellForItem(at: IndexPath(item: 8, section: 0)) as! TBNumericEntryCVCell).getTextFieldValue()
         
-        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], isbn: isbn, coverUrl: nil, numberOfPages: nil)
+        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], location: location, isbn: isbn, coverUrl: nil, numberOfPages: nil)
         addBookDelegate.didSubmit(book: book)
 
         dismiss(animated: true)

@@ -55,3 +55,7 @@ extension UIViewController {
         present(ac, animated: true)
     }
 }
+
+extension String {
+    static let lentOut = "Lent out to..."
+}
