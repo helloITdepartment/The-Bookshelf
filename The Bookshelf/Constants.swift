@@ -22,3 +22,15 @@ enum EntryCellType {
     case options
     case picture
 }
+
+enum EntryCellID: String {
+    case coverImage = "Cover image"
+    case title = "Title"
+    case subtitle = "Subtitle"
+    case genre = "Genre"
+    case author = "Author"
+    case location = "Location"
+    case isbn = "ISBN"
+    case myPage = "I'm on page"
+    case numPages = "Number of pages"
+}

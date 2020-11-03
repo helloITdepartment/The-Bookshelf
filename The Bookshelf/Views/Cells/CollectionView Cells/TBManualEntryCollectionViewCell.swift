@@ -13,6 +13,8 @@ class TBManualEntryCollectionViewCell: UICollectionViewCell {
 //    static let reuseID = "ManualEntryCVCell"
     let padding: CGFloat = 8
     
+    var id: EntryCellID!
+    
     internal let titleLabel = TBEntryFieldLabel()
     internal let lowerView = UIView()
 //    private let textField = TBTextField()
