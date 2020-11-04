@@ -19,6 +19,8 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     let locations = [.lentOut, "Main room", "Guest bedroom", "Downstairs", "test", "one more", "and one just for kicks", "lallalalalalalalalala real long boi"]
     
+    var submitButtonForAddOptionAlertController: UIAlertAction!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -82,6 +84,32 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     @objc private func addButtonTapped() {
         print("add button tapped")
+        let ac = UIAlertController(title: "Add a location", message: nil, preferredStyle: .alert)
+        
+        ac.addTextField { (textField) in
+            textField.placeholder = "Living room"
+            textField.autocapitalizationType = .sentences
+            textField.addTarget(self, action: #selector(self.alertTextFieldDidChange(textField:)), for: .editingChanged)
+        }
+        
+        submitButtonForAddOptionAlertController = UIAlertAction(title: "Add", style: .default) { (action) in
+            print(ac.textFields?[0].text ?? "")
+        }
+        submitButtonForAddOptionAlertController.isEnabled = !false
+        
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        ac.addAction(submitButtonForAddOptionAlertController)
+        ac.addAction(cancelButton)
+        
+        //This gives it a nice bold look, as well as makes it the action taken on the enter button
+        ac.preferredAction = submitButtonForAddOptionAlertController
+
+        helperVCPresenterDelegate.present(ac)
+    }
+    
+    @objc func alertTextFieldDidChange(textField: UITextField) {
+        submitButtonForAddOptionAlertController.isEnabled = !(textField.text?.isEmpty ?? true)
     }
 }
 
