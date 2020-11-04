@@ -87,7 +87,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         //Attach the action upon tapping the button
         cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
         
-        //Add camerabutton to lowerview
+        //Add cameraButton to lowerView
         lowerView.addSubview(cameraButton)
         
         //constrain it

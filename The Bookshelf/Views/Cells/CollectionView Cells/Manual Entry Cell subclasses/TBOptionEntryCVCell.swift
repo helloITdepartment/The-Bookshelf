@@ -17,12 +17,12 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     var collectionView: UICollectionView!
     var selectedCell: OptionsCVCell? = nil
     
-//    let locations = [ "a", "b", "c", "d", "e", "f"]
     let locations = [.lentOut, "Main room", "Guest bedroom", "Downstairs", "test", "one more", "and one just for kicks", "lallalalalalalalalala real long boi"]
-//    var selectedLocation: String? = nil
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        configureAddButton()
     }
 
     override func configureLowerView() {
@@ -33,12 +33,21 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         }
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func set(labelText: String) {
-        titleLabel.text = labelText
+    private func configureAddButton() {
+        let addButton = UIButton()
+        addButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addButton.tintColor = Constants.tintColor
+        
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        print(titleLabel)
+        addSubview(addButton)
+        NSLayoutConstraint.activate([
+            addButton.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+            addButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
+            addButton.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            addButton.widthAnchor.constraint(equalTo: addButton.heightAnchor)
+        ])
     }
     
     private func configureCollectionView() {
@@ -55,12 +64,24 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         lowerView.addSubview(collectionView)
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func set(labelText: String) {
+        titleLabel.text = labelText
+    }
+        
 //    public func getValue() -> Location? {
 //        selectedCell == nil ? nil : Location(name: selectedCell?.getText())
 //    }
     
     public func getValue() -> String? {
         selectedCell?.getText()
+    }
+    
+    @objc private func addButtonTapped() {
+        print("add button tapped")
     }
 }
 
