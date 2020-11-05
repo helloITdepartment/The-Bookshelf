@@ -17,13 +17,22 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     var collectionView: UICollectionView!
     var selectedCell: OptionsCVCell? = nil
     
-    let locations = [.lentOut, "Main room", "Guest bedroom", "Downstairs", "test", "one more", "and one just for kicks", "lallalalalalalalalala real long boi"]
+    var locations: [String] = []
     
     var submitButtonForAddOptionAlertController: UIAlertAction!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        PersistenceManager.retrieveLocations { (result) in
+            switch result {
+            case .success(let tempLocations):
+                self.locations = tempLocations
+                print(tempLocations)
+            case .failure(let error):
+                self.helperVCPresenterDelegate.presentErrorAlert(for: error)
+            }
+        }
         configureAddButton()
     }
 
@@ -42,7 +51,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         addButton.tintColor = Constants.tintColor
         
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        print(titleLabel)
+
         addSubview(addButton)
         NSLayoutConstraint.activate([
             addButton.topAnchor.constraint(equalTo: titleLabel.topAnchor),
@@ -84,6 +93,9 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     @objc private func addButtonTapped() {
         print("add button tapped")
+        selectedCell?.removeSelectedIndication()
+        selectedCell = nil
+        
         let ac = UIAlertController(title: "Add a location", message: nil, preferredStyle: .alert)
         
         ac.addTextField { (textField) in
@@ -93,9 +105,19 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         }
         
         submitButtonForAddOptionAlertController = UIAlertAction(title: "Add", style: .default) { (action) in
-            print(ac.textFields?[0].text ?? "")
+            guard let text = ac.textFields?[0].text else { return }
+            self.locations.insert(text, at: 1)
+            PersistenceManager.updateLocations(.add, location: text) { (error) in
+                if let error = error {
+                    print(error)
+                }
+            }
+            //TODO:- find a way to make the newly added location be selected when this alert controller goes away
+            self.collectionView.reloadData()
+            //In case the user has swiped away from the front of the list, this will snap it back so they see the location they just added
+            self.collectionView.selectItem(at: IndexPath(item: 1, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         }
-        submitButtonForAddOptionAlertController.isEnabled = !false
+        submitButtonForAddOptionAlertController.isEnabled = false
         
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel)
         
@@ -138,6 +160,7 @@ extension TBOptionEntryCVCell: UICollectionViewDelegate {
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? OptionsCVCell else { return }
 
+        print(cell.getText())
         if cell == selectedCell {
             collectionView.deselectItem(at: indexPath, animated: false)
             selectedCell = nil

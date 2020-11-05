@@ -15,15 +15,18 @@ enum TBError: String, Error {
     case invalidResponse = "Invalid response from the server. Please try again."
     case invalidData = "The data returned from the server was invalid. Please try again."
     
+    case unableToDownloadCover = "There was an error loading the cover image for this book"
+    
     //MARK:- Persistence
     case unableToSaveBooks = "There was an error storing your Bookshelf."
     case unableToRetrieveBooks = "There was an error retrieving your books."
-    case unableToDownloadCover = "There was an error loading the cover image fo this book"
     case bookAlreadySaved = "Looks like you already have that book :)"
     case bookNotYetSaved = "Couldn't find that book in your list"
     
     case unableToRetrieveLocations = "There was an error retrieving your list of locations"
     case unableToSaveLocations = "There was an error storing your list of locations"
+    case locationAlreadySaved = "Looks like that location is already saved"
+    case locationNotYetSaved = "Couldn't find that location in your list"
     
     //MARK:- Permissions
     case cameraNotAvailable = "The camera is not available"

@@ -145,5 +145,59 @@ enum PersistenceManager {
         }
     }
     
+    static func updateLocations(_ actionType: PersistenceActionType, location: String, completed: @escaping (TBError?) -> Void) {
+        
+        retrieveLocations { result in
+            switch result {
+                
+            case .success(let locations):
+                //make an editable version of the list of locations
+                var mutableLocations = locations
+                
+                //Decide what edit needs to be made and make it
+                switch actionType {
+                case .add:
+                    
+                    //check to make sure the books isn't already in there
+                    guard !mutableLocations.contains(location) else {
+                        completed(.locationAlreadySaved)
+                        return
+                    }
+                    
+                    //Make sure the new one is at the beginning
+                    mutableLocations.insert(location, at: 1)
+                    
+                case .delete:
+                    //TODO:- implement this
+                    guard mutableLocations.contains(location) else {
+                        completed(.locationNotYetSaved)
+                        return
+                    }
+                    
+                    mutableLocations.removeAll { (locationUnderConsideration) -> Bool in
+                        locationUnderConsideration == location
+                    }
+                    
+                case .move:
+                    //TODO:- implement this
+                    return
+                }
+                
+                if !mutableLocations.contains(.lentOut) {
+                    mutableLocations.insert(.lentOut, at: 0)
+                }
+                
+                //Store the result of the editing over the old list of locations
+                completed(saveLocations(locations: mutableLocations))
+                
+                
+                
+            case .failure(let error):
+                completed(error)
+            }
+        }
+    }
+
+    
     //MARK:- Cover stuff
 }
