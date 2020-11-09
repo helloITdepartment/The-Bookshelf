@@ -29,6 +29,10 @@ enum TBError: String, Error {
     case locationNotYetSaved = "Couldn't find that location in your list"
     
     case unableToRetrievePeople = "There was an error retrieving your list of people"
+    case unableToSavePeople = "There was an error storing your list of people"
+    case personAlreadySaved = "Looks like that person is already saved"
+    case personNotYetSaved = "Couldn't find that person in your list"
+
     //MARK:- Permissions
     case cameraNotAvailable = "The camera is not available"
     case cameraPermissionDenied = "It looks like you've decided not to grant permission to your camera, which is fine. Everyone is entitled to their privacy.\nBut to use the camera, you'll need to enable permissions. This can be done by going to Settings > The Bookshelf and making sure the camera toggle is on."

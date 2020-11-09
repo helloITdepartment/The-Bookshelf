@@ -82,7 +82,8 @@ enum PersistenceManager {
                         return
                     }
                     
-                    mutableBooks.append(book)
+                    //Make sure the new one is at the beginning
+                    mutableBooks.insert(book, at: 1)
                     
                 case .delete:
                     //TODO:- implement this
@@ -162,7 +163,7 @@ enum PersistenceManager {
                 switch actionType {
                 case .add:
                     
-                    //check to make sure the books isn't already in there
+                    //check to make sure the location isn't already in there
                     guard !mutableLocations.contains(location) else {
                         completed(.locationAlreadySaved)
                         return
@@ -230,5 +231,63 @@ enum PersistenceManager {
         
     }
     
+    static func savePeople(people: [String]) -> TBError? {
+        do {
+            let encoder = JSONEncoder()
+            let encodedPeople = try encoder.encode(people)
+            defaults.setValue(encodedPeople, forKey: Keys.people)
+            return nil //Because nothing went wrong, no errors to report
+        } catch {
+            //Uh oh
+            return .unableToSavePeople
+        }
+    }
+    
+    static func updatePeople(_ actionType: PersistenceActionType, person: String, completed: @escaping (TBError?) -> Void) {
+        
+        retrievePeople { result in
+            switch result {
+                
+            case .success(let people):
+                //make an editable version of the list of people
+                var mutablePeople = people
+                
+                //Decide what edit needs to be made and make it
+                switch actionType {
+                case .add:
+                    
+                    //check to make sure the person isn't already in there
+                    guard !mutablePeople.contains(person) else {
+                        completed(.personAlreadySaved)
+                        return
+                    }
+                    
+                    //Make sure the new one is at the beginning
+                    mutablePeople.insert(person, at: 0)
+                    
+                case .delete:
+                    //TODO:- implement this
+                    guard mutablePeople.contains(person) else {
+                        completed(.personNotYetSaved)
+                        return
+                    }
+                    
+                    mutablePeople.removeAll { (personUnderConsideration) -> Bool in
+                        personUnderConsideration == person
+                    }
+                    
+                case .move:
+                    //TODO:- implement this
+                    return
+                }
+                
+                //Store the result of the editing over the old list of locations
+                completed(savePeople(people: mutablePeople))
+                
+            case .failure(let error):
+                completed(error)
+            }
+        }
+    }
     //MARK:- Cover stuff
 }

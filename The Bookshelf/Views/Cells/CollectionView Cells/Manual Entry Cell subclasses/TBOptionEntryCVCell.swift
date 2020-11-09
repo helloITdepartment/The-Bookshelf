@@ -124,27 +124,54 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         selectedCell?.removeSelectedIndication()
         selectedCell = nil
         
-        let ac = UIAlertController(title: "Add a location", message: nil, preferredStyle: .alert)
+        let alertControllerTitle = (type == .people ? "Add a person" : "Add a location")
+        let ac = UIAlertController(title: alertControllerTitle, message: nil, preferredStyle: .alert)
         
         ac.addTextField { (textField) in
-            textField.placeholder = "Living room"
-            textField.autocapitalizationType = .sentences
+            textField.placeholder = (self.type == .people ? "Aunt Marge" : "Living room")
+            textField.autocapitalizationType = (self.type == .people ? .words : .sentences)
             textField.addTarget(self, action: #selector(self.alertTextFieldDidChange(textField:)), for: .editingChanged)
         }
         
         submitButtonForAddOptionAlertController = UIAlertAction(title: "Add", style: .default) { (action) in
             guard let text = ac.textFields?[0].text else { return }
-            self.options.insert(text, at: 1)
-            PersistenceManager.updateLocations(.add, location: text) { (error) in
-                if let error = error {
-                    print(error)
+            
+            switch self.type {
+            
+            case .none:
+                fatalError("OptionCell type was not set")
+            case .location:
+                self.options.insert(text, at: 1)
+                
+                PersistenceManager.updateLocations(.add, location: text) { (error) in
+                    if let error = error {
+                        print(error)
+                    }
                 }
+                
+                //TODO:- find a way to make the newly added location be selected when this alert controller goes away
+                self.collectionView.reloadData()
+                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+                //In case the user has swiped away from the front of the list, this will snap it back so they see the location they just added
+                self.collectionView.selectItem(at: IndexPath(item: 1, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+                
+            case .people:
+                self.options.insert(text, at: 0)
+
+                
+                PersistenceManager.updatePeople(.add, person: text) { (error) in
+                    if let error = error {
+                        print(error)
+                    }
+                }
+                
+                //TODO:- find a way to make the newly added location be selected when this alert controller goes away
+                self.collectionView.reloadData()
+                //In case the user has swiped away from the front of the list, this will snap it back so they see the location they just added
+                self.collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+                
             }
-            //TODO:- find a way to make the newly added location be selected when this alert controller goes away
-            self.collectionView.reloadData()
-            NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
-            //In case the user has swiped away from the front of the list, this will snap it back so they see the location they just added
-            self.collectionView.selectItem(at: IndexPath(item: 1, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+            
         }
         submitButtonForAddOptionAlertController.isEnabled = false
         
@@ -189,7 +216,7 @@ extension TBOptionEntryCVCell: UICollectionViewDelegate {
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? OptionsCVCell else { return }
 
-        print(cell.getText())
+//        print(cell.getText())
         if cell == selectedCell {
             collectionView.deselectItem(at: indexPath, animated: false)
             selectedCell = nil
@@ -202,6 +229,9 @@ extension TBOptionEntryCVCell: UICollectionViewDelegate {
         } else {
             selectedCell = cell
             cell.indicateSelected()
+            
+            //Make sure the option we're selection is even int he Location picker, otherwise it should have no bearing on whether "lent out..." was selected or deselected
+            guard type == .location else { return }
             
             if cell.getText() == .lentOut {
                 NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)

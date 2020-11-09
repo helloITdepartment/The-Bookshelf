@@ -35,6 +35,8 @@ class ManualEntryVC: UIViewController {
     var didConfigureCollectionView = false
     var didFillInCollectionViewFields = false
     
+    var containsLentOutField = false
+    
     var collectionView: UICollectionView!
     
     var selectedCell: TBManualEntryCollectionViewCell?
@@ -50,6 +52,8 @@ class ManualEntryVC: UIViewController {
         (.myPage, "102", false, .numeric),
         (.numPages, "340", false, .numeric)
     ]
+    
+    private let lentOutField: (id: EntryCellID, placeholder: String?, required: Bool, type: EntryCellType) = (id: .lentOutTo, placeholder: nil, required: false, type: .options(.people))
 
     //MARK:- Lifecycle
     override func viewDidLoad() {
@@ -331,15 +335,19 @@ class ManualEntryVC: UIViewController {
         print("Lent out option selected")
         //insert "Lent out to..." option picker cell
         
-        fields.insert((id: .lentOutTo, placeholder: nil, required: false, type: .options(.people)), at: 6)
+        fields.insert(lentOutField, at: 6)
         collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+        containsLentOutField = true
     }
     
     @objc func lentOutOptionWasDeselected() {
         print("Lent out option deselected")
         //remove "Lent out to..." option picker cell
-        fields.remove(at: 6)
-        collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])
+        if containsLentOutField {
+            fields.remove(at: 6)
+            collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])
+            containsLentOutField = false
+        }
     }
 }
 
