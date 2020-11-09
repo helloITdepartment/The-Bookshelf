@@ -17,7 +17,7 @@ extension UIView {
 }
 
 extension UICollectionView {
-    static func createFlowLayout(for width: CGFloat) -> UICollectionViewFlowLayout {
+    static func createVerticalFlowLayout(for width: CGFloat) -> UICollectionViewFlowLayout {
         
         let padding: CGFloat = 12
         let itemWidth = width - (padding * 2)
@@ -25,9 +25,25 @@ extension UICollectionView {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
         flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth/4)
+        flowLayout.scrollDirection = .vertical
         
         return flowLayout
         
+    }
+    
+    static func createHorizontalFlowLayout(for height: CGFloat) -> UICollectionViewFlowLayout{
+        
+        let padding: CGFloat = 3
+        let itemHeight = height - (padding * 2)
+        
+        let flowLayout = UICollectionViewFlowLayout()
+        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        flowLayout.itemSize = CGSize(width: itemHeight * 4, height: itemHeight)
+        flowLayout.scrollDirection = .horizontal
+//        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//        flowLayout.estimatedItemSize = CGSize.init(width: 1, height: 1)
+        
+        return flowLayout
     }
 }
 
@@ -38,4 +54,8 @@ extension UIViewController {
         ac.addAction(gotItButton)
         present(ac, animated: true)
     }
+}
+
+extension String {
+    static let lentOut = "Lent out to..."
 }

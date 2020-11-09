@@ -36,7 +36,7 @@ class ISBNEntryVC: UIViewController {
     //MARK:- Configuring UI layout
     private func configureCollectionView() {
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createVerticalFlowLayout(for: view.frame.width))
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -75,7 +75,7 @@ class ISBNEntryVC: UIViewController {
         goButton.setTitleColor(.secondaryLabel, for: .normal)
         goButton.tintColor = Constants.tintColor
         goButton.backgroundColor = .secondarySystemBackground
-        goButton.layer.cornerRadius = 15
+        goButton.layer.cornerRadius = Constants.largeItemCornerRadius
                     
         entryField = (cell as! TBNumericEntryCVCell)
         
