@@ -11,28 +11,56 @@ import UIKit
 class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     static let reuseID = "OptionEntryCVCell"
+    
+    static let lentOutOptionSelected =  Notification.Name("lentOutOptionSelected")
+    static let lentOutOptionDeselected =  Notification.Name("lentOutOptionDeselected")
 
     var helperVCPresenterDelegate: HelperVCPresenterDelegate!
+    var type: OptionEntryCellType! {
+        didSet {
+            switch type {
+            
+            case .none:
+    //            fatalError("OptionCell type was not set")
+               print("OptionCell type was not set")
+            case .location:
+                
+                PersistenceManager.retrieveLocations { (result) in
+                    switch result {
+                    case .success(let locations):
+                        self.options = locations
+                        print(locations)
+                    case .failure(let error):
+                        self.helperVCPresenterDelegate.presentErrorAlert(for: error)
+                    }
+                }
+                
+            case .people:
+                
+                PersistenceManager.retrievePeople { (result) in
+                    switch result {
+                    case .success(let people):
+                        self.options = people
+                        print(people)
+                    case .failure(let error):
+                        self.helperVCPresenterDelegate.presentErrorAlert(for: error)
+                    }
+                }
+                
+            }
+        }
+    }
 
     var collectionView: UICollectionView!
     var selectedCell: OptionsCVCell? = nil
     
-    var locations: [String] = []
+    var options: [String] = []
     
     var submitButtonForAddOptionAlertController: UIAlertAction!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        PersistenceManager.retrieveLocations { (result) in
-            switch result {
-            case .success(let tempLocations):
-                self.locations = tempLocations
-                print(tempLocations)
-            case .failure(let error):
-                self.helperVCPresenterDelegate.presentErrorAlert(for: error)
-            }
-        }
         configureAddButton()
     }
 
@@ -106,7 +134,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         
         submitButtonForAddOptionAlertController = UIAlertAction(title: "Add", style: .default) { (action) in
             guard let text = ac.textFields?[0].text else { return }
-            self.locations.insert(text, at: 1)
+            self.options.insert(text, at: 1)
             PersistenceManager.updateLocations(.add, location: text) { (error) in
                 if let error = error {
                     print(error)
@@ -114,6 +142,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
             }
             //TODO:- find a way to make the newly added location be selected when this alert controller goes away
             self.collectionView.reloadData()
+            NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
             //In case the user has swiped away from the front of the list, this will snap it back so they see the location they just added
             self.collectionView.selectItem(at: IndexPath(item: 1, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         }
@@ -138,13 +167,13 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
 extension TBOptionEntryCVCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        locations.count
+        options.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionsCVCell.reuseID, for: indexPath) as! OptionsCVCell
         
-        cell.setText(to: locations[indexPath.row])
+        cell.setText(to: options[indexPath.row])
 //        cell.widthAnchor.constraint(equalToConstant: cell.getLabelSize().width).isActive = true
 //        print(cell.getLabelSize())
 //        print("Cell size", cell.frame.width, cell.frame.height)
@@ -165,9 +194,20 @@ extension TBOptionEntryCVCell: UICollectionViewDelegate {
             collectionView.deselectItem(at: indexPath, animated: false)
             selectedCell = nil
             cell.removeSelectedIndication()
+            
+            if cell.getText() == .lentOut {
+                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+            }
+            
         } else {
             selectedCell = cell
             cell.indicateSelected()
+            
+            if cell.getText() == .lentOut {
+                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
+            } else {
+                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+            }
         }
     }
     
@@ -179,4 +219,9 @@ extension TBOptionEntryCVCell: UICollectionViewDelegate {
         cell.removeSelectedIndication()
 
     }
+}
+
+enum OptionEntryCellType {
+    case location
+    case people
 }

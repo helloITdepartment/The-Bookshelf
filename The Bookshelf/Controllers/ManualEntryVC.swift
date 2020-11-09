@@ -27,6 +27,7 @@ class ManualEntryVC: UIViewController {
     var genre: String?
     var author: String?
     var location: String?
+    var lentOutTo: String?
     var isbn: String?
     var currentPage: Int?
     var numPages: Int?
@@ -38,23 +39,27 @@ class ManualEntryVC: UIViewController {
     
     var selectedCell: TBManualEntryCollectionViewCell?
     
-    let fields: [(id: EntryCellID, placeholder: String?, required: Bool, type: EntryCellType)] = [
+    private var fields: [(id: EntryCellID, placeholder: String?, required: Bool, type: EntryCellType)] = [
         (.coverImage, nil, false, .picture),
         (.title, "The Adventures of Tom Sawyer", true, .regular),
         (.subtitle, "subtitle", false, .regular),
         (.genre, "Adventure Fiction", false, .regular),
         (.author, "Mark Twain", true, .regular),
-        (.location, nil, false, .options),
+        (.location, nil, false, .options(.location)),
         (.isbn, "0451526538", false, .numeric),
         (.myPage, "102", false, .numeric),
         (.numPages, "340", false, .numeric)
     ]
 
+    //MARK:- Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //Be on guard for the keyboard popping up
         setUpKeyboardNotificationObserver()
+        
+        //Be on guard for the Location picker announcing that the "lent out" option was chosen
+        setUpLentOutNotificationObserver()
     }
     
     override func viewWillLayoutSubviews() {
@@ -83,6 +88,7 @@ class ManualEntryVC: UIViewController {
         fillInCollectionViewFields()
     }
     
+    //Mark:- Notification Observers
     func setUpKeyboardNotificationObserver() {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillRise), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -90,6 +96,11 @@ class ManualEntryVC: UIViewController {
 
     }
 
+    func setUpLentOutNotificationObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(lentOutOptionWasSelected), name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(lentOutOptionWasDeselected), name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+    }
+    
     private func configureCollectionView() {
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createVerticalFlowLayout(for: view.frame.width))
@@ -241,6 +252,11 @@ class ManualEntryVC: UIViewController {
             location = cell.getValue()
             return
             
+        case .lentOutTo:
+            let cell = cell as! TBOptionEntryCVCell
+            lentOutTo = cell.getValue()
+            return
+            
         case .isbn:
             let cell = cell as! TBNumericEntryCVCell
             isbn = cell.getTextFieldValue()
@@ -262,6 +278,7 @@ class ManualEntryVC: UIViewController {
         }
     }
     
+    //MARK:- @objc methods
     @objc func addButtonTapped() {
         print("add Button tapped")
         
@@ -306,13 +323,24 @@ class ManualEntryVC: UIViewController {
     }
     
     @objc func keyboardWillHide() {
-        print("he has unrisen")
-        
         guard let collectionView = collectionView else { return }
         collectionView.contentInset.bottom = 0
     }
     
+    @objc func lentOutOptionWasSelected() {
+        print("Lent out option selected")
+        //insert "Lent out to..." option picker cell
+        
+        fields.insert((id: .lentOutTo, placeholder: nil, required: false, type: .options(.people)), at: 6)
+        collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+    }
     
+    @objc func lentOutOptionWasDeselected() {
+        print("Lent out option deselected")
+        //remove "Lent out to..." option picker cell
+        fields.remove(at: 6)
+        collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])
+    }
 }
 
 //MARK:- Extensions
@@ -342,9 +370,10 @@ extension ManualEntryVC: UICollectionViewDataSource {
             
             return cell
             
-        case .options:
+        case .options(let type):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
             cell.id = fieldTuple.id
+            cell.type = type
             cell.helperVCPresenterDelegate = self
             cell.set(labelText: labelText)
             

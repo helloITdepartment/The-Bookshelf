@@ -18,6 +18,7 @@ enum PersistenceManager {
     enum Keys {
         static let books = "books"
         static let locations = "locations"
+        static let people = "people"
     }
     
     static private let defaults = UserDefaults.standard
@@ -111,9 +112,9 @@ enum PersistenceManager {
     //MARK:- Location stuff
     static func retrieveLocations(completed: @escaping (Result<[String], TBError>) -> Void) {
         
-        //Check if there's anything there. If not, it's new, pass back an empty array
+        //Check if there's anything there. If not, it's new, pass back an empty array with the "lent out" option pre inserted
         guard let locationsObject = defaults.value(forKey: Keys.locations) else {
-            completed(.success([]))
+            completed(.success([.lentOut]))
             return
         }
         
@@ -126,7 +127,10 @@ enum PersistenceManager {
         //Try and get the locations array from the Data
         do {
             let decoder = JSONDecoder()
-            let locations = try decoder.decode([String].self, from: encodedLocations)
+            var locations = try decoder.decode([String].self, from: encodedLocations)
+            if !locations.contains(.lentOut) {
+                locations.insert(.lentOut, at: 0)
+            }
             completed(.success(locations))
         } catch {
             completed(.failure(.unableToRetrieveLocations))
@@ -198,6 +202,33 @@ enum PersistenceManager {
         }
     }
 
+    //Mark:- People stuff
+    static func retrievePeople(completed: @escaping (Result<[String], TBError>) -> Void) {
+        
+        //Have to make sure there's even something in there for "people"
+        guard let peopleObject = defaults.value(forKey: Keys.people) else {
+            //Otherwise, it's new, so pass back an empty array
+            completed(.success([]))
+            return
+        }
+        
+        //Have to make sure what's there is even understandable Data
+        guard let encodedPeople = peopleObject as? Data else {
+            //TODO:- change this to .unable to retrieve people
+            completed(.failure(.unableToRetrievePeople))
+            return
+        }
+        
+        //Try to pull the books out of the data
+        do{
+            let decoder = JSONDecoder()
+            let people = try decoder.decode([String].self, from: encodedPeople)
+            completed(.success(people))
+        } catch {
+            completed(.failure(.unableToRetrievePeople))
+        }
+        
+    }
     
     //MARK:- Cover stuff
 }

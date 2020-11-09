@@ -19,7 +19,7 @@ struct Constants {
 enum EntryCellType {
     case regular
     case numeric
-    case options
+    case options(OptionEntryCellType)
     case picture
 }
 
@@ -30,6 +30,7 @@ enum EntryCellID: String {
     case genre = "Genre"
     case author = "Author"
     case location = "Location"
+    case lentOutTo = "Lent out to..."
     case isbn = "ISBN"
     case myPage = "I'm on page"
     case numPages = "Number of pages"
