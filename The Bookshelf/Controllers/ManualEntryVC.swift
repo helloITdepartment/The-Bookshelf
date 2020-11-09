@@ -309,7 +309,8 @@ class ManualEntryVC: UIViewController {
             processDataIn(cell)
         }
         
-        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], location: location, isbn: isbn, coverUrl: nil, numberOfPages: numPages)
+        //Re: the lentOutTo field- first check if the the book is lent out, otherwise it can't be lent out to anyone so the value should be nil
+        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverUrl: nil, numberOfPages: numPages)
         addBookDelegate.didSubmit(book: book)
 
         dismiss(animated: true)
