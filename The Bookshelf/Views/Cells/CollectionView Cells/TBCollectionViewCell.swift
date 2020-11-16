@@ -8,6 +8,7 @@
 
 import UIKit
 
+//TODO:- change this to TBCollectionViewBookCell
 class TBCollectionViewCell: UICollectionViewCell {
     
     static let reuseID = "BookCVCell"

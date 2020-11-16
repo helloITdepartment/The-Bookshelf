@@ -80,14 +80,14 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         //Style the button (round the corners, set the background color, set the image)
         cameraButton.setImage(UIImage(systemName: "camera.viewfinder"), for: .normal)
         cameraButton.tintColor = Constants.tintColor
-        cameraButton.layer.cornerRadius = 10
+        cameraButton.layer.cornerRadius = Constants.mediumItemCornerRadius
         cameraButton.backgroundColor = .tertiarySystemBackground
 
         
         //Attach the action upon tapping the button
         cameraButton.addTarget(self, action: #selector(cameraButtonTapped), for: .touchUpInside)
         
-        //Add camerabutton to lowerview
+        //Add cameraButton to lowerView
         lowerView.addSubview(cameraButton)
         
         //constrain it
@@ -110,7 +110,7 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
         //Style the button (round the corners, set the background color, set the image)
         photosButton.setImage(UIImage(systemName: "photo.on.rectangle"), for: .normal)
         photosButton.tintColor = Constants.tintColor
-        photosButton.layer.cornerRadius = 10
+        photosButton.layer.cornerRadius = Constants.mediumItemCornerRadius
         photosButton.backgroundColor = .tertiarySystemBackground
 
         
@@ -161,19 +161,19 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
     @objc func cameraButtonTapped() {
 //        picture = UIImage(named: "testCover")
         
-        //Check to see if the camera is available
-        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
-            print(TBError.cameraNotAvailable.rawValue)
-            helperVCPresenterDelegate.presentErrorAlert(for: .cameraNotAvailable)
-            return
-        }
-        
-        //Check if the camera is able to take pictures
-        guard UIImagePickerController.availableMediaTypes(for: .camera)!.contains("public.image") else {
-            print(TBError.cameraNotAvailable.rawValue)
-            helperVCPresenterDelegate.presentErrorAlert(for: .cameraNotAvailable)
-            return
-        }
+//        //Check to see if the camera is available
+//        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+//            print(TBError.cameraNotAvailable.rawValue)
+//            helperVCPresenterDelegate.presentErrorAlert(for: .cameraNotAvailable)
+//            return
+//        }
+//        
+//        //Check if the camera is able to take pictures
+//        guard UIImagePickerController.availableMediaTypes(for: .camera)!.contains("public.image") else {
+//            print(TBError.cameraNotAvailable.rawValue)
+//            helperVCPresenterDelegate.presentErrorAlert(for: .cameraNotAvailable)
+//            return
+//        }
         
         //Check if we have permissions
         switch AVCaptureDevice.authorizationStatus(for: .video) {
@@ -199,17 +199,19 @@ class TBPictureEntryCVCell: TBManualEntryCollectionViewCell{
                 if granted {
                     
                     //Present the camera
-                    let cameraVC = UIImagePickerController()
-                    cameraVC.sourceType = .camera
-                    cameraVC.mediaTypes = ["public.image"]
-                    
-                    if self.cameraDelegateToPass != nil {
-                        cameraVC.delegate = self.cameraDelegateToPass
-                    } else {
-                        cameraVC.delegate =  self
+                    DispatchQueue.main.async {//Since this closure seems to happen on a background thread, and creating the cameraVC has to happen on the main thread
+                        let cameraVC = UIImagePickerController()
+                        cameraVC.sourceType = .camera
+                        cameraVC.mediaTypes = ["public.image"]
+
+                        if self.cameraDelegateToPass != nil {
+                            cameraVC.delegate = self.cameraDelegateToPass
+                        } else {
+                            cameraVC.delegate =  self
+                        }
+
+                        self.helperVCPresenterDelegate.present(cameraVC)
                     }
-                    
-                    self.helperVCPresenterDelegate.present(cameraVC)
                     
                 }
             }
