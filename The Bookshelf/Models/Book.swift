@@ -12,6 +12,7 @@ struct Book: Codable, Hashable {
     
     var title: String
     var subtitle: String?
+    var genres: [String]?
     var authors: [String]
     //For now location will just be the string, but in the future it will be the Location type, once I have the energy to make that Codable
 //    var location: Location?
@@ -22,12 +23,14 @@ struct Book: Codable, Hashable {
     var coverImageData: Data?
     var coverUrl: String?
     var numberOfPages: Int?
+    var dateAdded: Date
     //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
-    init(title: String, subtitle: String?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, numberOfPages: Int?) {
+    init(title: String, subtitle: String?, genres: [String]?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, numberOfPages: Int?, dateAdded: Date) {
         self.title = title
         self.subtitle = subtitle
+        self.genres = genres
         self.authors = authors
         self.location = location
         self.lentOutTo = lentOutTo
@@ -35,6 +38,7 @@ struct Book: Codable, Hashable {
         self.coverImageData = coverImageData
         self.coverUrl = coverUrl
         self.numberOfPages = numberOfPages
+        self.dateAdded = dateAdded
     }
     
     init(from serverBook: ServerBook) {
@@ -67,6 +71,7 @@ struct Book: Codable, Hashable {
         }
         
         numberOfPages = serverBook.numberOfPages
+        dateAdded = Date()
     }
     
     public func authorString() -> String {
