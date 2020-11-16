@@ -6,7 +6,7 @@
 //  Copyright © 2020 Q Technologies. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct Book: Codable, Hashable {
     
@@ -19,18 +19,20 @@ struct Book: Codable, Hashable {
     var lentOutTo: String?
     var isbn: String?
 //    var identifiers: [String : [String]]?
+    var coverImageData: Data?
     var coverUrl: String?
     var numberOfPages: Int?
     //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
-    init(title: String, subtitle: String?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverUrl: String?, numberOfPages: Int?) {
+    init(title: String, subtitle: String?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, numberOfPages: Int?) {
         self.title = title
         self.subtitle = subtitle
         self.authors = authors
         self.location = location
         self.lentOutTo = lentOutTo
         self.isbn = isbn
+        self.coverImageData = coverImageData
         self.coverUrl = coverUrl
         self.numberOfPages = numberOfPages
     }
@@ -76,6 +78,19 @@ struct Book: Codable, Hashable {
             let last = mutableAuthors.popLast()!
             return (mutableAuthors.joined(separator: ", ") + " and \(last)")
         }
+    }
+    
+    public func coverImage() -> UIImage? {
+        
+        //If a picture was taken
+        if let data = coverImageData {
+            if let image = UIImage(data: data) {
+                return image
+            }
+        }
+        
+        return nil
+        
     }
 }
 

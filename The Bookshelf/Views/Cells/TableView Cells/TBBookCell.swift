@@ -40,7 +40,9 @@ class TBBookCell: UITableViewCell {
     func set(book: Book) {
         
         //set the coverImageView's image
-        if let coverUrl = book.coverUrl {
+        if let coverImage = book.coverImage() {
+            coverImageView.image = coverImage
+        } else if let coverUrl = book.coverUrl {
             coverImageView.setImage(fromUrl: coverUrl)
         } //else the placeholder image will be used
         

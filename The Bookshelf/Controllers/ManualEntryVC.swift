@@ -20,8 +20,7 @@ class ManualEntryVC: UIViewController {
     var book: Book?
     
     //Variables to hold the book components
-    //This cover part should be handled in the cover branch
-//    var cover: UIImage?
+    var coverImageData: Data?
     var bookTitle: String?
     var subtitle: String?
     var genre: String?
@@ -134,20 +133,20 @@ class ManualEntryVC: UIViewController {
         }
         
         //Fill in the cover
-        if let coverURL = book?.coverUrl {
+        guard let coverImageCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TBPictureEntryCVCell else {
+            print("Couldn't find cover image cell")
+            return
+        }
+        
+        if let coverImage = book?.coverImage() {
+            coverImageCell.picture = coverImage
+        } else if let coverURL = book?.coverUrl {
             NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
                 switch result {
                 
                 case .success(let image):
                     
                     DispatchQueue.main.async {
-                        
-                        guard let coverImageCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TBPictureEntryCVCell else {
-                            print("Couldn't find cover image cell")
-                            return
-                        }
-                        
-                        //This cover part should be handled in the cover branch
 //                        self.cover = image
                         coverImageCell.picture = image
                     }
@@ -226,9 +225,8 @@ class ManualEntryVC: UIViewController {
             fatalError("Cell id was not set")
             
         case .coverImage:
-//            let cell = cell as! TBPictureEntryCVCell
-            //This cover part should be handled in the cover branch
-//            cover = cell.picture
+            let cell = cell as! TBPictureEntryCVCell
+            coverImageData = cell.picture?.jpegData(compressionQuality: 0.5)
             return
             
         case .title:
@@ -310,7 +308,7 @@ class ManualEntryVC: UIViewController {
         }
         
         //Re: the lentOutTo field- first check if the the book is lent out, otherwise it can't be lent out to anyone so the value should be nil
-        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverUrl: nil, numberOfPages: numPages)
+        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: nil, numberOfPages: numPages)
         addBookDelegate.didSubmit(book: book)
 
         dismiss(animated: true)
