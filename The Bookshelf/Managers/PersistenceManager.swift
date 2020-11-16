@@ -83,7 +83,7 @@ enum PersistenceManager {
                     }
                     
                     //Make sure the new one is at the beginning
-                    mutableBooks.insert(book, at: 1)
+                    mutableBooks.insert(book, at: 0)
                     
                 case .delete:
                     //TODO:- implement this
