@@ -23,7 +23,7 @@ class ManualEntryVC: UIViewController {
     var coverImageData: Data?
     var bookTitle: String?
     var subtitle: String?
-    var genre: String?
+    var genres: [String]?
     var author: String?
     var location: String?
     var lentOutTo: String?
@@ -241,7 +241,8 @@ class ManualEntryVC: UIViewController {
             
         case .genre:
             let cell = cell as! TBTextEntryCVCell
-            genre = cell.getTextFieldValue()
+            //Split returns Substrings instead of Strings, but you can map the Substrings into Strings
+            genres = cell.getTextFieldValue()?.split(separator: ",").map(String.init)
             return
             
         case .author:
@@ -308,7 +309,8 @@ class ManualEntryVC: UIViewController {
         }
         
         //Re: the lentOutTo field- first check if the the book is lent out, otherwise it can't be lent out to anyone so the value should be nil
-        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: nil, numberOfPages: numPages)
+        //Re: the dateAdded field- only overwrite the dateAdded if there was none in the book previously
+        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: nil, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
         addBookDelegate.didSubmit(book: book)
 
         dismiss(animated: true)
