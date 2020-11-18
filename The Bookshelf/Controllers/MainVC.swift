@@ -248,6 +248,7 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         
         guard let searchString = searchController.searchBar.text else {
+            updateDataSources(with: books, animated: true)
             return
         }
         

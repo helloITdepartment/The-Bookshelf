@@ -138,22 +138,25 @@ class ManualEntryVC: UIViewController {
             return
         }
         
-        if let coverImage = book?.coverImage() {
-            coverImageCell.picture = coverImage
-        } else if let coverURL = book?.coverUrl {
-            NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
-                switch result {
-                
-                case .success(let image):
+        //But only if there's nothing there already
+        if coverImageCell.picture == nil {
+            if let coverImage = book?.coverImage() {
+                coverImageCell.picture = coverImage
+            } else if let coverURL = book?.coverUrl {
+                NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
+                    switch result {
                     
-                    DispatchQueue.main.async {
-//                        self.cover = image
-                        coverImageCell.picture = image
+                    case .success(let image):
+                        
+                        DispatchQueue.main.async {
+    //                        self.cover = image
+                            coverImageCell.picture = image
+                        }
+                        
+                    case .failure(let error):
+                        print(error.rawValue)
+                        self.presentErrorAlert(for: error)
                     }
-                    
-                case .failure(let error):
-                    print(error.rawValue)
-                    self.presentErrorAlert(for: error)
                 }
             }
         }

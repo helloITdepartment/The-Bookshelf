@@ -107,7 +107,6 @@ struct Book: Codable, Hashable {
         //Can't return true from within the foreach since it's expecting a void function
         var shouldReturnTrue = false
         authors.forEach { (author) in
-            print(author)
             if author.containsCaseInsensitive(searchString) {
                 shouldReturnTrue = true
             }
