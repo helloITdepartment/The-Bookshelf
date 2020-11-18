@@ -97,6 +97,35 @@ struct Book: Codable, Hashable {
         return nil
         
     }
+    
+    public func shouldMatchSearchString(_ searchString: String) -> Bool {
+        if title.containsCaseInsensitive(searchString) { return true }
+        if subtitle != nil && subtitle!.containsCaseInsensitive(searchString) { return true }
+        //Can't return true from within the foreach since it's expecting a void function
+        var shouldReturnTrue = false
+        authors.forEach { (author) in
+            print(author)
+            if author.containsCaseInsensitive(searchString) {
+                shouldReturnTrue = true
+            }
+        }
+        if shouldReturnTrue { return true }
+        
+        if genres != nil {
+            genres!.forEach { (genre) in
+                if genre.containsCaseInsensitive(searchString) {
+                    shouldReturnTrue = true
+                }
+            }
+            if shouldReturnTrue { return true }
+        }
+        
+        if location != nil && location!.containsCaseInsensitive(searchString) { return true }
+        if lentOutTo != nil && lentOutTo!.containsCaseInsensitive(searchString) { return true }
+        if isbn != nil && isbn!.containsCaseInsensitive(searchString) { return true }
+        
+        return false
+    }
 }
 
 extension Book: Equatable { //TODO:- also add Comparable
