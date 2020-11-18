@@ -60,4 +60,8 @@ extension UIViewController {
 
 extension String {
     static let lentOut = "Lent out to..."
+    
+    func containsCaseInsensitive(_ other: String) -> Bool {
+        self.lowercased().contains(other.lowercased())
+    }
 }

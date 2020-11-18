@@ -21,6 +21,7 @@ class MainVC: UIViewController {
     }
     
     var books: [Book] = []
+    var filteredBooks: [Book] = []
     
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
@@ -38,6 +39,7 @@ class MainVC: UIViewController {
         configureListView()
         showCollectionView()
         configureDiffableDataSources()
+        configureSearchController()
         loadBooks()
         
     }
@@ -91,6 +93,15 @@ class MainVC: UIViewController {
             return cell
             
         })
+    }
+    
+    private func configureSearchController() {
+        let searchController = UISearchController()
+        searchController.searchBar.tintColor = Constants.tintColor
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
     }
     
     //MARK:- List view
@@ -228,6 +239,34 @@ extension MainVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let book = books[indexPath.row]
         print(book)
+    }
+    
+}
+
+extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        guard let searchString = searchController.searchBar.text else {
+            return
+        }
+        
+        guard !searchString.isEmpty else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
+        
+//        isSearching = true
+        filteredBooks = books.filter({ book -> Bool in
+            book.shouldMatchSearchString(searchString)
+        })
+        
+        updateDataSources(with: filteredBooks, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//        isSearching = false
+        updateDataSources(with: books, animated: true)
     }
     
 }

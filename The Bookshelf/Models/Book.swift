@@ -6,12 +6,13 @@
 //  Copyright © 2020 Q Technologies. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct Book: Codable, Hashable {
     
     var title: String
     var subtitle: String?
+    var genres: [String]?
     var authors: [String]
     //For now location will just be the string, but in the future it will be the Location type, once I have the energy to make that Codable
 //    var location: Location?
@@ -19,20 +20,25 @@ struct Book: Codable, Hashable {
     var lentOutTo: String?
     var isbn: String?
 //    var identifiers: [String : [String]]?
+    var coverImageData: Data?
     var coverUrl: String?
     var numberOfPages: Int?
+    var dateAdded: Date
     //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
-    init(title: String, subtitle: String?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverUrl: String?, numberOfPages: Int?) {
+    init(title: String, subtitle: String?, genres: [String]?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, numberOfPages: Int?, dateAdded: Date) {
         self.title = title
         self.subtitle = subtitle
+        self.genres = genres
         self.authors = authors
         self.location = location
         self.lentOutTo = lentOutTo
         self.isbn = isbn
+        self.coverImageData = coverImageData
         self.coverUrl = coverUrl
         self.numberOfPages = numberOfPages
+        self.dateAdded = dateAdded
     }
     
     init(from serverBook: ServerBook) {
@@ -65,6 +71,7 @@ struct Book: Codable, Hashable {
         }
         
         numberOfPages = serverBook.numberOfPages
+        dateAdded = Date()
     }
     
     public func authorString() -> String {
@@ -76,6 +83,48 @@ struct Book: Codable, Hashable {
             let last = mutableAuthors.popLast()!
             return (mutableAuthors.joined(separator: ", ") + " and \(last)")
         }
+    }
+    
+    public func coverImage() -> UIImage? {
+        
+        //If a picture was taken
+        if let data = coverImageData {
+            if let image = UIImage(data: data) {
+                return image
+            }
+        }
+        
+        return nil
+        
+    }
+    
+    public func shouldMatchSearchString(_ searchString: String) -> Bool {
+        if title.containsCaseInsensitive(searchString) { return true }
+        if subtitle != nil && subtitle!.containsCaseInsensitive(searchString) { return true }
+        //Can't return true from within the foreach since it's expecting a void function
+        var shouldReturnTrue = false
+        authors.forEach { (author) in
+            print(author)
+            if author.containsCaseInsensitive(searchString) {
+                shouldReturnTrue = true
+            }
+        }
+        if shouldReturnTrue { return true }
+        
+        if genres != nil {
+            genres!.forEach { (genre) in
+                if genre.containsCaseInsensitive(searchString) {
+                    shouldReturnTrue = true
+                }
+            }
+            if shouldReturnTrue { return true }
+        }
+        
+        if location != nil && location!.containsCaseInsensitive(searchString) { return true }
+        if lentOutTo != nil && lentOutTo!.containsCaseInsensitive(searchString) { return true }
+        if isbn != nil && isbn!.containsCaseInsensitive(searchString) { return true }
+        
+        return false
     }
 }
 
