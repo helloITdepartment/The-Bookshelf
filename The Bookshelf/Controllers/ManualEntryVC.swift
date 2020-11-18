@@ -219,6 +219,11 @@ class ManualEntryVC: UIViewController {
     }
     
     private func processDataIn(_ cell: TBManualEntryCollectionViewCell) {
+        
+        if book == nil {
+            book = Book(title: "", subtitle: nil, genres: nil, authors: [""], location: nil, lentOutTo: nil, isbn: nil, coverImageData: nil, coverUrl: nil, currentPage: nil, numberOfPages: nil, dateAdded: Date())
+        }
+        
         switch cell.id {
         
         case .none:
@@ -226,56 +231,62 @@ class ManualEntryVC: UIViewController {
             
         case .coverImage:
             let cell = cell as! TBPictureEntryCVCell
-            coverImageData = cell.picture?.jpegData(compressionQuality: 0.5)
+            book!.coverImageData = cell.picture?.jpegData(compressionQuality: 0.5)
             return
             
         case .title:
             let cell = cell as! TBTextEntryCVCell
-            bookTitle = cell.getTextFieldValue()
+            if let titleFieldText = cell.getTextFieldValue() {
+                book!.title = titleFieldText
+            }
             return
             
         case .subtitle:
             let cell = cell as! TBTextEntryCVCell
-            subtitle = cell.getTextFieldValue()
+            book!.subtitle = cell.getTextFieldValue()
             return
             
         case .genre:
             let cell = cell as! TBTextEntryCVCell
             //Split returns Substrings instead of Strings, but you can map the Substrings into Strings
-            genres = cell.getTextFieldValue()?.split(separator: ",").map(String.init)
+            book!.genres = cell.getTextFieldValue()?.split(separator: ",").map(String.init)
             return
             
         case .author:
             let cell = cell as! TBTextEntryCVCell
-            author = cell.getTextFieldValue()
+            if let authorsFieldText = cell.getTextFieldValue() {
+                book!.authors = authorsFieldText.split(separator: ",").map({ (substring) -> String in
+                    String(substring).trimmingCharacters(in: .whitespacesAndNewlines)
+                })
+            }
             return
             
         case .location:
             let cell = cell as! TBOptionEntryCVCell
-            location = cell.getValue()
+            book!.location = cell.getValue()
             return
             
         case .lentOutTo:
             let cell = cell as! TBOptionEntryCVCell
-            lentOutTo = cell.getValue()
+            book!.lentOutTo = cell.getValue()
             return
             
         case .isbn:
             let cell = cell as! TBNumericEntryCVCell
-            isbn = cell.getTextFieldValue()
+            book!.isbn = cell.getTextFieldValue()
             return
             
         case .myPage:
             let cell = cell as! TBNumericEntryCVCell
             if let myPage = cell.getTextFieldValue() {
-                currentPage = Int(myPage)
+                book!.currentPage = Int(myPage)
             }
             return
             
         case .numPages:
             let cell = cell as! TBNumericEntryCVCell
             if let pages = cell.getTextFieldValue() {
-                numPages = Int(pages)
+                book!.numberOfPages = Int(pages)
             }
             return
         }
@@ -310,8 +321,8 @@ class ManualEntryVC: UIViewController {
         
         //Re: the lentOutTo field- first check if the the book is lent out, otherwise it can't be lent out to anyone so the value should be nil
         //Re: the dateAdded field- only overwrite the dateAdded if there was none in the book previously
-        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: self.book?.coverUrl, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
-        addBookDelegate.didSubmit(book: book)
+//        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: self.book?.coverUrl, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
+        addBookDelegate.didSubmit(book: book!)
 
         dismiss(animated: true)
     }
@@ -431,6 +442,9 @@ extension ManualEntryVC: UICollectionViewDelegate {
 extension ManualEntryVC: HelperVCPresenterDelegate {
 
     func present(_ vc: UIViewController) {
+        collectionView.visibleCells.forEach { (cell) in
+            processDataIn(cell as! TBManualEntryCollectionViewCell)
+        }
         present(vc, animated: true)
     }
 }
