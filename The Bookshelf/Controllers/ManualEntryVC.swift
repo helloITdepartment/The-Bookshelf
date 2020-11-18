@@ -10,34 +10,59 @@ import UIKit
 
 protocol HelperVCPresenterDelegate {
     func present(_ vc: UIViewController)
+    func presentErrorAlert(for error: TBError)
 }
 
 class ManualEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
     
-    var willLayoutSubviewsHasRun = false
+    var book: Book?
+    
+    //Variables to hold the book components
+    var coverImageData: Data?
+    var bookTitle: String?
+    var subtitle: String?
+    var genres: [String]?
+    var author: String?
+    var location: String?
+    var lentOutTo: String?
+    var isbn: String?
+    var currentPage: Int?
+    var numPages: Int?
+    
+    var didConfigureCollectionView = false
+    var didFillInCollectionViewFields = false
+    
+    var containsLentOutField = false
     
     var collectionView: UICollectionView!
     
     var selectedCell: TBManualEntryCollectionViewCell?
     
-    let fields: [(label: String, placeholder: String?, required: Bool, type: EntryCellType)] = [
-        ("Cover image", nil, false, .picture),
-        ("Title", "The Adventures of Tom Sawyer", true, .regular),
-        ("Subtitle", "subtitle", false, .regular),
-        ("Genre", "Adventure Fiction", false, .regular),
-        ("Author", "Mark Twain", true, .regular),
-        ("ISBN", "0451526538", false, .numeric),
-        ("I'm on page", "102", false, .numeric),
-        ("Number of pages", "340", false, .numeric)
-        ]
+    private var fields: [(id: EntryCellID, placeholder: String?, required: Bool, type: EntryCellType)] = [
+        (.coverImage, nil, false, .picture),
+        (.title, "The Adventures of Tom Sawyer", true, .regular),
+        (.subtitle, "subtitle", false, .regular),
+        (.genre, "Adventure Fiction", false, .regular),
+        (.author, "Mark Twain", true, .regular),
+        (.location, nil, false, .options(.location)),
+        (.isbn, "0451526538", false, .numeric),
+        (.myPage, "102", false, .numeric),
+        (.numPages, "340", false, .numeric)
+    ]
+    
+    private let lentOutField: (id: EntryCellID, placeholder: String?, required: Bool, type: EntryCellType) = (id: .lentOutTo, placeholder: nil, required: false, type: .options(.people))
 
+    //MARK:- Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //Be on guard for the keyboard popping up
         setUpKeyboardNotificationObserver()
+        
+        //Be on guard for the Location picker announcing that the "lent out" option was chosen
+        setUpLentOutNotificationObserver()
     }
     
     override func viewWillLayoutSubviews() {
@@ -46,20 +71,27 @@ class ManualEntryVC: UIViewController {
         //This can lead to the problem of, in this example, the collectionView being put on twice
         //So as a quick fix, I'm putting a flag here to check if it's already been run
         
-        guard !willLayoutSubviewsHasRun else { return }
-        //Configure the collectionView
-        configureCollectionView()
-        
-        //configure the Add button
-        let addButton = UIBarButtonItem(title: "Add", style: .done, target: self, action: #selector(addButtonTapped))
-        addButton.tintColor = Constants.tintColor
-        
-        tabBarController!.navigationItem.leftBarButtonItem = addButton
-        
-        willLayoutSubviewsHasRun = true
-        
+        if !didConfigureCollectionView {
+            //Configure the collectionView
+            configureCollectionView()
+            
+            //configure the Add button
+            let addButton = UIBarButtonItem(title: "Add", style: .done, target: self, action: #selector(addButtonTapped))
+            addButton.tintColor = Constants.tintColor
+            
+            tabBarController!.navigationItem.leftBarButtonItem = addButton
+            
+            didConfigureCollectionView = true
+        }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        fillInCollectionViewFields()
+    }
+    
+    //Mark:- Notification Observers
     func setUpKeyboardNotificationObserver() {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillRise), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -67,9 +99,14 @@ class ManualEntryVC: UIViewController {
 
     }
 
+    func setUpLentOutNotificationObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(lentOutOptionWasSelected), name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(lentOutOptionWasDeselected), name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+    }
+    
     private func configureCollectionView() {
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createVerticalFlowLayout(for: view.frame.width))
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -84,20 +121,167 @@ class ManualEntryVC: UIViewController {
         view.addSubview(collectionView)
     }
     
-//    private func createFlowLayout() -> UICollectionViewFlowLayout {
-//
-//        let width = view.bounds.width
-//        let padding: CGFloat = 12
-//        let itemWidth = width - (padding * 2)
-//
-//        let flowLayout = UICollectionViewFlowLayout()
-//        flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-//        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth/4)
-//
-//        return flowLayout
-//
-//    }
+    public func fillInCollectionViewFields() {
+        
+        guard book != nil else {
+            print("Book was nil")
+            return
+        }
+        guard collectionView != nil else {
+            print("Collection view was nil")
+            return
+        }
+        
+        //Fill in the cover
+        guard let coverImageCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TBPictureEntryCVCell else {
+            print("Couldn't find cover image cell")
+            return
+        }
+        
+        if let coverImage = book?.coverImage() {
+            coverImageCell.picture = coverImage
+        } else if let coverURL = book?.coverUrl {
+            NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
+                switch result {
+                
+                case .success(let image):
+                    
+                    DispatchQueue.main.async {
+//                        self.cover = image
+                        coverImageCell.picture = image
+                    }
+                    
+                case .failure(let error):
+                    print(error.rawValue)
+                    self.presentErrorAlert(for: error)
+                }
+            }
+        }
+        
+        //Fill in the title
+        if let title = book?.title {
+            guard let titleCell = self.collectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? TBTextEntryCVCell else {
+                print("Couldn't find title cell")
+                return
+            }
+            
+            self.bookTitle = title
+            titleCell.setTextFieldValue(to: title)
+        }
+        
+        //Fill in the subtitle
+        if let subtitle = book?.subtitle {
+            guard let subtitleCell = self.collectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? TBTextEntryCVCell else {
+                print("Couldn't find subtitle cell")
+                return
+            }
+            
+            self.subtitle = subtitle
+            subtitleCell.setTextFieldValue(to: subtitle)
+        }
+        
+        //Fill in the authors
+        if let authors = book?.authors {
+            guard let authorsCell = self.collectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as? TBTextEntryCVCell else {
+                print("Couldn't find authors cell")
+                return
+            }
+            
+            let commaSeparatedAuthors = authors.joined(separator: ", ")
+            self.author = commaSeparatedAuthors
+            authorsCell.setTextFieldValue(to: commaSeparatedAuthors)
+        }
+        
+        //Fill in the ISBN
+        if let isbn = book?.isbn {
+            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as? TBNumericEntryCVCell else {
+                print("Couldn't find isbn cell")
+                return
+            }
+            
+            self.isbn = isbn
+            isbnCell.setTextFieldValue(to: isbn)
+        }
+        
+        //Fill in the number of pages
+        if let numPages = book?.numberOfPages {
+            guard let pagesCell = self.collectionView.cellForItem(at: IndexPath(item: 8, section: 0)) as? TBNumericEntryCVCell else {
+                print("Couldn't find the pages cell")
+                return
+            }
+            
+            self.numPages = numPages
+            pagesCell.setTextFieldValue(to: String(numPages))
+        }
+        
+        //If it made it this far, that means none of the fields weren't found, and so
+        didFillInCollectionViewFields = true
+    }
     
+    private func processDataIn(_ cell: TBManualEntryCollectionViewCell) {
+        switch cell.id {
+        
+        case .none:
+            fatalError("Cell id was not set")
+            
+        case .coverImage:
+            let cell = cell as! TBPictureEntryCVCell
+            coverImageData = cell.picture?.jpegData(compressionQuality: 0.5)
+            return
+            
+        case .title:
+            let cell = cell as! TBTextEntryCVCell
+            bookTitle = cell.getTextFieldValue()
+            return
+            
+        case .subtitle:
+            let cell = cell as! TBTextEntryCVCell
+            subtitle = cell.getTextFieldValue()
+            return
+            
+        case .genre:
+            let cell = cell as! TBTextEntryCVCell
+            //Split returns Substrings instead of Strings, but you can map the Substrings into Strings
+            genres = cell.getTextFieldValue()?.split(separator: ",").map(String.init)
+            return
+            
+        case .author:
+            let cell = cell as! TBTextEntryCVCell
+            author = cell.getTextFieldValue()
+            return
+            
+        case .location:
+            let cell = cell as! TBOptionEntryCVCell
+            location = cell.getValue()
+            return
+            
+        case .lentOutTo:
+            let cell = cell as! TBOptionEntryCVCell
+            lentOutTo = cell.getValue()
+            return
+            
+        case .isbn:
+            let cell = cell as! TBNumericEntryCVCell
+            isbn = cell.getTextFieldValue()
+            return
+            
+        case .myPage:
+            let cell = cell as! TBNumericEntryCVCell
+            if let myPage = cell.getTextFieldValue() {
+                currentPage = Int(myPage)
+            }
+            return
+            
+        case .numPages:
+            let cell = cell as! TBNumericEntryCVCell
+            if let pages = cell.getTextFieldValue() {
+                numPages = Int(pages)
+            }
+            return
+        }
+    }
+    
+    //MARK:- @objc methods
     @objc func addButtonTapped() {
         print("add Button tapped")
         
@@ -115,14 +299,18 @@ class ManualEntryVC: UIViewController {
             }
         }
         
-        //TODO:- make this not horrible
-        let bookTitle = (collectionView.cellForItem(at: IndexPath(row: 1, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let subtitle = (collectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let genre = (collectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let author = (collectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
-        let isbn = (collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as! TBTextEntryCVCell).getTextFieldValue()
+        for cell in collectionView.visibleCells {
+            guard let cell = cell as? TBManualEntryCollectionViewCell else {
+                print("error casting collection view cell before processing on add button tap")
+                return
+            }
+            
+            processDataIn(cell)
+        }
         
-        let book = Book(title: bookTitle!, subtitle: subtitle, authors: [author!], isbn: isbn, coverUrl: nil, numberOfPages: nil)
+        //Re: the lentOutTo field- first check if the the book is lent out, otherwise it can't be lent out to anyone so the value should be nil
+        //Re: the dateAdded field- only overwrite the dateAdded if there was none in the book previously
+        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: nil, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
         addBookDelegate.didSubmit(book: book)
 
         dismiss(animated: true)
@@ -140,15 +328,31 @@ class ManualEntryVC: UIViewController {
     }
     
     @objc func keyboardWillHide() {
-        print("he has unrisen")
-        
         guard let collectionView = collectionView else { return }
         collectionView.contentInset.bottom = 0
     }
     
+    @objc func lentOutOptionWasSelected() {
+        print("Lent out option selected")
+        //insert "Lent out to..." option picker cell
+        
+        fields.insert(lentOutField, at: 6)
+        collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+        containsLentOutField = true
+    }
     
+    @objc func lentOutOptionWasDeselected() {
+        print("Lent out option deselected")
+        //remove "Lent out to..." option picker cell
+        if containsLentOutField {
+            fields.remove(at: 6)
+            collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])
+            containsLentOutField = false
+        }
+    }
 }
 
+//MARK:- Extensions
 extension ManualEntryVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -158,28 +362,37 @@ extension ManualEntryVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let fieldTuple = fields[indexPath.row]
+        let labelText = fieldTuple.id.rawValue + (fieldTuple.required ? " (required)" : "")
         
         switch fieldTuple.type {
         case .regular:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBTextEntryCVCell.reuseID, for: indexPath) as! TBTextEntryCVCell
-            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
+            cell.id = fieldTuple.id
+            cell.set(labelText: labelText, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
             
             return cell
+            
         case .numeric:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBNumericEntryCVCell.reuseID, for: indexPath) as! TBNumericEntryCVCell
-            cell.set(labelText: fieldTuple.label, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
+            cell.id = fieldTuple.id
+            cell.set(labelText: labelText, textFieldPlaceholderText: fieldTuple.placeholder ?? "")
             
             return cell
-        case .options:
+            
+        case .options(let type):
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBOptionEntryCVCell.reuseID, for: indexPath) as! TBOptionEntryCVCell
+            cell.id = fieldTuple.id
+            cell.type = type
             cell.helperVCPresenterDelegate = self
-            cell.set(labelText: fieldTuple.label)
+            cell.set(labelText: labelText)
             
             return cell
+            
         case .picture:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TBPictureEntryCVCell.reuseID, for: indexPath) as! TBPictureEntryCVCell
+            cell.id = fieldTuple.id
             cell.helperVCPresenterDelegate = self
-            cell.set(labelText: fieldTuple.label)
+            cell.set(labelText: labelText)
             
             return cell
         }
@@ -208,6 +421,11 @@ extension ManualEntryVC: UICollectionViewDelegate {
 //        print("deselected cell for \(fields[indexPath.row].label)")
         cell.shrink()
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        print(indexPath)
+    }
+    
 }
 
 extension ManualEntryVC: HelperVCPresenterDelegate {

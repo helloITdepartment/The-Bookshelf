@@ -6,26 +6,39 @@
 //  Copyright © 2020 Q Technologies. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct Book: Codable, Hashable {
+    
     var title: String
     var subtitle: String?
+    var genres: [String]?
     var authors: [String]
+    //For now location will just be the string, but in the future it will be the Location type, once I have the energy to make that Codable
+//    var location: Location?
+    var location: String?
+    var lentOutTo: String?
     var isbn: String?
 //    var identifiers: [String : [String]]?
+    var coverImageData: Data?
     var coverUrl: String?
     var numberOfPages: Int?
+    var dateAdded: Date
     //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
-    init(title: String, subtitle: String?, authors: [String], isbn: String?, coverUrl: String?, numberOfPages: Int?) {
+    init(title: String, subtitle: String?, genres: [String]?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, numberOfPages: Int?, dateAdded: Date) {
         self.title = title
         self.subtitle = subtitle
+        self.genres = genres
         self.authors = authors
+        self.location = location
+        self.lentOutTo = lentOutTo
         self.isbn = isbn
+        self.coverImageData = coverImageData
         self.coverUrl = coverUrl
         self.numberOfPages = numberOfPages
+        self.dateAdded = dateAdded
     }
     
     init(from serverBook: ServerBook) {
@@ -58,6 +71,7 @@ struct Book: Codable, Hashable {
         }
         
         numberOfPages = serverBook.numberOfPages
+        dateAdded = Date()
     }
     
     public func authorString() -> String {
@@ -70,12 +84,28 @@ struct Book: Codable, Hashable {
             return (mutableAuthors.joined(separator: ", ") + " and \(last)")
         }
     }
+    
+    public func coverImage() -> UIImage? {
+        
+        //If a picture was taken
+        if let data = coverImageData {
+            if let image = UIImage(data: data) {
+                return image
+            }
+        }
+        
+        return nil
+        
+    }
 }
 
 extension Book: Equatable { //TODO:- also add Comparable
     
     static func == (lhs: Book, rhs: Book) -> Bool {
-        //TODO:- have this compare the title.lowercased() first
-        return lhs.isbn == rhs.isbn
+        if lhs.title.lowercased() == rhs.title.lowercased() {
+            return true
+        } else {
+            return lhs.isbn == rhs.isbn
+        }
     }
 }

@@ -13,7 +13,8 @@ import Vision
 class ISBNEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
-
+    var editBookDelegate: EditBookDelegate!
+    
     var collectionView: UICollectionView!
     var entryField: TBNumericEntryCVCell!
     var goButton: UIButton!
@@ -35,7 +36,7 @@ class ISBNEntryVC: UIViewController {
     //MARK:- Configuring UI layout
     private func configureCollectionView() {
         
-        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createFlowLayout(for: view.frame.width))
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createVerticalFlowLayout(for: view.frame.width))
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -64,7 +65,7 @@ class ISBNEntryVC: UIViewController {
 //
 //    }
     
-    private func configureGoButton(under cell: UICollectionViewCell) {
+    private func configureSearchButton(under cell: UICollectionViewCell) {
         
         goButton = UIButton()
         goButton.translatesAutoresizingMaskIntoConstraints = false
@@ -74,7 +75,7 @@ class ISBNEntryVC: UIViewController {
         goButton.setTitleColor(.secondaryLabel, for: .normal)
         goButton.tintColor = Constants.tintColor
         goButton.backgroundColor = .secondarySystemBackground
-        goButton.layer.cornerRadius = 15
+        goButton.layer.cornerRadius = Constants.largeItemCornerRadius
                     
         entryField = (cell as! TBNumericEntryCVCell)
         
@@ -130,8 +131,8 @@ class ISBNEntryVC: UIViewController {
                 }
                 
             case .failure(let error):
-                //TODO:- actually do something useful with these errors
-                print(error.localizedDescription)
+                print(error.rawValue)
+                self.presentErrorAlert(for: error)
             }
         }
         
@@ -145,6 +146,7 @@ class ISBNEntryVC: UIViewController {
     
     private func correctEditButtonTapped(book: Book) { 
         print("Correct, but let's change some things")
+        editBookDelegate.edit(book: book)
     }
     
     private func incorrectButtonTapped() {
@@ -233,7 +235,7 @@ extension ISBNEntryVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.item == 1 {
-            configureGoButton(under: cell)
+            configureSearchButton(under: cell)
         }
     }
 }

@@ -65,8 +65,8 @@ class MainVC: UIViewController {
                 self.books = books
                 self.updateDataSources(with: self.books, animated: true)
             case .failure(let error):
-                //TODO:- actually do something useful with these errors
                 print(error.rawValue)
+                self.presentErrorAlert(for: error)
             }
         }
     }
@@ -131,6 +131,7 @@ class MainVC: UIViewController {
 
     }
     
+    //TODO: this isn't very DRY
     private func createNColumnFlowLayout(withNColumns n: Int) -> UICollectionViewFlowLayout {
         
         let width = view.bounds.width
@@ -211,6 +212,7 @@ extension MainVC: AddBookDelegate {
             if let error = error {
                 //TODO:- something useful with this error
                 print(error.rawValue)
+                self.presentErrorAlert(for: error)
             }
         }
         

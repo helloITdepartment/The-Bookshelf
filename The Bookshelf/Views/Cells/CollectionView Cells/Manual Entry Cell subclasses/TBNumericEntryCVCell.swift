@@ -27,4 +27,10 @@ class TBNumericEntryCVCell: TBKeyboardEntryCVCell {
         
         textField.keyboardType = .numberPad
     }
+    
+    override func setTextFieldValue(to text: String) {
+        if let stringAsNumber = Int(text) {
+            textField.text = String(stringAsNumber)
+        }
+    }
 }

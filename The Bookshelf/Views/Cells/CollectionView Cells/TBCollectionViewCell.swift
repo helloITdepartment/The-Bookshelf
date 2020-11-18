@@ -1,36 +1,25 @@
 //
-//  TBBookCell.swift
+//  TBCollectionViewCell.swift
 //  The Bookshelf
 //
-//  Created by Jacques Benzakein on 8/14/20.
+//  Created by Jacques Benzakein on 8/16/20.
 //  Copyright © 2020 Q Technologies. All rights reserved.
 //
 
 import UIKit
 
-class TBBookCell: UITableViewCell {
-
-    static let reuseID = "BookCell"
-    let padding: CGFloat = 10
-
-    let coverImageView = TBCoverImageView(frame: .zero)
-    let titleLabel = TBTitleLabel(textAlignment: .left, fontSize: 20)
-    let authorLabel = TBAuthorLabel(textAlignment: .left, fontSize: 15)
-
-
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-        configure()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//TODO:- change this to TBCollectionViewBookCell
+class TBCollectionViewCell: UICollectionViewCell {
     
-    private func configure() {
-        accessoryType = .disclosureIndicator
-        backgroundColor = .systemBackground
+    static let reuseID = "BookCVCell"
+    let padding: CGFloat = 8
+    
+    let coverImageView = TBCoverImageView(frame: .zero)
+    let titleLabel = TBTitleLabel(textAlignment: .center, fontSize: 20)
+    let authorLabel = TBAuthorLabel(textAlignment: .center, fontSize: 15)
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         configureCoverImageView()
         configureTitleLabel()
@@ -40,7 +29,9 @@ class TBBookCell: UITableViewCell {
     func set(book: Book) {
         
         //set the coverImageView's image
-        if let coverUrl = book.coverUrl {
+        if let coverImage = book.coverImage() {
+            coverImageView.image = coverImage
+        } else if let coverUrl = book.coverUrl {
             coverImageView.setImage(fromUrl: coverUrl)
         } //else the placeholder image will be used
         
@@ -56,6 +47,10 @@ class TBBookCell: UITableViewCell {
         
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private func configureCoverImageView() {
         
         addSubview(coverImageView)
@@ -63,7 +58,7 @@ class TBBookCell: UITableViewCell {
         NSLayoutConstraint.activate([
             coverImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding),
             coverImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
-            coverImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding),
+            coverImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding),
             coverImageView.widthAnchor.constraint(equalTo: coverImageView.heightAnchor)
         ])
         
@@ -72,12 +67,14 @@ class TBBookCell: UITableViewCell {
     private func configureTitleLabel() {
         
         addSubview(titleLabel)
-        
+        titleLabel.minimumScaleFactor = 0.6
+        titleLabel.numberOfLines = 0
+
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: coverImageView.trailingAnchor, constant: padding),
-            titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: padding),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
+            titleLabel.topAnchor.constraint(equalTo: coverImageView.bottomAnchor, constant: padding),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
-            titleLabel.bottomAnchor.constraint(equalTo: self.centerYAnchor)
+            titleLabel.heightAnchor.constraint(equalToConstant: 25)
         ])
         
     }
@@ -85,14 +82,15 @@ class TBBookCell: UITableViewCell {
     private func configureAuthorLabel() {
         
         addSubview(authorLabel)
+        authorLabel.minimumScaleFactor = 0.5
         
         NSLayoutConstraint.activate([
-            authorLabel.leadingAnchor.constraint(equalTo: coverImageView.trailingAnchor, constant: padding),
+            authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
             authorLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding/2),
             authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
-            authorLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -padding)
+            authorLabel.heightAnchor.constraint(equalToConstant: 20)
         ])
         
     }
-       
+    
 }
