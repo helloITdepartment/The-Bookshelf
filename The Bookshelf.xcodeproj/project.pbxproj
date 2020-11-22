@@ -13,6 +13,7 @@
 		CF1DA4722537156500516E42 /* TBOptionEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1DA4712537156500516E42 /* TBOptionEntryCVCell.swift */; };
 		CF1DA4752537159600516E42 /* TBPictureEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1DA4742537159600516E42 /* TBPictureEntryCVCell.swift */; };
 		CF248C7B2546ED1700872FA3 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF248C7A2546ED1700872FA3 /* Location.swift */; };
+		CF25ED5E256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF25ED5D256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift */; };
 		CF7228682549E7FC00A64112 /* OptionsCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7228672549E7FC00A64112 /* OptionsCVCell.swift */; };
 		CF798D7924E56974002670C6 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF798D7824E56974002670C6 /* PersistenceManager.swift */; };
 		CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */; };
@@ -50,6 +51,7 @@
 		CF1DA4712537156500516E42 /* TBOptionEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBOptionEntryCVCell.swift; sourceTree = "<group>"; };
 		CF1DA4742537159600516E42 /* TBPictureEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBPictureEntryCVCell.swift; sourceTree = "<group>"; };
 		CF248C7A2546ED1700872FA3 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		CF25ED5D256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTableViewDiffableDataSource.swift; sourceTree = "<group>"; };
 		CF7228672549E7FC00A64112 /* OptionsCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsCVCell.swift; sourceTree = "<group>"; };
 		CF798D7824E56974002670C6 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		CF88D0E1246C4D2A00C7DD26 /* The Bookshelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Bookshelf.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,6 +121,18 @@
 				CF7228672549E7FC00A64112 /* OptionsCVCell.swift */,
 			);
 			path = "CollectionView Cells";
+			sourceTree = "<group>";
+		};
+		CF25ED5C256A883000DBF9DF /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				CF88D0F8246C4F3800C7DD26 /* MainVC.swift */,
+				CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */,
+				CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */,
+				CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */,
+				CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */,
+			);
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		CF785911252DE920004479C3 /* Manual Entry Cell subclasses */ = {
@@ -197,11 +211,8 @@
 		CF88D11A246D8AC200C7DD26 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				CF88D0F8246C4F3800C7DD26 /* MainVC.swift */,
-				CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */,
-				CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */,
-				CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */,
-				CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */,
+				CF25ED5C256A883000DBF9DF /* ViewControllers */,
+				CF25ED5D256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -293,6 +304,7 @@
 				CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */,
 				CF88D0F9246C4F3800C7DD26 /* MainVC.swift in Sources */,
 				CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */,
+				CF25ED5E256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift in Sources */,
 				CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */,
 				CF88D11E246D8BFA00C7DD26 /* ManualEntryVC.swift in Sources */,
 				CF7228682549E7FC00A64112 /* OptionsCVCell.swift in Sources */,

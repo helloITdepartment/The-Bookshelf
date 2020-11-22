@@ -12,7 +12,10 @@ protocol AddBookDelegate {
     func didSubmit(book: Book)
 }
 
-//Just putting this here so there's something to commit
+protocol DeleteBookDelegate {
+    func didRequestToDelete(book: Book)
+}
+
 class MainVC: UIViewController {
     
     enum Section {
@@ -26,7 +29,7 @@ class MainVC: UIViewController {
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
     var listView: UITableView!
-    var listViewDataSource: UITableViewDiffableDataSource<Section, Book>!
+    var listViewDataSource: TBTableViewDiffableDataSource!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,7 +88,7 @@ class MainVC: UIViewController {
         })
         
         //ListView dataSource
-        listViewDataSource = UITableViewDiffableDataSource<Section, Book>(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
+        listViewDataSource = TBTableViewDiffableDataSource(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
             let book = self.books[indexPath.row]
@@ -93,6 +96,7 @@ class MainVC: UIViewController {
             return cell
             
         })
+        listViewDataSource.deleteBookDelegate = self
         
         
     }
@@ -230,6 +234,26 @@ extension MainVC: AddBookDelegate {
         }
         
         loadBooks()
+    }
+    
+}
+
+extension MainVC: DeleteBookDelegate{
+    
+    func didRequestToDelete(book: Book) {
+        PersistenceManager.updateBooks(.delete, book: book) { (error) in
+            
+            if let error = error{
+                self.presentErrorAlert(for: error)
+            }
+            
+        }
+        
+        books.removeAll { (bookUnderConsideration) -> Bool in
+            bookUnderConsideration == book
+        }
+        
+        updateDataSources(with: books, animated: true)
     }
     
 }

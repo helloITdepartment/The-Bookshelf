@@ -13,6 +13,8 @@ class TBBookCell: UITableViewCell {
     static let reuseID = "BookCell"
     let padding: CGFloat = 10
 
+    var book: Book!
+    
     let coverImageView = TBCoverImageView(frame: .zero)
     let titleLabel = TBTitleLabel(textAlignment: .left, fontSize: 20)
     let authorLabel = TBAuthorLabel(textAlignment: .left, fontSize: 15)
@@ -39,6 +41,8 @@ class TBBookCell: UITableViewCell {
     }
     
     func set(book: Book) {
+        
+        self.book = book
         
         //set the coverImageView's image
         if let coverImage = book.coverImage() {

@@ -92,8 +92,8 @@ enum PersistenceManager {
                         return
                     }
                     
-                    mutableBooks.removeAll { (bookUnderInspection) -> Bool in
-                        bookUnderInspection == book
+                    mutableBooks.removeAll { (bookUnderConsideration) -> Bool in
+                        bookUnderConsideration == book
                     }
                     
                 case .move:
