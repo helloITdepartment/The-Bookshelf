@@ -55,10 +55,10 @@ struct Book: Codable, Hashable {
         }
         
         if let identifiers = serverBook.identifiers {
-            if let isbn10 = identifiers["isbn_10"] {
-                isbn = isbn10[0]
-            } else if let isbn13 = identifiers["isbn_13"] {
+            if let isbn13 = identifiers["isbn_13"] {
                 isbn = isbn13[0]
+            } else if let isbn10 = identifiers["isbn_10"] {
+                isbn = isbn10[0]
             }
         }
         

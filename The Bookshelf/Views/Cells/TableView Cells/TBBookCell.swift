@@ -32,6 +32,7 @@ class TBBookCell: UITableViewCell {
         accessoryType = .disclosureIndicator
         backgroundColor = .systemBackground
         
+        
         configureCoverImageView()
         configureTitleLabel()
         configureAuthorLabel()

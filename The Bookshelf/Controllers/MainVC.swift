@@ -93,6 +93,8 @@ class MainVC: UIViewController {
             return cell
             
         })
+        
+        
     }
     
     private func configureSearchController() {
