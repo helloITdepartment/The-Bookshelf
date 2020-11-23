@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Book: Codable, Hashable {
+struct Book: Codable, Hashable, CustomStringConvertible {
     
     var title: String
     var subtitle: String?
@@ -127,6 +127,10 @@ struct Book: Codable, Hashable {
         if isbn != nil && isbn!.containsCaseInsensitive(searchString) { return true }
         
         return false
+    }
+    
+    var description: String {
+        (title + " by " + authorString() + " " + (isbn ?? ""))
     }
 }
 

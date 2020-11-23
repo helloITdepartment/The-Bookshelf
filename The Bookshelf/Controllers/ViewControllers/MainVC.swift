@@ -25,6 +25,7 @@ class MainVC: UIViewController {
     
     var books: [Book] = []
     var filteredBooks: [Book] = []
+    var isUsingFilteredBooks = false
     
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
@@ -102,12 +103,15 @@ class MainVC: UIViewController {
     }
     
     private func configureSearchController() {
+        
         let searchController = UISearchController()
         searchController.searchBar.tintColor = Constants.tintColor
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Search"
+        searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
+        
     }
     
     //MARK:- List view
@@ -221,6 +225,7 @@ class MainVC: UIViewController {
     
 }
 
+//MARK:- Extensions
 extension MainVC: AddBookDelegate {
     
     func didSubmit(book: Book) {
@@ -258,12 +263,17 @@ extension MainVC: DeleteBookDelegate{
     
 }
 
-extension MainVC: UITableViewDelegate {}
+extension MainVC: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
+        print(book)
+    }
+}
 
 extension MainVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let book = books[indexPath.row]
+        let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
     }
     
@@ -283,17 +293,19 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
             return
         }
         
-//        isSearching = true
         filteredBooks = books.filter({ book -> Bool in
             book.shouldMatchSearchString(searchString)
         })
+        isUsingFilteredBooks = true
         
         updateDataSources(with: filteredBooks, animated: true)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//        isSearching = false
+        
+        isUsingFilteredBooks = false
         updateDataSources(with: books, animated: true)
+        
     }
     
 }

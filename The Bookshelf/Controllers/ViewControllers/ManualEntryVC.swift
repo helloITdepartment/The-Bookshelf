@@ -430,7 +430,6 @@ extension ManualEntryVC: UICollectionViewDataSource {
 extension ManualEntryVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //TODO:- Grow, make text field primary
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBTextEntryCVCell else { return }
         
