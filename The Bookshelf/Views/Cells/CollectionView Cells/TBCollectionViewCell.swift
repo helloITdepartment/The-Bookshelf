@@ -8,6 +8,7 @@
 
 import UIKit
 
+//TODO:- change this to TBCollectionViewBookCell
 class TBCollectionViewCell: UICollectionViewCell {
     
     static let reuseID = "BookCVCell"
@@ -28,9 +29,13 @@ class TBCollectionViewCell: UICollectionViewCell {
     func set(book: Book) {
         
         //set the coverImageView's image
-        if let coverUrl = book.coverUrl {
+        if let coverImage = book.coverImage() {
+            coverImageView.image = coverImage
+        } else if let coverUrl = book.coverUrl {
             coverImageView.setImage(fromUrl: coverUrl)
-        } //else the placeholder image will be used
+        } else { //else the placeholder image will be used
+            coverImageView.image = .bookPlaceholder
+        }
         
         //set the titleLabel's text
         titleLabel.text = book.title

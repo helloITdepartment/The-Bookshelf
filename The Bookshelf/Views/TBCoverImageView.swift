@@ -10,7 +10,7 @@ import UIKit
 
 class TBCoverImageView: UIImageView {
 
-    let placeholderImage = UIImage(systemName: "book.fill")
+    let placeholderImage = UIImage.bookPlaceholder
     let cache = NetworkManager.shared.cache
     
     override init(frame: CGRect) {
@@ -24,7 +24,7 @@ class TBCoverImageView: UIImageView {
     }
     
     private func configure() {
-        layer.cornerRadius = 10
+        layer.cornerRadius = Constants.mediumItemCornerRadius
         clipsToBounds = true
         image = placeholderImage
         translatesAutoresizingMaskIntoConstraints = false
@@ -35,14 +35,12 @@ class TBCoverImageView: UIImageView {
         
         let cacheKey = NSString(string: urlString)
         if let image = cache.object(forKey: cacheKey) {
-//            print("cached: ", cacheKey)
             self.image = image
             return
         }
         
         
         NetworkManager.shared.getCoverImage(from: urlString) { result in
-//            print("not cached: ", urlString)
             switch result {
                 
             case .success(let image):

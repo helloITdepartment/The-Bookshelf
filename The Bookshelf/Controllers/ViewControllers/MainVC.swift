@@ -12,7 +12,10 @@ protocol AddBookDelegate {
     func didSubmit(book: Book)
 }
 
-//Just putting this here so there's something to commit
+protocol DeleteBookDelegate {
+    func didRequestToDelete(book: Book)
+}
+
 class MainVC: UIViewController {
     
     enum Section {
@@ -21,11 +24,13 @@ class MainVC: UIViewController {
     }
     
     var books: [Book] = []
+    var filteredBooks: [Book] = []
+    var isUsingFilteredBooks = false
     
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
     var listView: UITableView!
-    var listViewDataSource: UITableViewDiffableDataSource<Section, Book>!
+    var listViewDataSource: TBTableViewDiffableDataSource!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +43,7 @@ class MainVC: UIViewController {
         configureListView()
         showCollectionView()
         configureDiffableDataSources()
+        configureSearchController()
         loadBooks()
         
     }
@@ -65,8 +71,8 @@ class MainVC: UIViewController {
                 self.books = books
                 self.updateDataSources(with: self.books, animated: true)
             case .failure(let error):
-                //TODO:- actually do something useful with these errors
                 print(error.rawValue)
+                self.presentErrorAlert(for: error)
             }
         }
     }
@@ -83,7 +89,7 @@ class MainVC: UIViewController {
         })
         
         //ListView dataSource
-        listViewDataSource = UITableViewDiffableDataSource<Section, Book>(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
+        listViewDataSource = TBTableViewDiffableDataSource(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
             let book = self.books[indexPath.row]
@@ -91,6 +97,21 @@ class MainVC: UIViewController {
             return cell
             
         })
+        listViewDataSource.deleteBookDelegate = self
+        
+        
+    }
+    
+    private func configureSearchController() {
+        
+        let searchController = UISearchController()
+        searchController.searchBar.tintColor = Constants.tintColor
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Search"
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = searchController
+        
     }
     
     //MARK:- List view
@@ -131,6 +152,7 @@ class MainVC: UIViewController {
 
     }
     
+    //TODO: this isn't very DRY
     private func createNColumnFlowLayout(withNColumns n: Int) -> UICollectionViewFlowLayout {
         
         let width = view.bounds.width
@@ -203,6 +225,7 @@ class MainVC: UIViewController {
     
 }
 
+//MARK:- Extensions
 extension MainVC: AddBookDelegate {
     
     func didSubmit(book: Book) {
@@ -211,6 +234,7 @@ extension MainVC: AddBookDelegate {
             if let error = error {
                 //TODO:- something useful with this error
                 print(error.rawValue)
+                self.presentErrorAlert(for: error)
             }
         }
         
@@ -219,13 +243,69 @@ extension MainVC: AddBookDelegate {
     
 }
 
-extension MainVC: UITableViewDelegate {}
+extension MainVC: DeleteBookDelegate{
+    
+    func didRequestToDelete(book: Book) {
+        PersistenceManager.updateBooks(.delete, book: book) { (error) in
+            
+            if let error = error{
+                self.presentErrorAlert(for: error)
+            }
+            
+        }
+        
+        books.removeAll { (bookUnderConsideration) -> Bool in
+            bookUnderConsideration == book
+        }
+        
+        updateDataSources(with: books, animated: true)
+    }
+    
+}
+
+extension MainVC: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
+        print(book)
+    }
+}
 
 extension MainVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let book = books[indexPath.row]
+        let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
+    }
+    
+}
+
+extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
+        guard let searchString = searchController.searchBar.text else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
+        
+        guard !searchString.isEmpty else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
+        
+        filteredBooks = books.filter({ book -> Bool in
+            book.shouldMatchSearchString(searchString)
+        })
+        isUsingFilteredBooks = true
+        
+        updateDataSources(with: filteredBooks, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        isUsingFilteredBooks = false
+        updateDataSources(with: books, animated: true)
+        
     }
     
 }

@@ -12,6 +12,9 @@
 		CF1DA46F253714BB00516E42 /* TBNumericEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1DA46E253714BB00516E42 /* TBNumericEntryCVCell.swift */; };
 		CF1DA4722537156500516E42 /* TBOptionEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1DA4712537156500516E42 /* TBOptionEntryCVCell.swift */; };
 		CF1DA4752537159600516E42 /* TBPictureEntryCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1DA4742537159600516E42 /* TBPictureEntryCVCell.swift */; };
+		CF248C7B2546ED1700872FA3 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF248C7A2546ED1700872FA3 /* Location.swift */; };
+		CF25ED5E256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF25ED5D256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift */; };
+		CF7228682549E7FC00A64112 /* OptionsCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7228672549E7FC00A64112 /* OptionsCVCell.swift */; };
 		CF798D7924E56974002670C6 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF798D7824E56974002670C6 /* PersistenceManager.swift */; };
 		CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */; };
 		CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D0E6246C4D2A00C7DD26 /* SceneDelegate.swift */; };
@@ -47,6 +50,9 @@
 		CF1DA46E253714BB00516E42 /* TBNumericEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBNumericEntryCVCell.swift; sourceTree = "<group>"; };
 		CF1DA4712537156500516E42 /* TBOptionEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBOptionEntryCVCell.swift; sourceTree = "<group>"; };
 		CF1DA4742537159600516E42 /* TBPictureEntryCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBPictureEntryCVCell.swift; sourceTree = "<group>"; };
+		CF248C7A2546ED1700872FA3 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		CF25ED5D256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTableViewDiffableDataSource.swift; sourceTree = "<group>"; };
+		CF7228672549E7FC00A64112 /* OptionsCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsCVCell.swift; sourceTree = "<group>"; };
 		CF798D7824E56974002670C6 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		CF88D0E1246C4D2A00C7DD26 /* The Bookshelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Bookshelf.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF88D0E4246C4D2A00C7DD26 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,6 +95,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CF0A289C2549E10500F485D2 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				CF0A289D2549E11000F485D2 /* TableView Cells */,
+				CF0A289E2549E11900F485D2 /* CollectionView Cells */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		CF0A289D2549E11000F485D2 /* TableView Cells */ = {
+			isa = PBXGroup;
+			children = (
+				CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */,
+			);
+			path = "TableView Cells";
+			sourceTree = "<group>";
+		};
+		CF0A289E2549E11900F485D2 /* CollectionView Cells */ = {
+			isa = PBXGroup;
+			children = (
+				CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */,
+				CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */,
+				CF785911252DE920004479C3 /* Manual Entry Cell subclasses */,
+				CF7228672549E7FC00A64112 /* OptionsCVCell.swift */,
+			);
+			path = "CollectionView Cells";
+			sourceTree = "<group>";
+		};
+		CF25ED5C256A883000DBF9DF /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				CF88D0F8246C4F3800C7DD26 /* MainVC.swift */,
+				CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */,
+				CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */,
+				CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */,
+				CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		CF785911252DE920004479C3 /* Manual Entry Cell subclasses */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,13 +186,10 @@
 		CF88D118246D8AB200C7DD26 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CF0A289C2549E10500F485D2 /* Cells */,
 				CF88D11F246DC1F300C7DD26 /* EntryFormField.swift */,
-				CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */,
-				CF785911252DE920004479C3 /* Manual Entry Cell subclasses */,
 				CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */,
 				CF88D123246DC4A300C7DD26 /* TBTextField.swift */,
-				CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */,
-				CFC3E46524E9392D00482DD8 /* TBCollectionViewCell.swift */,
 				CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */,
 				CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */,
 				CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */,
@@ -160,6 +203,7 @@
 				CF88D10E246D78D600C7DD26 /* ISBN.swift */,
 				CFCB9B4924E4A050008C95A5 /* ServerBook.swift */,
 				CF88D104246CA93400C7DD26 /* Book.swift */,
+				CF248C7A2546ED1700872FA3 /* Location.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -167,11 +211,8 @@
 		CF88D11A246D8AC200C7DD26 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				CF88D0F8246C4F3800C7DD26 /* MainVC.swift */,
-				CF88D10A246D684D00C7DD26 /* BookDetailVC.swift */,
-				CF88D116246D8AA000C7DD26 /* AddBookTabBarController.swift */,
-				CF88D11B246D8BE000C7DD26 /* ISBNEntryVC.swift */,
-				CF88D11D246D8BFA00C7DD26 /* ManualEntryVC.swift */,
+				CF25ED5C256A883000DBF9DF /* ViewControllers */,
+				CF25ED5D256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -263,8 +304,10 @@
 				CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */,
 				CF88D0F9246C4F3800C7DD26 /* MainVC.swift in Sources */,
 				CF88D0E5246C4D2A00C7DD26 /* AppDelegate.swift in Sources */,
+				CF25ED5E256A8A9B00DBF9DF /* TBTableViewDiffableDataSource.swift in Sources */,
 				CFCB9B4624E49350008C95A5 /* Constants.swift in Sources */,
 				CF88D11E246D8BFA00C7DD26 /* ManualEntryVC.swift in Sources */,
+				CF7228682549E7FC00A64112 /* OptionsCVCell.swift in Sources */,
 				CFC3E46024E5EA4C00482DD8 /* TBTitleLabel.swift in Sources */,
 				CF88D0E7246C4D2A00C7DD26 /* SceneDelegate.swift in Sources */,
 				CF1DA4722537156500516E42 /* TBOptionEntryCVCell.swift in Sources */,
@@ -278,6 +321,7 @@
 				CFC3E45C24E5E95100482DD8 /* TBBookCell.swift in Sources */,
 				CF88D11C246D8BE000C7DD26 /* ISBNEntryVC.swift in Sources */,
 				CF88D120246DC1F300C7DD26 /* EntryFormField.swift in Sources */,
+				CF248C7B2546ED1700872FA3 /* Location.swift in Sources */,
 				CFCB9B4A24E4A050008C95A5 /* ServerBook.swift in Sources */,
 				CF1DA46F253714BB00516E42 /* TBNumericEntryCVCell.swift in Sources */,
 				CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */,
@@ -427,6 +471,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.QTechnologies.The-Bookshelf";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -439,12 +484,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 849KN7767H;
+				DEVELOPMENT_TEAM = 569W85DQKZ;
 				INFOPLIST_FILE = "The Bookshelf/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.QTechnologies.The-Bookshelf";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

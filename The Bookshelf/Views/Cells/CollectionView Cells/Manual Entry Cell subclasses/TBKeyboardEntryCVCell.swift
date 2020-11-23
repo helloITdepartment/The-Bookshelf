@@ -11,6 +11,12 @@ import UIKit
 class TBKeyboardEntryCVCell: TBManualEntryCollectionViewCell {
     
     internal let textField = TBTextField()
+    
+    //Instead of reading the values of the cells when the add button is tapped-
+    //The cells have all have a didEnterValue closure given to them by their collectionView
+    //In theory it can be anything, but for right now they effectively say "assign (the string that's going to be passed in) to this variable"
+    //where the variable is one in the VC that holds the collectionView, which represents a component of the Book
+//    var didEnterValue: ((String?) -> Void)!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,6 +58,10 @@ class TBKeyboardEntryCVCell: TBManualEntryCollectionViewCell {
         textField.text
     }
 
+    public func setTextFieldValue(to text: String) {
+        textField.text = text
+    }
+    
     public func grow() {
         
         DispatchQueue.main.async {
@@ -100,11 +110,13 @@ extension TBKeyboardEntryCVCell: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+//        didEnterValue(getTextFieldValue())
         shrink()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let didProperlyResign = textField.resignFirstResponder()
+//        didEnterValue(getTextFieldValue())
         shrink()
         return didProperlyResign
     }

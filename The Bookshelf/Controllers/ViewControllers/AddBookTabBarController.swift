@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol EditBookDelegate {
+    func edit(book: Book)
+}
+
 class AddBookTabBarController: UITabBarController {
     
     var addBookDelegate: AddBookDelegate! {
@@ -46,6 +50,7 @@ class AddBookTabBarController: UITabBarController {
     private func configureISBNVC() {
         isbnVC = ISBNEntryVC()
         isbnVC.view.backgroundColor = .systemBackground
+        isbnVC.editBookDelegate = self
         isbnVC.tabBarItem = UITabBarItem(title: "ISBN", image: UIImage(systemName: "barcode"), tag: 0)
     }
 
@@ -58,4 +63,14 @@ class AddBookTabBarController: UITabBarController {
     @objc func doneButtonTapped() {
         dismiss(animated: true)
     }
+    
+}
+
+extension AddBookTabBarController: EditBookDelegate {
+    
+    func edit(book: Book) {
+        manualEntryVC.book = book
+        manualEntryVC.tabBarController?.selectedIndex = 1
+    }
+
 }
