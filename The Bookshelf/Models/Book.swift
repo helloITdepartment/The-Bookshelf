@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Book: Codable, Hashable {
+struct Book: Codable, Hashable, CustomStringConvertible {
     
     var title: String
     var subtitle: String?
@@ -22,12 +22,13 @@ struct Book: Codable, Hashable {
 //    var identifiers: [String : [String]]?
     var coverImageData: Data?
     var coverUrl: String?
+    var currentPage: Int?
     var numberOfPages: Int?
     var dateAdded: Date
     //TODO:_ add something to hold how many pages have been read so far, and genre
     //TODO:- Maybe add a notes section?
     
-    init(title: String, subtitle: String?, genres: [String]?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, numberOfPages: Int?, dateAdded: Date) {
+    init(title: String, subtitle: String?, genres: [String]?, authors: [String], location: String?, lentOutTo: String?, isbn: String?, coverImageData: Data?, coverUrl: String?, currentPage: Int?, numberOfPages: Int?, dateAdded: Date) {
         self.title = title
         self.subtitle = subtitle
         self.genres = genres
@@ -37,6 +38,7 @@ struct Book: Codable, Hashable {
         self.isbn = isbn
         self.coverImageData = coverImageData
         self.coverUrl = coverUrl
+        self.currentPage = currentPage
         self.numberOfPages = numberOfPages
         self.dateAdded = dateAdded
     }
@@ -53,10 +55,10 @@ struct Book: Codable, Hashable {
         }
         
         if let identifiers = serverBook.identifiers {
-            if let isbn10 = identifiers["isbn_10"] {
-                isbn = isbn10[0]
-            } else if let isbn13 = identifiers["isbn_13"] {
+            if let isbn13 = identifiers["isbn_13"] {
                 isbn = isbn13[0]
+            } else if let isbn10 = identifiers["isbn_10"] {
+                isbn = isbn10[0]
             }
         }
         
@@ -101,10 +103,10 @@ struct Book: Codable, Hashable {
     public func shouldMatchSearchString(_ searchString: String) -> Bool {
         if title.containsCaseInsensitive(searchString) { return true }
         if subtitle != nil && subtitle!.containsCaseInsensitive(searchString) { return true }
+        
         //Can't return true from within the foreach since it's expecting a void function
         var shouldReturnTrue = false
         authors.forEach { (author) in
-            print(author)
             if author.containsCaseInsensitive(searchString) {
                 shouldReturnTrue = true
             }
@@ -125,6 +127,10 @@ struct Book: Codable, Hashable {
         if isbn != nil && isbn!.containsCaseInsensitive(searchString) { return true }
         
         return false
+    }
+    
+    var description: String {
+        (title + " by " + authorString() + " " + (isbn ?? ""))
     }
 }
 

@@ -12,7 +12,10 @@ protocol AddBookDelegate {
     func didSubmit(book: Book)
 }
 
-//Just putting this here so there's something to commit
+protocol DeleteBookDelegate {
+    func didRequestToDelete(book: Book)
+}
+
 class MainVC: UIViewController {
     
     enum Section {
@@ -22,11 +25,12 @@ class MainVC: UIViewController {
     
     var books: [Book] = []
     var filteredBooks: [Book] = []
+    var isUsingFilteredBooks = false
     
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
     var listView: UITableView!
-    var listViewDataSource: UITableViewDiffableDataSource<Section, Book>!
+    var listViewDataSource: TBTableViewDiffableDataSource!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,7 +89,7 @@ class MainVC: UIViewController {
         })
         
         //ListView dataSource
-        listViewDataSource = UITableViewDiffableDataSource<Section, Book>(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
+        listViewDataSource = TBTableViewDiffableDataSource(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
             let book = self.books[indexPath.row]
@@ -93,15 +97,21 @@ class MainVC: UIViewController {
             return cell
             
         })
+        listViewDataSource.deleteBookDelegate = self
+        
+        
     }
     
     private func configureSearchController() {
+        
         let searchController = UISearchController()
         searchController.searchBar.tintColor = Constants.tintColor
         searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Search"
+        searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
+        
     }
     
     //MARK:- List view
@@ -215,6 +225,7 @@ class MainVC: UIViewController {
     
 }
 
+//MARK:- Extensions
 extension MainVC: AddBookDelegate {
     
     func didSubmit(book: Book) {
@@ -232,12 +243,37 @@ extension MainVC: AddBookDelegate {
     
 }
 
-extension MainVC: UITableViewDelegate {}
+extension MainVC: DeleteBookDelegate{
+    
+    func didRequestToDelete(book: Book) {
+        PersistenceManager.updateBooks(.delete, book: book) { (error) in
+            
+            if let error = error{
+                self.presentErrorAlert(for: error)
+            }
+            
+        }
+        
+        books.removeAll { (bookUnderConsideration) -> Bool in
+            bookUnderConsideration == book
+        }
+        
+        updateDataSources(with: books, animated: true)
+    }
+    
+}
+
+extension MainVC: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
+        print(book)
+    }
+}
 
 extension MainVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let book = books[indexPath.row]
+        let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
     }
     
@@ -248,6 +284,7 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         
         guard let searchString = searchController.searchBar.text else {
+            updateDataSources(with: books, animated: true)
             return
         }
         
@@ -256,17 +293,19 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
             return
         }
         
-//        isSearching = true
         filteredBooks = books.filter({ book -> Bool in
             book.shouldMatchSearchString(searchString)
         })
+        isUsingFilteredBooks = true
         
         updateDataSources(with: filteredBooks, animated: true)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//        isSearching = false
+        
+        isUsingFilteredBooks = false
         updateDataSources(with: books, animated: true)
+        
     }
     
 }

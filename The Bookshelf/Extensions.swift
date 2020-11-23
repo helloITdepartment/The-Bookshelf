@@ -65,3 +65,7 @@ extension String {
         self.lowercased().contains(other.lowercased())
     }
 }
+
+extension UIImage {
+    static let bookPlaceholder = UIImage(systemName: "book.fill")!
+}

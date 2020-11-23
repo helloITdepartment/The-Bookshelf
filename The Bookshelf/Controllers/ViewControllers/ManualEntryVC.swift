@@ -138,22 +138,25 @@ class ManualEntryVC: UIViewController {
             return
         }
         
-        if let coverImage = book?.coverImage() {
-            coverImageCell.picture = coverImage
-        } else if let coverURL = book?.coverUrl {
-            NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
-                switch result {
-                
-                case .success(let image):
+        //But only if there's nothing there already
+        if coverImageCell.picture == nil {
+            if let coverImage = book?.coverImage() {
+                coverImageCell.picture = coverImage
+            } else if let coverURL = book?.coverUrl {
+                NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
+                    switch result {
                     
-                    DispatchQueue.main.async {
-//                        self.cover = image
-                        coverImageCell.picture = image
+                    case .success(let image):
+                        
+                        DispatchQueue.main.async {
+    //                        self.cover = image
+                            coverImageCell.picture = image
+                        }
+                        
+                    case .failure(let error):
+                        print(error.rawValue)
+                        self.presentErrorAlert(for: error)
                     }
-                    
-                case .failure(let error):
-                    print(error.rawValue)
-                    self.presentErrorAlert(for: error)
                 }
             }
         }
@@ -219,6 +222,11 @@ class ManualEntryVC: UIViewController {
     }
     
     private func processDataIn(_ cell: TBManualEntryCollectionViewCell) {
+        
+        if book == nil {
+            book = Book(title: "", subtitle: nil, genres: nil, authors: [""], location: nil, lentOutTo: nil, isbn: nil, coverImageData: nil, coverUrl: nil, currentPage: nil, numberOfPages: nil, dateAdded: Date())
+        }
+        
         switch cell.id {
         
         case .none:
@@ -226,56 +234,62 @@ class ManualEntryVC: UIViewController {
             
         case .coverImage:
             let cell = cell as! TBPictureEntryCVCell
-            coverImageData = cell.picture?.jpegData(compressionQuality: 0.5)
+            book!.coverImageData = cell.picture?.jpegData(compressionQuality: 0.5)
             return
             
         case .title:
             let cell = cell as! TBTextEntryCVCell
-            bookTitle = cell.getTextFieldValue()
+            if let titleFieldText = cell.getTextFieldValue() {
+                book!.title = titleFieldText
+            }
             return
             
         case .subtitle:
             let cell = cell as! TBTextEntryCVCell
-            subtitle = cell.getTextFieldValue()
+            book!.subtitle = cell.getTextFieldValue()
             return
             
         case .genre:
             let cell = cell as! TBTextEntryCVCell
             //Split returns Substrings instead of Strings, but you can map the Substrings into Strings
-            genres = cell.getTextFieldValue()?.split(separator: ",").map(String.init)
+            book!.genres = cell.getTextFieldValue()?.split(separator: ",").map(String.init)
             return
             
         case .author:
             let cell = cell as! TBTextEntryCVCell
-            author = cell.getTextFieldValue()
+            if let authorsFieldText = cell.getTextFieldValue() {
+                book!.authors = authorsFieldText.split(separator: ",").map({ (substring) -> String in
+                    String(substring).trimmingCharacters(in: .whitespacesAndNewlines)
+                })
+            }
             return
             
         case .location:
             let cell = cell as! TBOptionEntryCVCell
-            location = cell.getValue()
+            book!.location = cell.getValue()
             return
             
         case .lentOutTo:
             let cell = cell as! TBOptionEntryCVCell
-            lentOutTo = cell.getValue()
+            book!.lentOutTo = cell.getValue()
             return
             
         case .isbn:
             let cell = cell as! TBNumericEntryCVCell
-            isbn = cell.getTextFieldValue()
+            book!.isbn = cell.getTextFieldValue()
             return
             
         case .myPage:
             let cell = cell as! TBNumericEntryCVCell
             if let myPage = cell.getTextFieldValue() {
-                currentPage = Int(myPage)
+                book!.currentPage = Int(myPage)
             }
             return
             
         case .numPages:
             let cell = cell as! TBNumericEntryCVCell
             if let pages = cell.getTextFieldValue() {
-                numPages = Int(pages)
+                book!.numberOfPages = Int(pages)
             }
             return
         }
@@ -289,10 +303,23 @@ class ManualEntryVC: UIViewController {
         for i in 0..<fields.count {
             let indexPath = IndexPath(item: i, section: 0)
             if fields[i].required { //Put this check first to avoid assignment of cell if it's unnecessary
-                if let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell {
+                if let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell { //This block will run if the required cell is visible
                     if cell.isEmpty(){
                         collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
                         cell.flashRed()
+                        return
+                    }
+                } else { //This will run if the required cell is not visible. Possible that this block is all that is necessary and handles the other case as well
+                    //TODO:- Refactor this nonsense
+                    if (fields[i].id == .title && book?.title == "") || (fields[i].id == .author && book?.authors == [""]) {
+                        print(1)
+                        self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            if let cell = self.collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell {
+                                print(2)
+                                cell.flashRed()
+                            }
+                        }
                         return
                     }
                 }
@@ -310,8 +337,8 @@ class ManualEntryVC: UIViewController {
         
         //Re: the lentOutTo field- first check if the the book is lent out, otherwise it can't be lent out to anyone so the value should be nil
         //Re: the dateAdded field- only overwrite the dateAdded if there was none in the book previously
-        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: self.book?.coverUrl, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
-        addBookDelegate.didSubmit(book: book)
+//        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: self.book?.coverUrl, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
+        addBookDelegate.didSubmit(book: book!)
 
         dismiss(animated: true)
     }
@@ -403,7 +430,6 @@ extension ManualEntryVC: UICollectionViewDataSource {
 extension ManualEntryVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //TODO:- Grow, make text field primary
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBTextEntryCVCell else { return }
         
@@ -423,7 +449,8 @@ extension ManualEntryVC: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print(indexPath)
+        guard let manualEntryCell = cell as? TBManualEntryCollectionViewCell else { return }
+        processDataIn(manualEntryCell)
     }
     
 }
@@ -431,6 +458,9 @@ extension ManualEntryVC: UICollectionViewDelegate {
 extension ManualEntryVC: HelperVCPresenterDelegate {
 
     func present(_ vc: UIViewController) {
+        collectionView.visibleCells.forEach { (cell) in
+            processDataIn(cell as! TBManualEntryCollectionViewCell)
+        }
         present(vc, animated: true)
     }
 }
