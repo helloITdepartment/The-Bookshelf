@@ -49,10 +49,12 @@ extension UICollectionView {
 
 extension UIViewController {
     func presentErrorAlert(for error: TBError) {
-        let ac = UIAlertController(title: "Something went wrong.", message: error.rawValue, preferredStyle: .alert)
-        let gotItButton = UIAlertAction(title: "Got it", style: .default)
-        ac.addAction(gotItButton)
-        present(ac, animated: true)
+        DispatchQueue.main.async {
+            let ac = UIAlertController(title: "Something went wrong.", message: error.rawValue, preferredStyle: .alert)
+            let gotItButton = UIAlertAction(title: "Got it", style: .default)
+            ac.addAction(gotItButton)
+            self.present(ac, animated: true)
+        }
     }
 }
 
@@ -62,4 +64,8 @@ extension String {
     func containsCaseInsensitive(_ other: String) -> Bool {
         self.lowercased().contains(other.lowercased())
     }
+}
+
+extension UIImage {
+    static let bookPlaceholder = UIImage(systemName: "book.fill")!
 }

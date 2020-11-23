@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Book: Codable, Hashable {
+struct Book: Codable, Hashable, CustomStringConvertible {
     
     var title: String
     var subtitle: String?
@@ -55,10 +55,10 @@ struct Book: Codable, Hashable {
         }
         
         if let identifiers = serverBook.identifiers {
-            if let isbn10 = identifiers["isbn_10"] {
-                isbn = isbn10[0]
-            } else if let isbn13 = identifiers["isbn_13"] {
+            if let isbn13 = identifiers["isbn_13"] {
                 isbn = isbn13[0]
+            } else if let isbn10 = identifiers["isbn_10"] {
+                isbn = isbn10[0]
             }
         }
         
@@ -107,7 +107,6 @@ struct Book: Codable, Hashable {
         //Can't return true from within the foreach since it's expecting a void function
         var shouldReturnTrue = false
         authors.forEach { (author) in
-            print(author)
             if author.containsCaseInsensitive(searchString) {
                 shouldReturnTrue = true
             }
@@ -128,6 +127,10 @@ struct Book: Codable, Hashable {
         if isbn != nil && isbn!.containsCaseInsensitive(searchString) { return true }
         
         return false
+    }
+    
+    var description: String {
+        (title + " by " + authorString() + " " + (isbn ?? ""))
     }
 }
 

@@ -10,7 +10,7 @@ import UIKit
 
 class TBCoverImageView: UIImageView {
 
-    let placeholderImage = UIImage(systemName: "book.fill")
+    let placeholderImage = UIImage.bookPlaceholder
     let cache = NetworkManager.shared.cache
     
     override init(frame: CGRect) {

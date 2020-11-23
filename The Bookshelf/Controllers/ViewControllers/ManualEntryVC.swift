@@ -138,22 +138,25 @@ class ManualEntryVC: UIViewController {
             return
         }
         
-        if let coverImage = book?.coverImage() {
-            coverImageCell.picture = coverImage
-        } else if let coverURL = book?.coverUrl {
-            NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
-                switch result {
-                
-                case .success(let image):
+        //But only if there's nothing there already
+        if coverImageCell.picture == nil {
+            if let coverImage = book?.coverImage() {
+                coverImageCell.picture = coverImage
+            } else if let coverURL = book?.coverUrl {
+                NetworkManager.shared.getCoverImage(from: coverURL) { (result) in
+                    switch result {
                     
-                    DispatchQueue.main.async {
-//                        self.cover = image
-                        coverImageCell.picture = image
+                    case .success(let image):
+                        
+                        DispatchQueue.main.async {
+    //                        self.cover = image
+                            coverImageCell.picture = image
+                        }
+                        
+                    case .failure(let error):
+                        print(error.rawValue)
+                        self.presentErrorAlert(for: error)
                     }
-                    
-                case .failure(let error):
-                    print(error.rawValue)
-                    self.presentErrorAlert(for: error)
                 }
             }
         }
@@ -300,10 +303,23 @@ class ManualEntryVC: UIViewController {
         for i in 0..<fields.count {
             let indexPath = IndexPath(item: i, section: 0)
             if fields[i].required { //Put this check first to avoid assignment of cell if it's unnecessary
-                if let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell {
+                if let cell = collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell { //This block will run if the required cell is visible
                     if cell.isEmpty(){
                         collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
                         cell.flashRed()
+                        return
+                    }
+                } else { //This will run if the required cell is not visible. Possible that this block is all that is necessary and handles the other case as well
+                    //TODO:- Refactor this nonsense
+                    if (fields[i].id == .title && book?.title == "") || (fields[i].id == .author && book?.authors == [""]) {
+                        print(1)
+                        self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            if let cell = self.collectionView.cellForItem(at: indexPath) as? TBManualEntryCollectionViewCell {
+                                print(2)
+                                cell.flashRed()
+                            }
+                        }
                         return
                     }
                 }
@@ -414,7 +430,6 @@ extension ManualEntryVC: UICollectionViewDataSource {
 extension ManualEntryVC: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //TODO:- Grow, make text field primary
         
         guard let cell = collectionView.cellForItem(at: indexPath) as? TBTextEntryCVCell else { return }
         
@@ -434,7 +449,8 @@ extension ManualEntryVC: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print(indexPath)
+        guard let manualEntryCell = cell as? TBManualEntryCollectionViewCell else { return }
+        processDataIn(manualEntryCell)
     }
     
 }
