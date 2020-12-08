@@ -122,6 +122,7 @@ class MainVC: UIViewController {
         listView.delegate = self
         listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
         listView.backgroundColor = .systemBackground
+        listView.tintColor = Constants.tintColor
         
     }
     

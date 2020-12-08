@@ -87,6 +87,10 @@ struct Book: Codable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func hasCoverImage() -> Bool {
+        coverUrl != nil || coverImageData != nil
+    }
+    
     public func coverImage() -> UIImage? {
         
         //If a picture was taken

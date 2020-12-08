@@ -25,11 +25,13 @@ class BookDetailVC: UIViewController {
         view.backgroundColor = .systemBackground
 //        view.backgroundColor = .systemGreen
         
-        if book.coverUrl != nil || book.coverImageData != nil {
+        if book.hasCoverImage() {
             print("configuring cover image view")
             configureCoverImageView()
         }
+        
         configureTitleLabel()
+        configureAuthorLabel()
     }
     
     private func configureCoverImageView() {
@@ -74,6 +76,7 @@ class BookDetailVC: UIViewController {
         //Configure its text, font
         titleLabel.text = book.title
         titleLabel.minimumScaleFactor = 0.5
+        titleLabel.numberOfLines = 2
         
         //Add it to the view
         view.addSubview(titleLabel)
@@ -88,6 +91,27 @@ class BookDetailVC: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: padding),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             titleLabel.heightAnchor.constraint(equalToConstant: 100)
+        ])
+    }
+    
+    private func configureAuthorLabel() {
+        
+        //Create the label
+        authorLabel = TBAuthorLabel(textAlignment: .left, fontSize: 30)
+        
+        //Configure the text, font
+        authorLabel.text = book.authorString()
+        authorLabel.minimumScaleFactor = 0.5
+        
+        //Add it to the subview
+        view.addSubview(authorLabel)
+        
+        //Constrain it
+        NSLayoutConstraint.activate([
+            authorLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            authorLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: padding),
+            authorLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            authorLabel.heightAnchor.constraint(equalToConstant: 100)
         ])
     }
     
