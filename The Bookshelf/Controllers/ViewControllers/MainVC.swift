@@ -267,6 +267,9 @@ extension MainVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
+        let bookDetailVC = BookDetailVC()
+        bookDetailVC.book = book
+        navigationController?.pushViewController(bookDetailVC, animated: true)
     }
 }
 
@@ -275,6 +278,9 @@ extension MainVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
+        let bookDetailVC = BookDetailVC()
+        bookDetailVC.book = book
+        navigationController?.pushViewController(bookDetailVC, animated: true)
     }
     
 }
