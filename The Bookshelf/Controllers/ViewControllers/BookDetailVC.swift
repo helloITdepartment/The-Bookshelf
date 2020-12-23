@@ -17,6 +17,7 @@ class BookDetailVC: UIViewController {
     var coverImageView: UIImageView?
     var titleLabel: TBTitleLabel!
     var authorLabel: TBAuthorLabel!
+    var locationLabel: LocationLabelView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +26,13 @@ class BookDetailVC: UIViewController {
         view.backgroundColor = .systemBackground
 //        view.backgroundColor = .systemGreen
         
+       configureVC()
+    }
+    
+    private func configureVC() {
+        
+        view.clear()
+        
         if book.hasCoverImage() {
             print("configuring cover image view")
             configureCoverImageView()
@@ -32,6 +40,13 @@ class BookDetailVC: UIViewController {
         
         configureTitleLabel()
         configureAuthorLabel()
+        
+        if book.location != nil {
+            configureLocationLabel()
+        }
+        
+        configureEditButton()
+        
     }
     
     private func configureCoverImageView() {
@@ -113,6 +128,73 @@ class BookDetailVC: UIViewController {
             authorLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             authorLabel.heightAnchor.constraint(equalToConstant: 100)
         ])
+        
+    }
+    
+    private func configureLocationLabel() {
+        
+        //Create the label
+        locationLabel = LocationLabelView()
+        
+        //Configure the text, font
+        if book.location == .lentOut {
+            if book.lentOutTo != nil {
+                locationLabel?.set(labelText: "Lent out to \(book.lentOutTo!)")
+            } else {
+                locationLabel?.set(labelText: "Lent out")
+            }
+        } else {
+            locationLabel?.set(labelText: book.location!) // Can safely unwrap since we're only getting into this func if the location is not nil
+        }
+        
+        //Add it to the subview
+        view.addSubview(locationLabel!)
+        
+        //Constrain it
+        locationLabel?.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            locationLabel!.leadingAnchor.constraint(equalTo: authorLabel.leadingAnchor),
+            locationLabel!.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: padding),
+            locationLabel!.trailingAnchor.constraint(equalTo: authorLabel.trailingAnchor),
+            locationLabel!.heightAnchor.constraint(equalToConstant: 25)
+        ])
+    }
+    
+    private func configureEditButton() {
+        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonTapped))
+        editButton.tintColor = Constants.tintColor
+        
+        navigationItem.rightBarButtonItem = editButton
+    }
+    
+    @objc private func editButtonTapped() {
+        let editingVC = ManualEntryVC()
+        editingVC.book = book
+        editingVC.addBookDelegate = self
+        
+        let vcToPresent = UINavigationController(rootViewController: editingVC)
+        present(vcToPresent, animated: true)
+    }
+}
+
+extension BookDetailVC: AddBookDelegate {
+    
+    func didSubmit(book: Book) {
+        
+        PersistenceManager.updateBooks(.delete, book: self.book) { (error) in
+            if let error = error {
+                self.presentErrorAlert(for: error)
+            }
+        }
+        
+        PersistenceManager.updateBooks(.add, book: book) { (error) in
+            if let error = error {
+                self.presentErrorAlert(for: error)
+            }
+        }
+        
+        self.book = book
+        configureVC()
     }
     
 }

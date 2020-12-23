@@ -79,8 +79,19 @@ class ManualEntryVC: UIViewController {
             let addButton = UIBarButtonItem(title: "Add", style: .done, target: self, action: #selector(addButtonTapped))
             addButton.tintColor = Constants.tintColor
             
-            tabBarController!.navigationItem.leftBarButtonItem = addButton
+            //configure the Done/cancel button
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
+            doneButton.tintColor = Constants.tintColor            
             
+            //add them to the appropriate navigation item
+            if tabBarController != nil {
+                tabBarController!.navigationItem.leftBarButtonItem = addButton
+                tabBarController!.navigationItem.rightBarButtonItem = doneButton
+            } else {
+                navigationItem.leftBarButtonItem = addButton
+                navigationItem.rightBarButtonItem = doneButton
+            }
+
             didConfigureCollectionView = true
         }
     }
@@ -340,6 +351,10 @@ class ManualEntryVC: UIViewController {
 //        let book = Book(title: bookTitle!, subtitle: subtitle, genres: genres, authors: [author!], location: location, lentOutTo: (location == .lentOut ? lentOutTo : nil), isbn: isbn, coverImageData: coverImageData, coverUrl: self.book?.coverUrl, numberOfPages: numPages, dateAdded: self.book != nil ? self.book!.dateAdded : Date())
         addBookDelegate.didSubmit(book: book!)
 
+        dismiss(animated: true)
+    }
+    
+    @objc func doneButtonTapped() {
         dismiss(animated: true)
     }
     

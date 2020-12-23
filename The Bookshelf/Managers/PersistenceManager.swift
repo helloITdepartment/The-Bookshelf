@@ -289,5 +289,6 @@ enum PersistenceManager {
             }
         }
     }
+    
     //MARK:- Cover stuff
 }
