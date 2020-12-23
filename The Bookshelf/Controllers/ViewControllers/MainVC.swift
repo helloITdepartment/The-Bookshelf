@@ -97,7 +97,6 @@ class MainVC: UIViewController {
         listViewDataSource = TBTableViewDiffableDataSource(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
-            let book = self.books[indexPath.row]
             cell.set(book: book)
             return cell
             
@@ -187,11 +186,11 @@ class MainVC: UIViewController {
         
     }
     
-    func updateDataSources(with books: [Book], animated: Bool) {
+    func updateDataSources(with booksToDisplay: [Book], animated: Bool) {
         
         var snapshot = NSDiffableDataSourceSnapshot<Section, Book>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(books)
+        snapshot.appendItems(booksToDisplay)
         
         if view.subviews.contains(collectionView){
             DispatchQueue.main.async {
