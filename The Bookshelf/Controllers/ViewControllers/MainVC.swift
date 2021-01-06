@@ -51,8 +51,10 @@ class MainVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.prefersLargeTitles = true
         loadBooks()
     }
+    
     private func configureNavBar() {
         
         //In production, should use the one with "listViewButtonTapped" and showCollectionView in the viewDidLoad

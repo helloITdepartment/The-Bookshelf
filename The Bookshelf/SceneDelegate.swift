@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         mainVC.title = "The Bookshelf"
         
         let navController = UINavigationController(rootViewController: mainVC)
-        navController.navigationBar.prefersLargeTitles = true
+        navController.navigationBar.tintColor = Constants.tintColor
         
         return navController
     }

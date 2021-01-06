@@ -228,7 +228,18 @@ class ManualEntryVC: UIViewController {
             pagesCell.setTextFieldValue(to: String(numPages))
         }
         
-        //If it made it this far, that means none of the fields weren't found, and so
+        //Fill in the location data
+        //The reason we're doing this out of order is because it might mess with the order, and we want to make sure everything else is already set
+        self.location = book?.location
+        if let location = book?.location {
+            guard let locationCell = self.collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as? TBOptionEntryCVCell else {
+                print("Couldn't find the location cell")
+                return
+            }
+  
+            locationCell.optionToSelect = location
+//            locationCell.selectOption(withName: location)
+        }        //If it made it this far, that means none of the fields weren't found, and so
         didFillInCollectionViewFields = true
     }
     

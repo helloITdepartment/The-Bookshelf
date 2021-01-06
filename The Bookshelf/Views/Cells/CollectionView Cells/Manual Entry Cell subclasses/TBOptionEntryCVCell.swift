@@ -25,10 +25,14 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
                print("OptionCell type was not set")
             case .location:
                 
-                PersistenceManager.retrieveLocations { (result) in
+                PersistenceManager.retrieveLocations { [weak self] (result) in
+                    guard let self = self else { return }
                     switch result {
                     case .success(let locations):
                         self.options = locations
+                        
+                        
+                        
                         print(locations)
                     case .failure(let error):
                         self.helperVCPresenterDelegate.presentErrorAlert(for: error)
@@ -53,6 +57,27 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
 
     var collectionView: UICollectionView!
     var selectedCell: OptionsCVCell? = nil
+    var optionToSelect: String? = nil {
+        didSet {
+            guard let optionToSelect = optionToSelect else { return }
+            
+            if optionToSelect != .lentOut {
+                if options.contains(optionToSelect) {
+                    self.options.removeAll { (underConsideration) -> Bool in
+                        underConsideration == optionToSelect
+                    }
+                    options.insert(optionToSelect, at: 1)
+                    collectionView.performBatchUpdates {
+                        collectionView.reloadData()
+                    } completion: { (bool) in
+                        self.selectOption(withName: optionToSelect)
+                    }
+
+                }
+            }
+            
+        }
+    }
     
     var options: [String] = []
     
@@ -101,6 +126,11 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         
         lowerView.addSubview(collectionView)
+//
+//        guard (optionToSelect != nil) else { return }
+//
+//        selectOption(withName: optionToSelect!)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -119,6 +149,29 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         selectedCell?.getText()
     }
     
+    public func selectOption(withName name: String) {
+
+        let indexOfOptionToSelect = name == .lentOut ? 0 : 1
+
+        guard let optionToSelect = collectionView.cellForItem(at: IndexPath(item: indexOfOptionToSelect, section: 0)) as? OptionsCVCell else { return }
+        selectedCell = optionToSelect
+        optionToSelect.indicateSelected()
+
+        //Make sure the option we're selection is even int he Location picker, otherwise it should have no bearing on whether "lent out..." was selected or deselected
+        guard type == .location else { return }
+
+        if optionToSelect.getText() == .lentOut { //TODO:- add check that we're in the Location picker, and that someone didn't just and "lent out..." as an option in the people picker
+            NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
+        } else {
+            NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+        }
+
+//        collectionView.selectItem(at: IndexPath(item: indexOfOptionToSelect, section: 0), animated: false, scrollPosition: .centeredHorizontally)
+//        print("found \(name) at", indexOfOptionToSelect)
+
+
+    }
+
     @objc private func addButtonTapped() {
         print("add button tapped")
         selectedCell?.removeSelectedIndication()
