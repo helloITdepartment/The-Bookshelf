@@ -48,6 +48,13 @@ class MainVC: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        loadBooks()
+    }
+    
     private func configureNavBar() {
         
         //In production, should use the one with "listViewButtonTapped" and showCollectionView in the viewDidLoad
@@ -92,7 +99,6 @@ class MainVC: UIViewController {
         listViewDataSource = TBTableViewDiffableDataSource(tableView: listView, cellProvider: { (tableView, indexPath, book) -> UITableViewCell? in
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TBBookCell.reuseID) as! TBBookCell
-            let book = self.books[indexPath.row]
             cell.set(book: book)
             return cell
             
@@ -122,6 +128,7 @@ class MainVC: UIViewController {
         listView.delegate = self
         listView.register(TBBookCell.self, forCellReuseIdentifier: TBBookCell.reuseID)
         listView.backgroundColor = .systemBackground
+        listView.tintColor = Constants.tintColor
         
     }
     
@@ -181,11 +188,11 @@ class MainVC: UIViewController {
         
     }
     
-    func updateDataSources(with books: [Book], animated: Bool) {
+    func updateDataSources(with booksToDisplay: [Book], animated: Bool) {
         
         var snapshot = NSDiffableDataSourceSnapshot<Section, Book>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(books)
+        snapshot.appendItems(booksToDisplay)
         
         if view.subviews.contains(collectionView){
             DispatchQueue.main.async {
@@ -267,6 +274,9 @@ extension MainVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
+        let bookDetailVC = BookDetailVC()
+        bookDetailVC.book = book
+        navigationController?.pushViewController(bookDetailVC, animated: true)
     }
 }
 
@@ -275,6 +285,9 @@ extension MainVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let book = isUsingFilteredBooks ? filteredBooks[indexPath.row] : books[indexPath.row]
         print(book)
+        let bookDetailVC = BookDetailVC()
+        bookDetailVC.book = book
+        navigationController?.pushViewController(bookDetailVC, animated: true)
     }
     
 }

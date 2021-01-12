@@ -87,6 +87,10 @@ struct Book: Codable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func hasCoverImage() -> Bool {
+        coverUrl != nil || coverImageData != nil
+    }
+    
     public func coverImage() -> UIImage? {
         
         //If a picture was taken
@@ -98,6 +102,22 @@ struct Book: Codable, Hashable, CustomStringConvertible {
         
         return nil
         
+    }
+    
+    public func coverImage(completed: @escaping (Result<UIImage, TBError>) -> Void) {
+        
+        //If a picture was taken
+        if let data = coverImageData {
+            if let image = UIImage(data: data) {
+                completed(.success(image))
+            }
+        }
+        
+        //If there is a url to the picture
+        if let url = coverUrl {
+            //Pass on the same `completed` function that was passed in
+            NetworkManager.shared.getCoverImage(from: url, completed: completed)
+        }
     }
     
     public func shouldMatchSearchString(_ searchString: String) -> Bool {
@@ -137,10 +157,10 @@ struct Book: Codable, Hashable, CustomStringConvertible {
 extension Book: Equatable { //TODO:- also add Comparable
     
     static func == (lhs: Book, rhs: Book) -> Bool {
-        if lhs.title.lowercased() == rhs.title.lowercased() {
+        if lhs.title.lowercased() == rhs.title.lowercased() { //Two books are equal if they have the same name...
             return true
-        } else {
-            return lhs.isbn == rhs.isbn
+        } else { //... or if they have the same (non-nil) isbn
+            return (rhs.isbn != "") && (lhs.isbn == rhs.isbn)
         }
     }
 }

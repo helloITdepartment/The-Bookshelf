@@ -34,6 +34,7 @@
 		CF88D124246DC4A300C7DD26 /* TBTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D123246DC4A300C7DD26 /* TBTextField.swift */; };
 		CF88D126246DC75500C7DD26 /* TBEntryFieldLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */; };
 		CFBB34E324F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */; };
+		CFC31B5325921FBC00D3BB36 /* LocationLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC31B5225921FBC00D3BB36 /* LocationLabelView.swift */; };
 		CFC3E45C24E5E95100482DD8 /* TBBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */; };
 		CFC3E45E24E5EA0A00482DD8 /* TBCoverImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */; };
 		CFC3E46024E5EA4C00482DD8 /* TBTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */; };
@@ -74,6 +75,7 @@
 		CF88D123246DC4A300C7DD26 /* TBTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTextField.swift; sourceTree = "<group>"; };
 		CF88D125246DC75500C7DD26 /* TBEntryFieldLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBEntryFieldLabel.swift; sourceTree = "<group>"; };
 		CFBB34E224F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBManualEntryCollectionViewCell.swift; sourceTree = "<group>"; };
+		CFC31B5225921FBC00D3BB36 /* LocationLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLabelView.swift; sourceTree = "<group>"; };
 		CFC3E45B24E5E95100482DD8 /* TBBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBBookCell.swift; sourceTree = "<group>"; };
 		CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBCoverImageView.swift; sourceTree = "<group>"; };
 		CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBTitleLabel.swift; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 				CFC3E45D24E5EA0A00482DD8 /* TBCoverImageView.swift */,
 				CFC3E45F24E5EA4C00482DD8 /* TBTitleLabel.swift */,
 				CFC3E46124E5EA8300482DD8 /* TBAuthorLabel.swift */,
+				CFC31B5225921FBC00D3BB36 /* LocationLabelView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -253,7 +256,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Q Technologies";
 				TargetAttributes = {
 					CF88D0E0246C4D2A00C7DD26 = {
@@ -314,6 +317,7 @@
 				CF1DA46C2537148900516E42 /* TBTextEntryCVCell.swift in Sources */,
 				CFCB9B4824E49396008C95A5 /* TBError.swift in Sources */,
 				CF88D10B246D684D00C7DD26 /* BookDetailVC.swift in Sources */,
+				CFC31B5325921FBC00D3BB36 /* LocationLabelView.swift in Sources */,
 				CF88D105246CA93400C7DD26 /* Book.swift in Sources */,
 				CF1DA466253713B500516E42 /* TBKeyboardEntryCVCell.swift in Sources */,
 				CFBB34E324F68AA600E7C501 /* TBManualEntryCollectionViewCell.swift in Sources */,
@@ -372,6 +376,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -432,6 +437,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -471,7 +477,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.7;
+				MARKETING_VERSION = 0.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.QTechnologies.The-Bookshelf";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -490,7 +496,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.7;
+				MARKETING_VERSION = 0.0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.QTechnologies.The-Bookshelf";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

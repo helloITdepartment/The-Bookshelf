@@ -40,10 +40,6 @@ class AddBookTabBarController: UITabBarController {
         view.backgroundColor = .systemBackground
         tabBar.tintColor = Constants.tintColor
         
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
-        doneButton.tintColor = Constants.tintColor
-        navigationItem.rightBarButtonItem = doneButton
-        
         title = "Add New Book"
     }
     
@@ -59,11 +55,6 @@ class AddBookTabBarController: UITabBarController {
         manualEntryVC.view.backgroundColor = .systemBackground
         manualEntryVC.tabBarItem = UITabBarItem(title: "Manual", image: UIImage(systemName: "text.alignleft"), tag: 1)
     }
-    
-    @objc func doneButtonTapped() {
-        dismiss(animated: true)
-    }
-    
 }
 
 extension AddBookTabBarController: EditBookDelegate {
