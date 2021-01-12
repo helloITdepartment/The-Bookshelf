@@ -74,7 +74,6 @@ class OptionsCVCell: UICollectionViewCell {
     public func indicateSelected() {
         backgroundColor = .systemTeal
         nameLabel.textColor = .label
-        
     }
     
     public func removeSelectedIndication() {

@@ -13,6 +13,11 @@ protocol HelperVCPresenterDelegate {
     func presentErrorAlert(for error: TBError)
 }
 
+enum ManualEntryMode {
+    case add
+    case edit
+}
+
 class ManualEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
@@ -143,6 +148,8 @@ class ManualEntryVC: UIViewController {
             return
         }
         
+        let offset = ((book?.location != nil ) ? 0 : 1)
+        
         //Fill in the cover
         guard let coverImageCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TBPictureEntryCVCell else {
             print("Couldn't find cover image cell")
@@ -208,7 +215,7 @@ class ManualEntryVC: UIViewController {
         
         //Fill in the ISBN
         if let isbn = book?.isbn {
-            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as? TBNumericEntryCVCell else {
+            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 6 + offset, section: 0)) as? TBNumericEntryCVCell else {
                 print("Couldn't find isbn cell")
                 return
             }
@@ -219,7 +226,7 @@ class ManualEntryVC: UIViewController {
         
         //Fill in the number of pages
         if let numPages = book?.numberOfPages {
-            guard let pagesCell = self.collectionView.cellForItem(at: IndexPath(item: 8, section: 0)) as? TBNumericEntryCVCell else {
+            guard let pagesCell = self.collectionView.cellForItem(at: IndexPath(item: 8 + offset, section: 0)) as? TBNumericEntryCVCell else {
                 print("Couldn't find the pages cell")
                 return
             }
@@ -230,16 +237,30 @@ class ManualEntryVC: UIViewController {
         
         //Fill in the location data
         //The reason we're doing this out of order is because it might mess with the order, and we want to make sure everything else is already set
-        self.location = book?.location
-        if let location = book?.location {
-            guard let locationCell = self.collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as? TBOptionEntryCVCell else {
-                print("Couldn't find the location cell")
-                return
-            }
-  
-            locationCell.optionToSelect = location
-//            locationCell.selectOption(withName: location)
-        }        //If it made it this far, that means none of the fields weren't found, and so
+//        self.location = book?.location
+//        if let location = book?.location {
+//            guard let locationCell = self.collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as? TBOptionEntryCVCell else {
+//                print("Couldn't find the location cell")
+//                return
+//            }
+//
+//            locationCell.optionToSelect = location
+//        }
+//
+//        //Fill in who it was lent out to
+//        //If it was went out at all
+//        if book?.location == .lentOut {
+//            self.lentOutTo = book?.lentOutTo
+//            if let lentOutTo = book?.lentOutTo {
+//                guard let lentOutCell = self.collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as? TBOptionEntryCVCell else {
+//                    print("Couldn't find the lentOut cell")
+//                    return
+//                }
+//
+//                lentOutCell.optionToSelect = lentOutTo
+//            }
+//        }        //If it made it this far, that means none of the fields weren't found, and so:
+        
         didFillInCollectionViewFields = true
     }
     
@@ -377,7 +398,14 @@ class ManualEntryVC: UIViewController {
         
         guard let collectionView = collectionView else { return }
         //I'll be honest, I don't know *why* three quarters of the height of the keyboard is the perfect height, I just know that it is
-        collectionView.contentInset.bottom = (keyboardFrame.height * 0.75)
+        var raisingFactor: CGFloat = 0.75
+        //TODO:- refactor this out, maybe have a variable somewhere that holds which mode we're in, adding or editing
+        if tabBarController == nil {
+            print("Probably in editing mode")
+            //Again, no idea why 92%, just tweaked the amount until it looked right
+            raisingFactor = 0.92
+        }
+        collectionView.contentInset.bottom = (keyboardFrame.height * raisingFactor)
     }
     
     @objc func keyboardWillHide() {
@@ -388,19 +416,20 @@ class ManualEntryVC: UIViewController {
     @objc func lentOutOptionWasSelected() {
         print("Lent out option selected")
         //insert "Lent out to..." option picker cell
-        
-        fields.insert(lentOutField, at: 6)
-        collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
-        containsLentOutField = true
+        if !containsLentOutField {
+            containsLentOutField = true
+            fields.insert(lentOutField, at: 6)
+            collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+        }
     }
     
     @objc func lentOutOptionWasDeselected() {
         print("Lent out option deselected")
         //remove "Lent out to..." option picker cell
         if containsLentOutField {
+            containsLentOutField = false
             fields.remove(at: 6)
             collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])
-            containsLentOutField = false
         }
     }
 }
@@ -438,6 +467,17 @@ extension ManualEntryVC: UICollectionViewDataSource {
             cell.type = type
             cell.helperVCPresenterDelegate = self
             cell.set(labelText: labelText)
+            
+            switch type {
+            case .location:
+                if let loc = book?.location {
+                    cell.optionToSelect = loc
+                }
+            case .people:
+                if let lentOutTo = book?.lentOutTo {
+                    cell.optionToSelect = lentOutTo
+                }
+            }
             
             return cell
             

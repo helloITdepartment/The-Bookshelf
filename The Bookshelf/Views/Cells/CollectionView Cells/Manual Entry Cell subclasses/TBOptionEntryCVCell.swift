@@ -30,10 +30,6 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
                     switch result {
                     case .success(let locations):
                         self.options = locations
-                        
-                        
-                        
-                        print(locations)
                     case .failure(let error):
                         self.helperVCPresenterDelegate.presentErrorAlert(for: error)
                     }
@@ -45,7 +41,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
                     switch result {
                     case .success(let people):
                         self.options = people
-                        print(people)
+//                        print(people)
                     case .failure(let error):
                         self.helperVCPresenterDelegate.presentErrorAlert(for: error)
                     }
@@ -61,20 +57,27 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         didSet {
             guard let optionToSelect = optionToSelect else { return }
             
-            if optionToSelect != .lentOut {
-                if options.contains(optionToSelect) {
-                    self.options.removeAll { (underConsideration) -> Bool in
-                        underConsideration == optionToSelect
-                    }
-                    options.insert(optionToSelect, at: 1)
-                    collectionView.performBatchUpdates {
-                        collectionView.reloadData()
-                    } completion: { (bool) in
-                        self.selectOption(withName: optionToSelect)
-                    }
-
-                }
+            if optionToSelect == .lentOut { //TODO:- add check that we're in the Location picker, and that someone didn't just and "lent out..." as an option in the people picker
+                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
+            } else {
+//                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
             }
+            
+//            if optionToSelect != .lentOut {
+//                if options.contains(optionToSelect) {
+//                    self.options.removeAll { (underConsideration) -> Bool in
+//                        underConsideration == optionToSelect
+//                    }
+//                    let whereToInsert = type == .location ? 1 : 0
+//                    options.insert(optionToSelect, at: whereToInsert)
+//                }
+//            }
+//
+//            collectionView?.performBatchUpdates {
+//                collectionView.reloadData()
+//            } completion: { (bool) in
+//                self.selectOption(withName: optionToSelect)
+//            }
             
         }
     }
@@ -151,7 +154,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     public func selectOption(withName name: String) {
 
-        let indexOfOptionToSelect = name == .lentOut ? 0 : 1
+        guard let indexOfOptionToSelect = options.firstIndex(of: name) else { return }
 
         guard let optionToSelect = collectionView.cellForItem(at: IndexPath(item: indexOfOptionToSelect, section: 0)) as? OptionsCVCell else { return }
         selectedCell = optionToSelect
@@ -253,7 +256,12 @@ extension TBOptionEntryCVCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionsCVCell.reuseID, for: indexPath) as! OptionsCVCell
         
-        cell.setText(to: options[indexPath.row])
+        let text = options[indexPath.row]
+        cell.setText(to: text)
+        if text == optionToSelect {
+            cell.indicateSelected()
+            self.selectedCell = cell
+        }
 //        cell.widthAnchor.constraint(equalToConstant: cell.getLabelSize().width).isActive = true
 //        print(cell.getLabelSize())
 //        print("Cell size", cell.frame.width, cell.frame.height)
