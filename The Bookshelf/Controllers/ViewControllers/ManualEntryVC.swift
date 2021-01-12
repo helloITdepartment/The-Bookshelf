@@ -13,6 +13,11 @@ protocol HelperVCPresenterDelegate {
     func presentErrorAlert(for error: TBError)
 }
 
+protocol ManualEntryController {
+    func lentOutOptionSelected()
+    func lentOutOptionDeselected()
+}
+
 enum ManualEntryMode {
     case add
     case edit
@@ -64,10 +69,10 @@ class ManualEntryVC: UIViewController {
         super.viewDidLoad()
         
         //Be on guard for the keyboard popping up
-        setUpKeyboardNotificationObserver()
-        
-        //Be on guard for the Location picker announcing that the "lent out" option was chosen
-        setUpLentOutNotificationObserver()
+//        setUpKeyboardNotificationObserver()
+//
+//        //Be on guard for the Location picker announcing that the "lent out" option was chosen
+//        setUpLentOutNotificationObserver()
     }
     
     override func viewWillLayoutSubviews() {
@@ -466,12 +471,14 @@ extension ManualEntryVC: UICollectionViewDataSource {
             cell.id = fieldTuple.id
             cell.type = type
             cell.helperVCPresenterDelegate = self
+            cell.manualEntryController = self
             cell.set(labelText: labelText)
             
             switch type {
             case .location:
                 if let loc = book?.location {
                     cell.optionToSelect = loc
+                    cell.manualEntryController = self
                 }
             case .people:
                 if let lentOutTo = book?.lentOutTo {
@@ -529,4 +536,25 @@ extension ManualEntryVC: HelperVCPresenterDelegate {
         }
         present(vc, animated: true)
     }
+}
+
+extension ManualEntryVC: ManualEntryController {
+    
+    func lentOutOptionSelected() {
+        print("Lent out option selected")
+        if !containsLentOutField {
+            containsLentOutField = true
+            fields.insert(lentOutField, at: 6)
+            collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+        }
+    }
+    
+    func lentOutOptionDeselected() {
+        print("Lent out option deselected")
+        if containsLentOutField {
+            containsLentOutField = false
+            fields.remove(at: 6)
+            collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])        }
+    }
+    
 }
