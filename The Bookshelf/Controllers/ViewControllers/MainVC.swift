@@ -287,6 +287,7 @@ extension MainVC: UICollectionViewDelegate {
         print(book)
         let bookDetailVC = BookDetailVC()
         bookDetailVC.book = book
+        bookDetailVC.deleteBookDelegate = self
         navigationController?.pushViewController(bookDetailVC, animated: true)
     }
     
