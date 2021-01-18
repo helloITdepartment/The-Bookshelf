@@ -12,6 +12,8 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     
     static let reuseID = "OptionEntryCVCell"
     
+    var manualEntryController: ManualEntryController!
+    
     static let lentOutOptionSelected =  Notification.Name("lentOutOptionSelected")
     static let lentOutOptionDeselected =  Notification.Name("lentOutOptionDeselected")
 
@@ -25,11 +27,11 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
                print("OptionCell type was not set")
             case .location:
                 
-                PersistenceManager.retrieveLocations { (result) in
+                PersistenceManager.retrieveLocations { [weak self] (result) in
+                    guard let self = self else { return }
                     switch result {
                     case .success(let locations):
                         self.options = locations
-                        print(locations)
                     case .failure(let error):
                         self.helperVCPresenterDelegate.presentErrorAlert(for: error)
                     }
@@ -41,7 +43,7 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
                     switch result {
                     case .success(let people):
                         self.options = people
-                        print(people)
+//                        print(people)
                     case .failure(let error):
                         self.helperVCPresenterDelegate.presentErrorAlert(for: error)
                     }
@@ -52,7 +54,17 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
     }
 
     var collectionView: UICollectionView!
-    var selectedCell: OptionsCVCell? = nil
+    var selectedCell: OptionsCVCell? = nil {
+        didSet {
+            guard oldValue?.getText() != selectedCell?.getText() else { return } //Make sure something has actually changed
+            if selectedCell?.getText() == .lentOut {
+                manualEntryController.lentOutOptionSelected()
+            } else if oldValue?.getText() == .lentOut && selectedCell?.getText() != .lentOut{ //Listen, I know that the second half is redundant based on the fact that a) we're in the else of an if that checked the opposite, and that b) the guard above is ensuring that this value can't be the same as the old value, so if the first half of the conditional is true, the second half must be, but I just needed to put this in to make myself feel better and this is my app, so
+                manualEntryController.lentOutOptionDeselected()
+            }
+        }
+    }
+    var optionToSelect: String? = nil
     
     var options: [String] = []
     
@@ -101,6 +113,11 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         
         lowerView.addSubview(collectionView)
+//
+//        guard (optionToSelect != nil) else { return }
+//
+//        selectOption(withName: optionToSelect!)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -119,6 +136,29 @@ class TBOptionEntryCVCell: TBManualEntryCollectionViewCell {
         selectedCell?.getText()
     }
     
+    public func selectOption(withName name: String) {
+
+        guard let indexOfOptionToSelect = options.firstIndex(of: name) else { return }
+
+        guard let optionToSelect = collectionView.cellForItem(at: IndexPath(item: indexOfOptionToSelect, section: 0)) as? OptionsCVCell else { return }
+        selectedCell = optionToSelect
+        optionToSelect.indicateSelected()
+
+        //Make sure the option we're selection is even int he Location picker, otherwise it should have no bearing on whether "lent out..." was selected or deselected
+        guard type == .location else { return }
+
+        if optionToSelect.getText() == .lentOut { //TODO:- add check that we're in the Location picker, and that someone didn't just and "lent out..." as an option in the people picker
+            NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
+        } else {
+            NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
+        }
+
+//        collectionView.selectItem(at: IndexPath(item: indexOfOptionToSelect, section: 0), animated: false, scrollPosition: .centeredHorizontally)
+//        print("found \(name) at", indexOfOptionToSelect)
+
+
+    }
+
     @objc private func addButtonTapped() {
         print("add button tapped")
         selectedCell?.removeSelectedIndication()
@@ -200,7 +240,12 @@ extension TBOptionEntryCVCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionsCVCell.reuseID, for: indexPath) as! OptionsCVCell
         
-        cell.setText(to: options[indexPath.row])
+        let text = options[indexPath.row]
+        cell.setText(to: text)
+        if text == optionToSelect {
+            cell.indicateSelected()
+            self.selectedCell = cell
+        }
 //        cell.widthAnchor.constraint(equalToConstant: cell.getLabelSize().width).isActive = true
 //        print(cell.getLabelSize())
 //        print("Cell size", cell.frame.width, cell.frame.height)
@@ -222,22 +267,16 @@ extension TBOptionEntryCVCell: UICollectionViewDelegate {
             selectedCell = nil
             cell.removeSelectedIndication()
             
-            if cell.getText() == .lentOut {
-                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
-            }
-            
         } else {
+            if selectedCell != nil { //Data was prefilled
+                if let indexPathToDeselect = collectionView.indexPath(for: selectedCell!){
+                    collectionView.deselectItem(at: indexPathToDeselect, animated: false)
+                    selectedCell?.removeSelectedIndication()
+                }
+            }
             selectedCell = cell
             cell.indicateSelected()
             
-            //Make sure the option we're selection is even int he Location picker, otherwise it should have no bearing on whether "lent out..." was selected or deselected
-            guard type == .location else { return }
-            
-            if cell.getText() == .lentOut {
-                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionSelected, object: nil)
-            } else {
-                NotificationCenter.default.post(name: TBOptionEntryCVCell.lentOutOptionDeselected, object: nil)
-            }
         }
     }
     

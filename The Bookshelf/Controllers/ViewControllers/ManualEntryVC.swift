@@ -13,6 +13,16 @@ protocol HelperVCPresenterDelegate {
     func presentErrorAlert(for error: TBError)
 }
 
+protocol ManualEntryController {
+    func lentOutOptionSelected()
+    func lentOutOptionDeselected()
+}
+
+enum ManualEntryMode {
+    case add
+    case edit
+}
+
 class ManualEntryVC: UIViewController {
 
     var addBookDelegate: AddBookDelegate!
@@ -59,10 +69,10 @@ class ManualEntryVC: UIViewController {
         super.viewDidLoad()
         
         //Be on guard for the keyboard popping up
-        setUpKeyboardNotificationObserver()
-        
-        //Be on guard for the Location picker announcing that the "lent out" option was chosen
-        setUpLentOutNotificationObserver()
+//        setUpKeyboardNotificationObserver()
+//
+//        //Be on guard for the Location picker announcing that the "lent out" option was chosen
+//        setUpLentOutNotificationObserver()
     }
     
     override func viewWillLayoutSubviews() {
@@ -79,8 +89,19 @@ class ManualEntryVC: UIViewController {
             let addButton = UIBarButtonItem(title: "Add", style: .done, target: self, action: #selector(addButtonTapped))
             addButton.tintColor = Constants.tintColor
             
-            tabBarController!.navigationItem.leftBarButtonItem = addButton
+            //configure the Done/cancel button
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
+            doneButton.tintColor = Constants.tintColor            
             
+            //add them to the appropriate navigation item
+            if tabBarController != nil {
+                tabBarController!.navigationItem.leftBarButtonItem = addButton
+                tabBarController!.navigationItem.rightBarButtonItem = doneButton
+            } else {
+                navigationItem.leftBarButtonItem = addButton
+                navigationItem.rightBarButtonItem = doneButton
+            }
+
             didConfigureCollectionView = true
         }
     }
@@ -131,6 +152,8 @@ class ManualEntryVC: UIViewController {
             print("Collection view was nil")
             return
         }
+        
+        let offset = ((book?.location != nil ) ? 0 : 1)
         
         //Fill in the cover
         guard let coverImageCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? TBPictureEntryCVCell else {
@@ -197,7 +220,7 @@ class ManualEntryVC: UIViewController {
         
         //Fill in the ISBN
         if let isbn = book?.isbn {
-            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as? TBNumericEntryCVCell else {
+            guard let isbnCell = self.collectionView.cellForItem(at: IndexPath(item: 6 + offset, section: 0)) as? TBNumericEntryCVCell else {
                 print("Couldn't find isbn cell")
                 return
             }
@@ -208,7 +231,7 @@ class ManualEntryVC: UIViewController {
         
         //Fill in the number of pages
         if let numPages = book?.numberOfPages {
-            guard let pagesCell = self.collectionView.cellForItem(at: IndexPath(item: 8, section: 0)) as? TBNumericEntryCVCell else {
+            guard let pagesCell = self.collectionView.cellForItem(at: IndexPath(item: 8 + offset, section: 0)) as? TBNumericEntryCVCell else {
                 print("Couldn't find the pages cell")
                 return
             }
@@ -217,7 +240,32 @@ class ManualEntryVC: UIViewController {
             pagesCell.setTextFieldValue(to: String(numPages))
         }
         
-        //If it made it this far, that means none of the fields weren't found, and so
+        //Fill in the location data
+        //The reason we're doing this out of order is because it might mess with the order, and we want to make sure everything else is already set
+//        self.location = book?.location
+//        if let location = book?.location {
+//            guard let locationCell = self.collectionView.cellForItem(at: IndexPath(item: 5, section: 0)) as? TBOptionEntryCVCell else {
+//                print("Couldn't find the location cell")
+//                return
+//            }
+//
+//            locationCell.optionToSelect = location
+//        }
+//
+//        //Fill in who it was lent out to
+//        //If it was went out at all
+//        if book?.location == .lentOut {
+//            self.lentOutTo = book?.lentOutTo
+//            if let lentOutTo = book?.lentOutTo {
+//                guard let lentOutCell = self.collectionView.cellForItem(at: IndexPath(item: 6, section: 0)) as? TBOptionEntryCVCell else {
+//                    print("Couldn't find the lentOut cell")
+//                    return
+//                }
+//
+//                lentOutCell.optionToSelect = lentOutTo
+//            }
+//        }        //If it made it this far, that means none of the fields weren't found, and so:
+        
         didFillInCollectionViewFields = true
     }
     
@@ -343,6 +391,10 @@ class ManualEntryVC: UIViewController {
         dismiss(animated: true)
     }
     
+    @objc func doneButtonTapped() {
+        dismiss(animated: true)
+    }
+    
     @objc func keyboardWillRise(notification: NSNotification) {
         
         guard let userInfo = notification.userInfo else { return }
@@ -351,7 +403,14 @@ class ManualEntryVC: UIViewController {
         
         guard let collectionView = collectionView else { return }
         //I'll be honest, I don't know *why* three quarters of the height of the keyboard is the perfect height, I just know that it is
-        collectionView.contentInset.bottom = (keyboardFrame.height * 0.75)
+        var raisingFactor: CGFloat = 0.75
+        //TODO:- refactor this out, maybe have a variable somewhere that holds which mode we're in, adding or editing
+        if tabBarController == nil {
+            print("Probably in editing mode")
+            //Again, no idea why 92%, just tweaked the amount until it looked right
+            raisingFactor = 0.92
+        }
+        collectionView.contentInset.bottom = (keyboardFrame.height * raisingFactor)
     }
     
     @objc func keyboardWillHide() {
@@ -362,19 +421,20 @@ class ManualEntryVC: UIViewController {
     @objc func lentOutOptionWasSelected() {
         print("Lent out option selected")
         //insert "Lent out to..." option picker cell
-        
-        fields.insert(lentOutField, at: 6)
-        collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
-        containsLentOutField = true
+        if !containsLentOutField {
+            containsLentOutField = true
+            fields.insert(lentOutField, at: 6)
+            collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+        }
     }
     
     @objc func lentOutOptionWasDeselected() {
         print("Lent out option deselected")
         //remove "Lent out to..." option picker cell
         if containsLentOutField {
+            containsLentOutField = false
             fields.remove(at: 6)
             collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])
-            containsLentOutField = false
         }
     }
 }
@@ -411,7 +471,20 @@ extension ManualEntryVC: UICollectionViewDataSource {
             cell.id = fieldTuple.id
             cell.type = type
             cell.helperVCPresenterDelegate = self
+            cell.manualEntryController = self
             cell.set(labelText: labelText)
+            
+            switch type {
+            case .location:
+                if let loc = book?.location {
+                    cell.optionToSelect = loc
+                    cell.manualEntryController = self
+                }
+            case .people:
+                if let lentOutTo = book?.lentOutTo {
+                    cell.optionToSelect = lentOutTo
+                }
+            }
             
             return cell
             
@@ -463,4 +536,25 @@ extension ManualEntryVC: HelperVCPresenterDelegate {
         }
         present(vc, animated: true)
     }
+}
+
+extension ManualEntryVC: ManualEntryController {
+    
+    func lentOutOptionSelected() {
+        print("Lent out option selected")
+        if !containsLentOutField {
+            containsLentOutField = true
+            fields.insert(lentOutField, at: 6)
+            collectionView.insertItems(at: [IndexPath(item: 6, section: 0)])
+        }
+    }
+    
+    func lentOutOptionDeselected() {
+        print("Lent out option deselected")
+        if containsLentOutField {
+            containsLentOutField = false
+            fields.remove(at: 6)
+            collectionView.deleteItems(at: [IndexPath(item: 6, section: 0)])        }
+    }
+    
 }
