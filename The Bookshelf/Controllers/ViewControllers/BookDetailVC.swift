@@ -12,6 +12,11 @@ class BookDetailVC: UIViewController {
 
     var book: Book!
     
+    var deleteBookDelegate: DeleteBookDelegate!
+    
+    var deleteButton: UIBarButtonItem!
+    var editButton: UIBarButtonItem!
+    
     let padding: CGFloat = 8
     
     var coverImageView: UIImageView?
@@ -45,8 +50,10 @@ class BookDetailVC: UIViewController {
             configureLocationLabel()
         }
         
+        configureDeleteButton()
         configureEditButton()
         
+        navigationItem.rightBarButtonItems = [deleteButton, editButton]
     }
     
     private func configureCoverImageView() {
@@ -160,11 +167,19 @@ class BookDetailVC: UIViewController {
         ])
     }
     
+    private func configureDeleteButton() {
+        deleteButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteButtonTapped))
+        deleteButton.tintColor = .systemRed
+    }
+    
     private func configureEditButton() {
-        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonTapped))
+        editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonTapped))
         editButton.tintColor = Constants.tintColor
-        
-        navigationItem.rightBarButtonItem = editButton
+    }
+    
+    @objc private func deleteButtonTapped() {
+        self.deleteBookDelegate.didRequestToDelete(book: self.book)
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func editButtonTapped() {
@@ -175,6 +190,7 @@ class BookDetailVC: UIViewController {
         let vcToPresent = UINavigationController(rootViewController: editingVC)
         present(vcToPresent, animated: true)
     }
+    
 }
 
 extension BookDetailVC: AddBookDelegate {
