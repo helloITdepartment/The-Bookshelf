@@ -28,12 +28,20 @@ class ISBNEntryVC: UIViewController {
 
         // Do any additional setup after loading the view.
         configureCollectionView()
-//        configureEntryField()
-//        configureGoButton()
-        //configureAddButton
     }
         
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        configureDoneButton()
+    }
+    
     //MARK:- Configuring UI layout
+    private func configureDoneButton(){
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(doneButtonTapped))
+        doneButton.tintColor = Constants.tintColor
+        tabBarController!.navigationItem.rightBarButtonItem = doneButton
+    }
+    
     private func configureCollectionView() {
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionView.createVerticalFlowLayout(for: view.frame.width))
@@ -49,21 +57,6 @@ class ISBNEntryVC: UIViewController {
         
         view.addSubview(collectionView)
     }
-    
-//    private func configureEntryField() {
-//        entryField.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(entryField)
-//
-//        entryField.set(labelText: "ISBN", textFieldPlaceholderText: "123456789")
-//
-//        NSLayoutConstraint.activate([
-//            entryField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-//            entryField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: padding),
-//            entryField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-//            entryField.heightAnchor.constraint(equalToConstant: 100)
-//        ])
-//
-//    }
     
     private func configureSearchButton(under cell: UICollectionViewCell) {
         
@@ -90,6 +83,10 @@ class ISBNEntryVC: UIViewController {
     }
     
     //MARK:- Button taps
+    @objc private func doneButtonTapped() {
+        dismiss(animated: true)
+    }
+    
     @objc private func searchButtonTapped() {
         
         guard let isbn = entryField.getTextFieldValue() else { return }

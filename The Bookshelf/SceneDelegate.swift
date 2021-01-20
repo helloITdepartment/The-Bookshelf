@@ -32,7 +32,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let mainVC = MainVC()
         mainVC.title = "The Bookshelf"
         
-        return UINavigationController(rootViewController: mainVC)
+        let navController = UINavigationController(rootViewController: mainVC)
+        navController.navigationBar.tintColor = Constants.tintColor
+        
+        return navController
     }
     
     func configureNavBar() {
