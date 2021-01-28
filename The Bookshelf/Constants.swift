@@ -36,4 +36,8 @@ enum EntryCellID: String {
     case numPages = "Number of pages"
 }
 
-
+struct SortingType {
+    static let byAuthor = { (lhs: Book, rhs: Book) in
+        return lhs.authorString() < rhs.authorString()
+    }
+}

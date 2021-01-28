@@ -118,6 +118,9 @@ class MainVC: UIViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         
+//        let btn = UIBarButtonItem(barButtonSystemItem: .compose, target: nil, action: nil)
+        
+        searchController.searchBar.scopeButtonTitles = ["All fields", "Title", "Author", "Location"]
     }
     
     //MARK:- List view
@@ -296,12 +299,77 @@ extension MainVC: UICollectionViewDelegate {
 extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
     
     func updateSearchResults(for searchController: UISearchController) {
-        
+                
         guard let searchString = searchController.searchBar.text else {
             updateDataSources(with: books, animated: true)
             return
         }
+                
+        guard !searchString.isEmpty else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
         
+        switch searchController.searchBar.selectedScopeButtonIndex {
+        case 0: //All fields
+            filteredBooks = books.filter({ book -> Bool in
+                book.shouldMatchSearchString(searchString)
+            })
+            
+        case 1: //Title
+            filteredBooks = books.filter({ book -> Bool in
+                book.title.contains(searchString)
+            })
+            
+        case 2: //Author (need to check all the authors)
+            filteredBooks = books.filter({ book -> Bool in
+                book.authors.contains { (author) -> Bool in
+                    author.contains(searchString)
+                }
+            })
+            
+        case 3: //Location
+            filteredBooks = books.filter({ book -> Bool in
+                if (book.location?.contains(searchString)) ?? false {
+                    return true
+                } else if book.location == .lentOut {
+                    return (book.lentOutTo?.contains(searchString)) ?? false
+                }
+                return false
+            })
+            
+        default:
+            filteredBooks = books.filter({ book -> Bool in
+                book.shouldMatchSearchString(searchString)
+            })
+        }
+        
+        isUsingFilteredBooks = true
+        
+        updateDataSources(with: filteredBooks, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        searchBar.showsScopeBar = false
+        isUsingFilteredBooks = false
+        updateDataSources(with: books, animated: true)
+        
+    }
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.showsScopeBar = true
+        
+        return true
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+        guard let searchString = searchBar.text else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
+                
         guard !searchString.isEmpty else {
             updateDataSources(with: books, animated: true)
             return
@@ -314,12 +382,4 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
         
         updateDataSources(with: filteredBooks, animated: true)
     }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        
-        isUsingFilteredBooks = false
-        updateDataSources(with: books, animated: true)
-        
-    }
-    
 }
