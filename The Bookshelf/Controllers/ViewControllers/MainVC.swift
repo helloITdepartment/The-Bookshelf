@@ -318,22 +318,22 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
             
         case 1: //Title
             filteredBooks = books.filter({ book -> Bool in
-                book.title.contains(searchString)
+                book.title.containsCaseInsensitive(searchString)
             })
             
         case 2: //Author (need to check all the authors)
             filteredBooks = books.filter({ book -> Bool in
                 book.authors.contains { (author) -> Bool in
-                    author.contains(searchString)
+                    author.containsCaseInsensitive(searchString)
                 }
             })
             
         case 3: //Location
             filteredBooks = books.filter({ book -> Bool in
-                if (book.location?.contains(searchString)) ?? false {
+                if (book.location?.containsCaseInsensitive(searchString)) ?? false {
                     return true
                 } else if book.location == .lentOut {
-                    return (book.lentOutTo?.contains(searchString)) ?? false
+                    return (book.lentOutTo?.containsCaseInsensitive(searchString)) ?? false
                 }
                 return false
             })

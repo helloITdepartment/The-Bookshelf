@@ -26,25 +26,48 @@ enum PersistenceManager {
     //MARK:- Book stuff
     static func retrieveBooks(completed: @escaping (Result<[Book], TBError>) -> Void) {
         
-        //Have to make sure there's even something in there for "books"
-        guard let booksObject = defaults.value(forKey: Keys.books) else {
-            completed(.success([]))
-            return
-        }
-        
-        //Have to make sure what's there is even understandable Data
-        guard let encodedBooks = booksObject as? Data else {
-            completed(.failure(.unableToRetrieveBooks))
-            return
-        }
-        
-        //Try to pull the books out of the data
-        do{
-            let decoder = JSONDecoder()
-            let books = try decoder.decode([Book].self, from: encodedBooks)
-            completed(.success(books))
-        } catch {
-            completed(.failure(.unableToRetrieveBooks))
+        if !Constants.inTestingMode {
+            //Have to make sure there's even something in there for "books"
+            guard let booksObject = defaults.value(forKey: Keys.books) else {
+                completed(.success([]))
+                return
+            }
+            
+            //Have to make sure what's there is even understandable Data
+            guard let encodedBooks = booksObject as? Data else {
+                completed(.failure(.unableToRetrieveBooks))
+                return
+            }
+            
+            //Try to pull the books out of the data
+            do{
+                let decoder = JSONDecoder()
+                let books = try decoder.decode([Book].self, from: encodedBooks)
+                completed(.success(books))
+            } catch {
+                completed(.failure(.unableToRetrieveBooks))
+            }
+        } else {
+            //Have to make sure there's even something in there for "books"
+            guard let booksFile = Bundle.main.url(forResource: "DummyBooks", withExtension: "json") else {
+                completed(.success([]))
+                return
+            }
+            
+            //Have to make sure what's there is even understandable Data
+            guard let encodedBooks = try? Data(contentsOf: booksFile) else {
+                completed(.failure(.unableToRetrieveBooks))
+                return
+            }
+            
+            //Try to pull the books out of the data
+            do{
+                let decoder = JSONDecoder()
+                let books = try decoder.decode([Book].self, from: encodedBooks)
+                completed(.success(books))
+            } catch {
+                completed(.failure(.unableToRetrieveBooks))
+            }
         }
     }
     
