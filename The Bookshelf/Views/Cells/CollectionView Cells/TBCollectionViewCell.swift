@@ -28,14 +28,34 @@ class TBCollectionViewCell: UICollectionViewCell {
     
     func set(book: Book) {
         
+//        let intrinsicSize = coverImageView.intrinsicContentSize
+//        let size = coverImageView.image?.size
+//        print(intrinsicSize, size)
+    
         //set the coverImageView's image
-        if let coverImage = book.coverImage() {
-            coverImageView.image = coverImage
-        } else if let coverUrl = book.coverUrl {
-            coverImageView.setImage(fromUrl: coverUrl)
-        } else { //else the placeholder image will be used
-            coverImageView.image = .bookPlaceholder
+        book.coverImage { (result) in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+//                    let size = self.coverImageView.image!.size
+//                    let renderer = UIGraphicsImageRenderer(size: size)
+//                    let scaledImageToDisplay = renderer.image { (context) in
+//                        image.draw(in: CGRect(origin: .zero, size: size))
+//                    }
+                    self.coverImageView.image = image
+                }
+            case .failure(let error):
+                print(error.rawValue)
+            }
         }
+        
+//        if let coverImage = book.coverImage() {
+//            coverImageView.image = coverImage
+//        } else if let coverUrl = book.coverUrl {
+//            coverImageView.setImage(fromUrl: coverUrl)
+//        } else { //else the placeholder image will be used
+//            coverImageView.image = .bookPlaceholder
+//        }
         
         //set the titleLabel's text
         titleLabel.text = book.title
