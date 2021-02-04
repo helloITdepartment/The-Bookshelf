@@ -69,9 +69,9 @@ class ManualEntryVC: UIViewController {
         super.viewDidLoad()
         
         //Be on guard for the keyboard popping up
-//        setUpKeyboardNotificationObserver()
-//
-//        //Be on guard for the Location picker announcing that the "lent out" option was chosen
+        setUpKeyboardNotificationObserver()
+
+        //Be on guard for the Location picker announcing that the "lent out" option was chosen
 //        setUpLentOutNotificationObserver()
     }
     
