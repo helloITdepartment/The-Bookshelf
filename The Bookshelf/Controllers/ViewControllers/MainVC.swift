@@ -38,6 +38,7 @@ class MainVC: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .systemRed
         
+//        PersistenceManager.injectDummyBooks()
         configureNavBar()
         configureCollectionView()
         configureListView()
@@ -65,6 +66,11 @@ class MainVC: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
         navigationItem.rightBarButtonItem?.tintColor = Constants.tintColor
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
+        let randomButton = UIBarButtonItem(image: UIImage(systemName: "die.face.6"), style: .plain, target: self, action: #selector(randomButtonTapped))
+        
+        navigationItem.rightBarButtonItems /* starting with the right edge */ = [addButton, randomButton]
     }
     
     private func loadBooks() {
@@ -231,6 +237,13 @@ class MainVC: UIViewController {
     
     @objc private func plusButtonTapped() {
         showAddEntryController()
+    }
+    
+    @objc private func randomButtonTapped() {
+        print("random button tapped")
+        let booksToRandomize = isUsingFilteredBooks ? filteredBooks : books
+        let randomizedBooks = booksToRandomize.shuffled()
+        updateDataSources(with: randomizedBooks, animated: true)
     }
     
 }
