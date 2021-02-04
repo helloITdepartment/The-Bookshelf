@@ -17,6 +17,8 @@ struct Constants {
     static let smallItemCornerRadius: CGFloat = 5
     
     static let tintColor: UIColor = .systemTeal
+    
+    static let imageFileMaxSize = 3000 //Maximum file size for the cover images taken on device. Don't want to be using up gigabyte of RAM if the user has tons of books and the covers are all in full res and taken on the newest phones
 }
 
 enum EntryCellType {
