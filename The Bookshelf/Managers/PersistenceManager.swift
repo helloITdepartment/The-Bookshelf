@@ -26,48 +26,25 @@ enum PersistenceManager {
     //MARK:- Book stuff
     static func retrieveBooks(completed: @escaping (Result<[Book], TBError>) -> Void) {
         
-        if !Constants.inTestingMode {
-            //Have to make sure there's even something in there for "books"
-            guard let booksObject = defaults.value(forKey: Keys.books) else {
-                completed(.success([]))
-                return
-            }
-            
-            //Have to make sure what's there is even understandable Data
-            guard let encodedBooks = booksObject as? Data else {
-                completed(.failure(.unableToRetrieveBooks))
-                return
-            }
-            
-            //Try to pull the books out of the data
-            do{
-                let decoder = JSONDecoder()
-                let books = try decoder.decode([Book].self, from: encodedBooks)
-                completed(.success(books))
-            } catch {
-                completed(.failure(.unableToRetrieveBooks))
-            }
-        } else {
-            //Have to make sure there's even something in there for "books"
-            guard let booksFile = Bundle.main.url(forResource: "DummyBooks", withExtension: "json") else {
-                completed(.success([]))
-                return
-            }
-            
-            //Have to make sure what's there is even understandable Data
-            guard let encodedBooks = try? Data(contentsOf: booksFile) else {
-                completed(.failure(.unableToRetrieveBooks))
-                return
-            }
-            
-            //Try to pull the books out of the data
-            do{
-                let decoder = JSONDecoder()
-                let books = try decoder.decode([Book].self, from: encodedBooks)
-                completed(.success(books))
-            } catch {
-                completed(.failure(.unableToRetrieveBooks))
-            }
+        //Have to make sure there's even something in there for "books"
+        guard let booksObject = defaults.value(forKey: Keys.books) else {
+            completed(.success([]))
+            return
+        }
+        
+        //Have to make sure what's there is even understandable Data
+        guard let encodedBooks = booksObject as? Data else {
+            completed(.failure(.unableToRetrieveBooks))
+            return
+        }
+        
+        //Try to pull the books out of the data
+        do{
+            let decoder = JSONDecoder()
+            let books = try decoder.decode([Book].self, from: encodedBooks)
+            completed(.success(books))
+        } catch {
+            completed(.failure(.unableToRetrieveBooks))
         }
     }
     
@@ -130,6 +107,29 @@ enum PersistenceManager {
             case .failure(let error):
                 completed(error)
             }
+        }
+    }
+    
+    static func injectDummyBooks() {
+        //Have to make sure there's even something in there for "DummyBooks.json"
+        guard let booksFile = Bundle.main.url(forResource: "DummyBooks", withExtension: "json") else {
+            return
+        }
+        
+        //Have to make sure what's there is even understandable Data
+        guard let encodedBooks = try? Data(contentsOf: booksFile) else {
+            return
+        }
+        
+        //Try to pull the books out of the data
+        do{
+            let decoder = JSONDecoder()
+            let books = try decoder.decode([Book].self, from: encodedBooks)
+            if let error = saveBooks(books: books) {
+                print(error)
+            }
+        } catch {
+            print(TBError.unableToRetrieveBooks)
         }
     }
     
