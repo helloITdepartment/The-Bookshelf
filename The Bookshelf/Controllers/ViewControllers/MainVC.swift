@@ -26,6 +26,7 @@ class MainVC: UIViewController {
     var books: [Book] = []
     var filteredBooks: [Book] = []
     var isUsingFilteredBooks = false
+    var isUsingRandomizedBooks = false
     
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
@@ -239,11 +240,18 @@ class MainVC: UIViewController {
         showAddEntryController()
     }
     
-    @objc private func randomButtonTapped() {
+    @objc func randomButtonTapped() {
         print("random button tapped")
+        isUsingRandomizedBooks.toggle()
+        if isUsingRandomizedBooks {
         let booksToRandomize = isUsingFilteredBooks ? filteredBooks : books
         let randomizedBooks = booksToRandomize.shuffled()
         updateDataSources(with: randomizedBooks, animated: true)
+        } else {
+            let booksToShow = isUsingFilteredBooks ? filteredBooks : books
+            updateDataSources(with: booksToShow, animated: true)
+        }
+        
     }
     
 }
