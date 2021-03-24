@@ -110,6 +110,29 @@ enum PersistenceManager {
         }
     }
     
+    static func injectDummyBooks() {
+        //Have to make sure there's even something in there for "DummyBooks.json"
+        guard let booksFile = Bundle.main.url(forResource: "DummyBooks", withExtension: "json") else {
+            return
+        }
+        
+        //Have to make sure what's there is even understandable Data
+        guard let encodedBooks = try? Data(contentsOf: booksFile) else {
+            return
+        }
+        
+        //Try to pull the books out of the data
+        do{
+            let decoder = JSONDecoder()
+            let books = try decoder.decode([Book].self, from: encodedBooks)
+            if let error = saveBooks(books: books) {
+                print(error)
+            }
+        } catch {
+            print(TBError.unableToRetrieveBooks)
+        }
+    }
+    
     //MARK:- Location stuff
     static func retrieveLocations(completed: @escaping (Result<[String], TBError>) -> Void) {
         
@@ -291,4 +314,43 @@ enum PersistenceManager {
     }
     
     //MARK:- Cover stuff
+    
+    //MARK:- Import/Export stuff
+    static func getFileToExport() -> NSURL? {
+        //Have to make sure there's even something in there for "books"
+        guard let booksObject = defaults.value(forKey: Keys.books) else {
+//            completed(.success([]))
+            return nil
+        }
+        
+        //Have to make sure what's there is even understandable Data
+        guard let encodedBooks = booksObject as? Data else {
+//            completed(.failure(.unableToRetrieveBooks))
+            return nil
+        }
+        
+        let fileName = "BKSHLFExport.json"
+        
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0] as NSString
+        
+        let filePath = documentsDirectory.appendingPathComponent(fileName)
+
+        var fileURL: NSURL!
+        
+        do {
+            // Write the file from data into the filepath (if there will be an error, the code jumps to the catch block below)
+            try encodedBooks.write(to: URL(fileURLWithPath: filePath))
+
+            // Returns the URL where the new file is located in NSURL
+            fileURL = NSURL(fileURLWithPath: filePath)
+
+        } catch {
+            // Prints the localized description of the error from the do block
+            print("Error writing the file: \(error.localizedDescription)")
+        }
+        
+        return fileURL
+
+    }
 }

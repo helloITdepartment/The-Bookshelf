@@ -9,11 +9,16 @@
 import UIKit
 
 struct Constants {
+    static let inTestingMode = true
+    
     static let entryFormFieldBorderWidth: CGFloat = 2
     static let largeItemCornerRadius: CGFloat = 15
     static let mediumItemCornerRadius: CGFloat = 10
     static let smallItemCornerRadius: CGFloat = 5
+    
     static let tintColor: UIColor = .systemTeal
+    
+    static let imageFileMaxSize = 3000 //Maximum file size for the cover images taken on device. Don't want to be using up gigabyte of RAM if the user has tons of books and the covers are all in full res and taken on the newest phones
 }
 
 enum EntryCellType {
@@ -36,4 +41,8 @@ enum EntryCellID: String {
     case numPages = "Number of pages"
 }
 
-
+struct SortingType {
+    static let byAuthor = { (lhs: Book, rhs: Book) in
+        return lhs.authorString() < rhs.authorString()
+    }
+}

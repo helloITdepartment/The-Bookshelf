@@ -26,6 +26,7 @@ class MainVC: UIViewController {
     var books: [Book] = []
     var filteredBooks: [Book] = []
     var isUsingFilteredBooks = false
+    var isUsingRandomizedBooks = false
     
     var collectionView: UICollectionView!
     var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, Book>!
@@ -38,6 +39,7 @@ class MainVC: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .systemRed
         
+//        PersistenceManager.injectDummyBooks()
         configureNavBar()
         configureCollectionView()
         configureListView()
@@ -65,6 +67,11 @@ class MainVC: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
         navigationItem.rightBarButtonItem?.tintColor = Constants.tintColor
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
+        let randomButton = UIBarButtonItem(image: UIImage(systemName: "die.face.6"), style: .plain, target: self, action: #selector(randomButtonTapped))
+        
+        navigationItem.rightBarButtonItems /* starting with the right edge */ = [addButton, randomButton]
     }
     
     private func loadBooks() {
@@ -118,6 +125,9 @@ class MainVC: UIViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         
+//        let btn = UIBarButtonItem(barButtonSystemItem: .compose, target: nil, action: nil)
+        
+        searchController.searchBar.scopeButtonTitles = ["All fields", "Title", "Author", "Location"]
     }
     
     //MARK:- List view
@@ -230,6 +240,20 @@ class MainVC: UIViewController {
         showAddEntryController()
     }
     
+    @objc func randomButtonTapped() {
+        print("random button tapped")
+        isUsingRandomizedBooks.toggle()
+        if isUsingRandomizedBooks {
+        let booksToRandomize = isUsingFilteredBooks ? filteredBooks : books
+        let randomizedBooks = booksToRandomize.shuffled()
+        updateDataSources(with: randomizedBooks, animated: true)
+        } else {
+            let booksToShow = isUsingFilteredBooks ? filteredBooks : books
+            updateDataSources(with: booksToShow, animated: true)
+        }
+        
+    }
+    
 }
 
 //MARK:- Extensions
@@ -296,12 +320,77 @@ extension MainVC: UICollectionViewDelegate {
 extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
     
     func updateSearchResults(for searchController: UISearchController) {
-        
+                
         guard let searchString = searchController.searchBar.text else {
             updateDataSources(with: books, animated: true)
             return
         }
+                
+        guard !searchString.isEmpty else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
         
+        switch searchController.searchBar.selectedScopeButtonIndex {
+        case 0: //All fields
+            filteredBooks = books.filter({ book -> Bool in
+                book.shouldMatchSearchString(searchString)
+            })
+            
+        case 1: //Title
+            filteredBooks = books.filter({ book -> Bool in
+                book.title.containsCaseInsensitive(searchString)
+            })
+            
+        case 2: //Author (need to check all the authors)
+            filteredBooks = books.filter({ book -> Bool in
+                book.authors.contains { (author) -> Bool in
+                    author.containsCaseInsensitive(searchString)
+                }
+            })
+            
+        case 3: //Location
+            filteredBooks = books.filter({ book -> Bool in
+                if (book.location?.containsCaseInsensitive(searchString)) ?? false {
+                    return true
+                } else if book.location == .lentOut {
+                    return (book.lentOutTo?.containsCaseInsensitive(searchString)) ?? false
+                }
+                return false
+            })
+            
+        default:
+            filteredBooks = books.filter({ book -> Bool in
+                book.shouldMatchSearchString(searchString)
+            })
+        }
+        
+        isUsingFilteredBooks = true
+        
+        updateDataSources(with: filteredBooks, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        searchBar.showsScopeBar = false
+        isUsingFilteredBooks = false
+        updateDataSources(with: books, animated: true)
+        
+    }
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.showsScopeBar = true
+        
+        return true
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+        guard let searchString = searchBar.text else {
+            updateDataSources(with: books, animated: true)
+            return
+        }
+                
         guard !searchString.isEmpty else {
             updateDataSources(with: books, animated: true)
             return
@@ -314,12 +403,4 @@ extension MainVC: UISearchResultsUpdating, UISearchBarDelegate {
         
         updateDataSources(with: filteredBooks, animated: true)
     }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        
-        isUsingFilteredBooks = false
-        updateDataSources(with: books, animated: true)
-        
-    }
-    
 }
